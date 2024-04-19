@@ -19,33 +19,31 @@ export const GET = auth(async (req: any) => {
   }
 });
 
-export const POST = auth(async (req: any) => {
+export const POST = auth(async (req) => {
   if (!req.auth || !req.auth.user?.isAdmin) {
     return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 });
   }
 
-  const { categoryName } = await req.json();
   await dbConnect();
 
-  // Generate a slug from the categoryName
-  // Make sure to create a function that generates a unique slug
-  const slug = generateSlug(categoryName); 
-
-  // Check if category with the same slug already exists
-  const categoryExists = await CategoryModel.findOne({ slug: slug });
-  if (categoryExists) {
-    return new Response(JSON.stringify({ message: 'Category with this slug already exists' }), { status: 409 }); // Conflict status code
-  }
-
-  // Add a new category with the slug
-  const category = new CategoryModel({ name: categoryName, slug: slug });
-
   try {
+    const body = await req.json();
+    const slug = generateSlug(body.name); // Funkcja do generowania sluga
+
+    // Sprawdzenie, czy istnieje już kategoria o takim samym slugu
+    const existingCategory = await CategoryModel.findOne({ slug });
+    if (existingCategory) {
+      return new Response(JSON.stringify({ message: 'Slug already exists' }), { status: 409 });
+    }
+
+    // Utworzenie nowej kategorii
+    const category = new CategoryModel({ name: body.name, slug });
     await category.save();
-    return new Response(JSON.stringify({ message: 'Category added successfully' }), { status: 201 });
-  } catch (err: any) {
-    console.error(err); // Log the error for debugging
-    return new Response(JSON.stringify({ message: err.message }), { status: 500 });
+
+    return new Response(JSON.stringify({ message: 'Category added successfully', category }), { status: 201 });
+  } catch (err) {
+    console.error('Error creating new category:', err);
+    return new Response(JSON.stringify({ message: 'Internal Server Error', error: err.toString() }), { status: 500 });
   }
 });
 
@@ -87,6 +85,44 @@ export const DELETE = auth(async (req: any) => {
   }
 });
 
+export const PUT = auth(async (req, { params }) => {
+  if (!req.auth || !req.auth.user?.isAdmin) {
+    return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 });
+  }
 
-
-
+  await dbConnect();
+  
+  try {
+    const { name, slug } = req.body;
+    const category = await CategoryModel.findById(params.id);
+    
+    if (!category) {
+      return new Response(JSON.stringify({ message: 'Category not found' }), { status: 404 });
+    }
+    
+    // Sprawdzanie unikalności sluga
+    let newSlug = slug;
+    let existingCategory;
+    let count = 1;
+    
+    // Pętla sprawdza unikalność sluga; jeśli jest zajęty, dodaje numer do sluga
+    do {
+      existingCategory = await CategoryModel.findOne({ slug: newSlug, _id: { $ne: category._id } });
+      if (existingCategory) {
+        newSlug = `${slug}-${count}`;
+        count++;
+      }
+    } while (existingCategory);
+    
+    // Aktualizacja kategorii
+    category.name = name;
+    category.slug = newSlug;
+    
+    await category.save();
+    
+    return new Response(JSON.stringify({ message: 'Category updated successfully' }), { status: 200 });
+  } catch (err) {
+    console.error('Error updating category:', err);
+    return new Response(JSON.stringify({ message: 'Internal Server Error', error: err.toString() }), { status: 500 });
+  }
+});

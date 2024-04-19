@@ -1,4 +1,4 @@
-# PIVE
+# triggery AI version STORE
 
 |                |                                                        |
 | -------------- | ------------------------------------------------------ |
@@ -6,7 +6,7 @@
 | UI             | Tailwind, DaisyUI, Chart.js                            |
 | Database       | MongoDB, Mongoose                                      |
 | Payment        | PayPal, Stripe                                         |
-| Deployment     | Github, Vercel, MongoDB Atlas                          |
+| Deployment     | Own Server                                             |
 | Authentication | Auth.js, Google Auth                                   |
 | Others         | Cloudinary, Zustand, SWR                               |
 

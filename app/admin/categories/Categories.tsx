@@ -1,14 +1,36 @@
+// app\admin\categories\Categories.tsx
 "use client";
 import useSWR from 'swr';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast'; // Importing toast from react-hot-toast
 // Modal Component using Tailwind CSS and DaisyUI
-const Modal = ({ onClose, onSubmit, initialCategory = '' }) => {
-  const [categoryName, setCategoryName] = useState(initialCategory);
+const Modal = ({ onClose, onSubmit, initialCategory, isEditing }) => {
+  // Ustawianie stanu początkowego na podstawie tego, czy edytujemy istniejącą kategorię
+  const [category, setCategory] = useState({
+    id: isEditing && initialCategory ? initialCategory._id : '',
+    name: isEditing && initialCategory ? initialCategory.name : '',
+    slug: isEditing && initialCategory ? initialCategory.slug : '',
+  });
+
+  // Funkcja do aktualizacji sluga na podstawie nazwy kategorii
+  useEffect(() => {
+    if (isEditing) {
+      function createSlug(name) {
+        return name.toLowerCase().replace(/[\s\W-]+/g, '-');
+      }
+  
+      if (category.name) {
+        setCategory((prevCategory) => ({
+          ...prevCategory,
+          slug: createSlug(category.name),
+        }));
+      }
+    }
+  }, [category.name, isEditing]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(categoryName);
+    onSubmit(category);
   };
 
   return (
@@ -16,15 +38,46 @@ const Modal = ({ onClose, onSubmit, initialCategory = '' }) => {
       <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-5 rounded-lg shadow-lg"
            onClick={(e) => e.stopPropagation()}>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            value={categoryName}
-            onChange={(e) => setCategoryName(e.target.value)}
-            placeholder="Category Name"
-            className="input input-bordered w-full"
-          />
+          {isEditing && (
+            <div>
+              <label htmlFor="category-id" className="block text-sm font-medium text-gray-700">ID</label>
+              <input
+                type="text"
+                id="category-id"
+                value={category.id}
+                className="input input-bordered w-full"
+                disabled
+              />
+            </div>
+          )}
+          <div>
+            <label htmlFor="category-name" className="block text-sm font-medium text-gray-700">Name</label>
+            <input
+              type="text"
+              id="category-name"
+              value={category.name}
+              onChange={(e) => setCategory({...category, name: e.target.value})}
+              placeholder="Category Name"
+              className="input input-bordered w-full"
+              required
+            />
+          </div>
+          {isEditing && (
+            <div>
+              <label htmlFor="category-slug" className="block text-sm font-medium text-gray-700">Slug</label>
+              <input
+                type="text"
+                id="category-slug"
+                value={category.slug}
+                onChange={(e) => setCategory({...category, slug: e.target.value})}
+                placeholder="Category Slug"
+                className="input input-bordered w-full"
+                required
+              />
+            </div>
+          )}
           <div className="flex justify-between">
-            <button type="submit" className="btn btn-primary">{initialCategory ? 'Update Category' : 'Add Category'}</button>
+            <button type="submit" className="btn btn-primary">{isEditing ? 'Update Category' : 'Create Category'}</button>
             <button type="button" className="btn" onClick={onClose}>Close</button>
           </div>
         </form>
@@ -32,6 +85,7 @@ const Modal = ({ onClose, onSubmit, initialCategory = '' }) => {
     </div>
   );
 };
+
 
 // CategoriesPage Component using Tailwind CSS and DaisyUI
 const CategoriesPage = () => {
@@ -69,7 +123,7 @@ const CategoriesPage = () => {
         <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-5 rounded-lg shadow-lg"
              onClick={(e) => e.stopPropagation()}>
           <div className="text-center">
-            <h3 className="mb-4">Are you sure you want to delete this category?</h3>
+            <h3 className="mb-4 text-[#222]">Are you sure you want to delete this category?</h3>
             <button type="button" className="btn btn-error mr-2" onClick={onConfirm}>Yes, Delete</button>
             <button type="button" className="btn btn-primary" onClick={onClose}>Cancel</button>
           </div>
@@ -78,7 +132,7 @@ const CategoriesPage = () => {
     );
   };
   
-  const handleAddOrUpdateCategory = async (categoryName) => {
+  const handleAddOrUpdateCategory = async (categoryData) => {
     const method = currentCategory ? 'PUT' : 'POST';
     const url = currentCategory ? `/api/admin/categories/${currentCategory._id}` : '/api/admin/categories';
   
@@ -88,28 +142,34 @@ const CategoriesPage = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ categoryName }),
+        body: JSON.stringify(categoryData),
       });
-
+  
       if (response.ok) {
-        mutate(); // Revalidate categories data
-        handleCloseModal(); // Close modal after operation
+        toast.success('Category updated successfully');
+        mutate();
+        handleCloseModal();
+      } else if (response.status === 409) {
+        toast.error('Slug already exists. Please choose a different slug.');
       } else {
         const result = await response.json();
-        alert(result.message || 'An error occurred');
+        toast.error(result.message || 'An error occurred during update');
       }
     } catch (error) {
       console.error('Request failed:', error);
-      alert('An error occurred while sending the request.');
+      toast.error('An error occurred while sending the request.');
     }
   };
+  
 
   const handleDeleteCategory = async (categoryId) => {
     try {
       const response = await fetch(`/api/admin/categories/${categoryId}`, { method: 'DELETE' });
       if (response.ok) {
         toast.success('Category deleted successfully');
-        mutate();  // Revalidate the SWR cache to update the list
+        mutate(); // Revalidate the SWR cache to update the list
+        setShowDeleteConfirm(false); // Zamykaj modal potwierdzenia
+        handleCloseModal(); // Zamknij modal edycji/dodawania
       } else {
         const result = await response.json();
         toast.error(result.message || 'Failed to delete category');
@@ -120,12 +180,45 @@ const CategoriesPage = () => {
     }
   };
   
+  
+
+  const handleAddCategory = async (categoryData) => {
+    try {
+      const response = await fetch('/api/admin/categories', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(categoryData),
+      });
+
+      if (response.ok) {
+        toast.success('Category added successfully');
+        mutate();
+        handleCloseModal();
+      } else if (response.status === 409) {
+        toast.error('Slug already exists. Please choose a different slug.');
+      } else {
+        const result = await response.json();
+        toast.error(result.message || 'An error occurred while adding the category');
+      }
+    } catch (error) {
+      console.error('Request failed:', error);
+      toast.error('An error occurred while sending the request.');
+    }
+  };
+  
   return (
     <div className="container mx-auto p-4">
-      <button className="btn btn-primary mb-4" onClick={() => handleOpenModal()}>Add Category</button>
-      {isModalOpen && (
-        <Modal onClose={handleCloseModal} onSubmit={handleAddOrUpdateCategory} initialCategory={currentCategory} />
-      )}
+    <button className="btn btn-primary mb-4" onClick={() => handleOpenModal()}>Add Category</button>
+    {isModalOpen && (
+      <Modal
+        onClose={handleCloseModal}
+        onSubmit={currentCategory ? handleAddOrUpdateCategory : handleAddCategory}
+        initialCategory={currentCategory || { name: '', slug: '' }}
+        isEditing={!!currentCategory}
+      />
+    )}
       {showDeleteConfirm && (
         <ConfirmDeleteModal
           onClose={handleCloseDeleteConfirm}
