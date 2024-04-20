@@ -1,4 +1,4 @@
-// pages/api/categories/index.js
+// pages/api/categories/index.ts
 import dbConnect from '@/lib/dbConnect';
 import ProductModel from '@/lib/models/ProductModel';
 

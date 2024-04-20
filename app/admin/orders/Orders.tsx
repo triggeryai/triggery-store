@@ -58,13 +58,13 @@ export default function Orders() {
         <table className="table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>USER</th>
-              <th>DATE</th>
-              <th>TOTAL</th>
-              <th>PAID</th>
-              <th>DELIVERED</th>
-              <th>ACTION</th>
+              <th><div className="badge">ID</div></th>
+              <th><div className="badge">USER</div></th>
+              <th><div className="badge">DATE</div></th>
+              <th><div className="badge">TOTAL</div></th>
+              <th><div className="badge">PAID</div></th>
+              <th><div className="badge">DELIVERED</div></th>
+              <th><div className="badge">ACTION</div></th>
             </tr>
           </thead>
           <tbody>

@@ -28,11 +28,11 @@ const BackQuote: React.FC = () => {
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
             </p>
             <blockquote className="p-4 italic border-l-4 bg-neutral-100 text-neutral-600 border-neutral-500 quote">
-              <p className="mb-2">"Successfully Providing business solutions from 25 years"</p>
+              <p className="mb-2">&quot;Successfully Providing business solutions from 25 years&quot;</p>
               <cite className="flex items-center">
                 <span className="mr-3 font-bold text-neutral-800">- John Doe, CEO</span>
               </cite>
-            </blockquote>
+          </blockquote>
           </div>
         </div>
       </div>

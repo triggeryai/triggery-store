@@ -29,7 +29,7 @@ export default function Products() {
     const response = await fetch('/api/admin/categories', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ name: 'Default Category' })
+      body: JSON.stringify({ name: 'Sample Category' })
     });
     const newCategory = await response.json();
     mutateCategories([...categories, newCategory], false); // Update SWR cache without re-fetching

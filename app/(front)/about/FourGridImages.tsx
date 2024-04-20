@@ -1,6 +1,6 @@
 // plik: components/FourGridImages.tsx
 
-import React from 'react';
+import Image from 'next/image';
 
 const FourGridImages: React.FC = () => {
   return (
@@ -10,15 +10,15 @@ const FourGridImages: React.FC = () => {
           <div className="w-full px-4 mb-10 xl:w-1/2 lg:mb-8">
             <div className="flex flex-wrap">
               <div className="w-full px-4 md:w-1/2">
-                <img src="https://i.postimg.cc/YCJW7jv8/pexels-fauxels-3184357.jpg" alt=""
+                <Image src="https://i.postimg.cc/YCJW7jv8/pexels-fauxels-3184357.jpg" alt=""
                      className="object-cover w-full mb-6 rounded-lg h-80"/>
-                <img src="https://i.postimg.cc/j5L5bX2d/pexels-andrea-piacquadio-3757946.jpg" alt=""
+                <Image src="https://i.postimg.cc/j5L5bX2d/pexels-andrea-piacquadio-3757946.jpg" alt=""
                      className="object-cover w-full rounded-lg h-80"/>
               </div>
               <div className="w-full px-4 md:w-1/2 xl:mt-11">
-                <img src="https://i.postimg.cc/sXJQ5cw0/pexels-pixabay-256455-1.jpg" alt=""
+                <Image src="https://i.postimg.cc/sXJQ5cw0/pexels-pixabay-256455-1.jpg" alt=""
                      className="object-cover w-full mb-6 rounded-lg h-80"/>
-                <img src="https://i.postimg.cc/vHTg6593/aqq.jpg" alt=""
+                <Image src="https://i.postimg.cc/vHTg6593/aqq.jpg" alt=""
                      className="object-cover w-full rounded-lg h-80"/>
               </div>
             </div>

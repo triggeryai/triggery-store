@@ -2,6 +2,7 @@
 import { auth } from '@/lib/auth';
 import dbConnect from '@/lib/dbConnect';
 import CategoryModel from '@/lib/models/CategoryModel';
+import ProductModel from '@/lib/models/ProductModel';
 
 export const DELETE = auth(async (req, { params }) => {
   if (!req.auth || !req.auth.user?.isAdmin) {
@@ -16,6 +17,26 @@ export const DELETE = auth(async (req, { params }) => {
       return new Response(JSON.stringify({ message: 'Category not found' }), { status: 404 });
     }
 
+    // Find products with the category to be deleted
+    const products = await ProductModel.find({ category: params.id });
+
+    // Check if there are any existing categories other than the one being deleted
+    const availableCategories = await CategoryModel.find({ _id: { $ne: params.id } });
+
+    let defaultCategory;
+    if (availableCategories.length > 0) {
+      defaultCategory = availableCategories[0]._id; // Use the first available category
+    } else {
+      // No available categories, create a new default category
+      const newCategory = new CategoryModel({ name: 'Sample Category', slug: 'sample-category' });
+      await newCategory.save();
+      defaultCategory = newCategory._id;
+    }
+
+    // Reassign products to the new default category
+    await ProductModel.updateMany({ category: params.id }, { $set: { category: defaultCategory } });
+
+    // Finally, delete the category
     await category.deleteOne();
     return new Response(JSON.stringify({ message: 'Category deleted successfully' }), { status: 200 });
   } catch (err) {
@@ -25,7 +46,7 @@ export const DELETE = auth(async (req, { params }) => {
 });
 
 
-export const PUT = auth(async (req, { params }) => {
+export const PUT = auth(async (req, { params }): Promise<Response> => {
   if (!req.auth || !req.auth.user?.isAdmin) {
     return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 });
   }
@@ -60,5 +81,6 @@ export const PUT = auth(async (req, { params }) => {
     return new Response(JSON.stringify({ message: 'Internal Server Error', error: err.toString() }), { status: 500 });
   }
 });
+
 
   

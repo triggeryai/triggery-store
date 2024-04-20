@@ -1,7 +1,9 @@
+// plik: components/cookies/Cookies.tsx
 "use client"
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link'; // Import komponentu Link
 import { FaTimes } from 'react-icons/fa';
+import Image from 'next/image'; // Import komponentu Image
 
 const Cookies: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -33,7 +35,7 @@ const Cookies: React.FC = () => {
       <div className="bg-white rounded-lg shadow-lg p-4">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center">
-            <img src="https://www.svgrepo.com/show/401340/cookie.svg" alt="Cookie" className="h-6 w-6 mr-2" />
+            <Image src="https://www.svgrepo.com/show/401340/cookie.svg" alt="Cookie" width={24} height={24} className="mr-2" />
             <span className="text-gray-700 font-bold text-sm">Cookie Policy</span>
           </div>
           <button onClick={handleClose} className="text-gray-500 hover:text-gray-700 focus:outline-none">
@@ -44,7 +46,7 @@ const Cookies: React.FC = () => {
           We use cookies to enhance your experience. By continuing to visit this site, you agree to our use of cookies.
           {/* Dodajemy link do polityki prywatności */}
           <Link href="/privacy">
-            <button className="text-blue-600 hover:underline">Learn more about our Privacy Policy.</button>
+            <a className="text-blue-600 hover:underline">Learn more about our Privacy Policy.</a>
           </Link>
         </p>
         <div className="flex justify-between">

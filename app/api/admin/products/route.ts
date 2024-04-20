@@ -26,7 +26,7 @@ export const GET = auth(async (req: any) => {
 
 export const POST = auth(async (req: any) => {
   const body = await req.json();
-  console.log('Request body:', body); // Log the request body
+  console.log('Request body:', body);
 
   if (!req.auth || !req.auth.user?.isAdmin) {
     console.log('Unauthorized access attempt');
@@ -35,15 +35,16 @@ export const POST = auth(async (req: any) => {
 
   try {
     await dbConnect();
-
-    // Since body has been parsed already, use the existing parsed data
     const { name, slug, price, image, brand, countInStock, description, categoryId } = body;
     console.log('Creating product with data:', { name, slug, price, image, brand, countInStock, description, categoryId });
 
     const category = await CategoryModel.findById(categoryId);
     if (!category) {
       console.log(`Category not found: ${categoryId}`);
-      return Response.json({ message: 'Category not found' }, { status: 400 });
+      return Response.json({
+        message: 'Category not found. Please create a category.',
+        redirect: '/admin/categories'
+      }, { status: 400 });
     }
 
     const product = new ProductModel({
@@ -58,7 +59,6 @@ export const POST = auth(async (req: any) => {
     });
 
     await product.save();
-
     const productObject = product.toObject();
     productObject.category = category.name;
     console.log('Product created successfully:', productObject);
@@ -69,5 +69,6 @@ export const POST = auth(async (req: any) => {
     return Response.json({ message: error.message || 'Internal Server Error' }, { status: 500 });
   }
 });
+
 
 

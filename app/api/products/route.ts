@@ -12,8 +12,23 @@ export const POST = auth(async (req, res) => {
   try {
     await dbConnect();
     
-    // Extract product data from the request body
-    const { name, slug, price, image, brand, countInStock, description, category } = req.body;
+    // Extract product data from the request body with defaults for potential null values
+    const { 
+      name = 'No name provided', 
+      slug = 'no-slug', 
+      price = 0, 
+      image = 'no-image', 
+      brand = 'no-brand', 
+      countInStock = 0, 
+      description = 'No description', 
+      category = 'no category' // Default if category is null
+    } = req.body;
+
+    // Check if any critical fields are still null or add more checks as necessary
+    if (!name || !slug) {
+      res.status(400).json({ message: 'Missing name or slug for the product' });
+      return;
+    }
 
     // Create a new product instance
     const newProduct = new ProductModel({
@@ -36,9 +51,8 @@ export const POST = auth(async (req, res) => {
     // Log the error to the server console
     console.error('Error creating product:', error);
 
-    // Respond with error message and error details (consider removing detailed error information in production)
+    // Respond with error message and error details
     res.status(500).json({ message: 'Internal Server Error', error: error.message });
   }
 });
 
-// Add the GET, PUT, DELETE handlers as necessary

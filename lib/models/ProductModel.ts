@@ -6,7 +6,7 @@ const productSchema = new Schema(
     name: { type: String, required: true },
     slug: { type: String, required: true, unique: true },
     // Reference the Category model
-    category: { type: Schema.Types.ObjectId, ref: 'Category', required: true },
+    category: { type: Schema.Types.ObjectId, ref: 'Category' },
     image: { type: String, required: true },
     price: { type: Number, required: true },
     brand: { type: String, required: true },

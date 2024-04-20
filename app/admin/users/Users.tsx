@@ -84,11 +84,11 @@ export default function Users() {
         <table className="table table-zebra">
           <thead>
             <tr>
-              <th>id</th>
-              <th>name</th>
-              <th>email</th>
-              <th>admin</th>
-              <th>actions</th>
+              <th><div className="badge">id</div></th>
+              <th><div className="badge">name</div></th>
+              <th><div className="badge">email</div></th>
+              <th><div className="badge">admin</div></th>
+              <th><div className="badge">actions</div></th>
             </tr>
           </thead>
           <tbody>
