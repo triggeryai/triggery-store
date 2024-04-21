@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 import { SearchBox } from './SearchBox'
 import Image from 'next/image'
 import CartModal from './CartModal'; // Zaimportuj nowy komponent
+import DropDownMenuToggle from './DropDownMenuToggle'
 
 const Menu = () => {
   const { items, init } = useCartService()
@@ -37,6 +38,9 @@ const Menu = () => {
       </div>
       <div>
         <ul className="flex items-stretch">
+        <li>
+           <DropDownMenuToggle />
+          </li>
           <i>
             {mounted && (
               <label className="swap swap-rotate">

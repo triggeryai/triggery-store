@@ -5,9 +5,11 @@ import Providers from '@/components/Providers'
 import DrawerButton from '@/components/DrawerButton'
 import Sidebar from '@/components/Sidebar'
 import Header from '@/components/header/Header'
+
 import Footer from '@/components/footer/Footer'
 import Cookies from '@/components/cookies/Cookies';
 import GoogleCaptchaWrapper from './GoogleCaptchaWrapper'
+import HeaderMobile from '@/components/header/HeaderMobile';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -31,6 +33,7 @@ export default function RootLayout({
             <div className="drawer-content">
               <div className="min-h-screen flex flex-col">
                 <Header />
+                <HeaderMobile />
                 {children}
                 <Cookies />
                 <Footer />
