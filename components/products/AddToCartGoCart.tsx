@@ -1,3 +1,4 @@
+// components\products\AddToCartGoCart.tsx
 'use client'
 import useCartService from '@/lib/hooks/useCartStore'
 import { OrderItem } from '@/lib/models/OrderModel'
