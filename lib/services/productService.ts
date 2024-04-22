@@ -29,7 +29,7 @@ const PAGE_SIZE = 12;
 
 const getByQuery = async ({
   q,
-  categoryName,
+  category,
   sort,
   price,
   page = '1',
@@ -44,10 +44,10 @@ const getByQuery = async ({
   } : {};
 
   let categoryFilter = {};
-  if (categoryName && categoryName !== 'all') {
-    const category = await CategoryModel.findOne({ name: categoryName });
-    if (category) {
-      categoryFilter = { category: category._id };
+  if (category && category !== 'all') {
+    const categoryDoc = await CategoryModel.findOne({ name: category });
+    if (categoryDoc) {
+      categoryFilter = { category: categoryDoc._id };
     } else {
       return { products: [], countProducts: 0, page, pages: 0, categories: [] };
     }

@@ -1,3 +1,4 @@
+// components\products\ProductItem.tsx
 "use client"
 import React, { useState } from 'react';
 import AddToCart from '@/components/products/AddToCartGoCart';

@@ -1,3 +1,4 @@
+// app\(front)\search\page.tsx
 import ProductItem from '@/components/products/ProductItem'
 import productServices from '@/lib/services/productService'
 import Link from 'next/link'
