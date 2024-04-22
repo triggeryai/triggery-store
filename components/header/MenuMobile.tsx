@@ -12,6 +12,7 @@ import LeftCategorySideBar from './LeftCategorySideBar'
 import Logo from './Logo';
 import MenuModal from './MenuModal';
 import MenuToggleButton from './MenuToggleButton';
+import ThemeToggle from './ThemeToggle';
 
 const MobileMenu: React.FC = () => {
   const { items, init } = useCartService();
@@ -49,6 +50,7 @@ const MobileMenu: React.FC = () => {
           {/* User session area */}
           {session && session.user ? (
             <div className="flex flex-col items-center">
+            <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
               <div className="badge badge-primary mb-4">{session.user.name}</div>
               {session.user.isAdmin && (
                 <Link href="/admin/dashboard"><div className="btn btn-ghost w-full mb-2">Admin Dashboard</div></Link>
