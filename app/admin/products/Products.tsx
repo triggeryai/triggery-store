@@ -151,13 +151,13 @@ export default function Products() {
         <table className="table table-zebra w-full">
           <thead>
             <tr>
-              <th>id</th>
-              <th>name</th>
-              <th>price</th>
-              <th>category</th>
-              <th>count in stock</th>
-              <th>rating</th>
-              <th>actions</th>
+              <th><div className="badge">id</div></th>
+              <th><div className="badge">name</div></th>
+              <th><div className="badge">price</div></th>
+              <th><div className="badge">category</div></th>
+              <th><div className="badge">count in stock</div></th>
+             {/*} <th><div className="badge">rating</div></th> */}
+              <th><div className="badge">actions</div></th>
             </tr>
           </thead>
           <tbody>
@@ -168,7 +168,7 @@ export default function Products() {
                 <td>${product.price}</td>
                 <td>{product.category}</td>
                 <td>{product.countInStock}</td>
-                <td>{product.rating}</td>
+                {/*<td>{product.rating}</td> */}
                 <td>
                   <Link href={`/admin/products/${product._id}`}>
                   <button type="button" className="btn btn-info btn-sm">
