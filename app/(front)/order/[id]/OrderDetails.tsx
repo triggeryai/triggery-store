@@ -1,3 +1,4 @@
+// app\(front)\order\[id]\OrderDetails.tsx
 'use client'
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js'
 import { OrderItem } from '@/lib/models/OrderModel'
@@ -7,6 +8,8 @@ import Link from 'next/link'
 import toast from 'react-hot-toast'
 import useSWR from 'swr'
 import useSWRMutation from 'swr/mutation'
+import { useEffect, useState } from 'react'
+import ChangePaymentMethodButton from '@/components/ChangePaymentMethodButton'
 
 export default function OrderDetails({
   orderId,
@@ -62,7 +65,39 @@ export default function OrderDetails({
         : toast.error(data.message)
     }
   )
+  const [stripeSessionUrl, setStripeSessionUrl] = useState(null);
+  // Dodaj funkcję do inicjowania płatności Stripe
+
+
+const createStripeSession = async () => {
+  try {
+    const response = await fetch(`/api/orders/${orderId}/create-stripe-session`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const session = await response.json();
+    if (response.ok) {
+      setStripeSessionUrl(session.url);
+    } else {
+      console.error('Failed to initiate Stripe payment:', session.message);
+      toast.error('Could not initiate Stripe payment: ' + session.message);
+    }
+  } catch (error) {
+    console.error('Network error when connecting to the payment gateway:', error);
+    toast.error('There was a network error connecting to the payment gateway.');
+  }
+};
+
+
   
+
+useEffect(() => {
+  if (stripeSessionUrl) {
+    window.location.href = stripeSessionUrl; // Przekieruj do Stripe
+  }
+}, [stripeSessionUrl]);
 
   const { data: session } = useSession()
   console.log(session)
@@ -230,18 +265,21 @@ export default function OrderDetails({
                   </div>
                 </li>
 
-                {!isPaid && paymentMethod === 'PayPal' && (
-                  <li>
-                    <PayPalScriptProvider
-                      options={{ clientId: paypalClientId }}
-                    >
-                      <PayPalButtons
-                        createOrder={createPayPalOrder}
-                        onApprove={onApprovePayPalOrder}
-                      />
+                {!isPaid && (
+                  
+                <li>
+                  {paymentMethod === 'PayPal' ? (
+                    <PayPalScriptProvider options={{ clientId: paypalClientId }}>
+                      <PayPalButtons createOrder={createPayPalOrder} onApprove={onApprovePayPalOrder} />
                     </PayPalScriptProvider>
-                  </li>
-                )}
+                  ) : paymentMethod === 'Stripe' ? (
+                    <button onClick={createStripeSession} className="btn btn-primary w-full my-2">
+                      Pay with Stripe
+                    </button>
+                  ) : null}
+                </li>
+              )}
+
   {session?.user.isAdmin && (
     <li>
       {isDelivered ? (
@@ -295,14 +333,28 @@ export default function OrderDetails({
         </ul>
       )}
 
-
-
-
-
-                
               </ul>
             </div>
           </div>
+
+          
+          <div className="card bg-base-300 mt-4">
+            <div className="card-body">
+              <h2 className="card-title">Payment Method</h2>
+              <p>{paymentMethod}</p>
+              {isPaid ? (
+                <div className="text-success">Paid at {paidAt}</div>
+              ) : (
+                <div className="text-error">
+                  Not Paid
+                  <ChangePaymentMethodButton orderId={orderId} />
+                </div>
+              )}
+            </div>
+</div>
+
+
+
         </div>
       </div>
     </div>

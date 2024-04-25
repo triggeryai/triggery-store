@@ -1,3 +1,4 @@
+// app\api\orders\[id]\capture-paypal-order\route.ts
 import { auth } from '@/lib/auth'
 import dbConnect from '@/lib/dbConnect'
 import OrderModel from '@/lib/models/OrderModel'

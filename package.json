@@ -27,7 +27,8 @@
     "react-google-recaptcha-v3": "^1.10.1",
     "uuid": "^9.0.1",
     "nodemailer": "^6.9.9",
-    "canvas-confetti": "^1.9.2"
+    "canvas-confetti": "^1.9.2",
+    "stripe": "^14.11.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
