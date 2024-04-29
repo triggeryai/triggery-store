@@ -1,0 +1,64 @@
+// app\api\admin\orders\[id]\update-payment-method\route.ts
+import { auth } from '@/lib/auth'
+import dbConnect from '@/lib/dbConnect'
+import OrderModel from '@/lib/models/OrderModel'
+
+export const PUT = auth(async (...request: any) => {
+    const [req, { params }] = request;
+    console.log("Request:", request);
+    if (!req.auth) {
+      return Response.json(
+        { message: 'Unauthorized' },
+        {
+          status: 401,
+        }
+      );
+    }
+
+    const body = req.body;
+    console.log("Received paymentMethod update with body:", body);
+
+    console.log("Connecting to database...");
+    await dbConnect();
+    console.log("Database connection successful.");
+    const order = await OrderModel.findById(params.id);
+
+    if (order) {
+        console.log("Processing order:", order); // Loguje, które zamówienie jest przetwarzane
+        if (order.user.toString() === req.auth.user._id) {
+            console.log("Raw body:", req.body);
+            try {
+                const { paymentMethod } = req.body;
+                console.log("Full body received:", req.body);
+                console.log("Specific paymentMethod received:", paymentMethod);
+
+                order.paymentMethod = paymentMethod;
+                const updatedOrder = await order.save();
+                console.log("Order updated successfully: ", updatedOrder);
+                return Response.json(updatedOrder);
+            } catch (err) {
+                console.error("Error updating payment method:", err);
+                return Response.json(
+                  { message: err.message || "An error occurred" },
+                  {
+                    status: 500,
+                  }
+                );
+            }
+        } else {
+            return Response.json(
+              { message: 'User does not have permission to update this order' },
+              {
+                status: 403,
+              }
+            );
+        }
+    } else {
+      return Response.json(
+        { message: 'Order not found' },
+        {
+          status: 404,
+        }
+      );
+    }
+}) as any;

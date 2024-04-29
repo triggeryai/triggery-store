@@ -1,3 +1,4 @@
+// components\ClientProviders.tsx
 'use client'
 import { cartStore } from '@/lib/hooks/useCartStore'
 import useLayoutService from '@/lib/hooks/useLayout'

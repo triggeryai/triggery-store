@@ -1,34 +1,34 @@
-// app\api\orders\[id]\update-payment-method/route.ts
-import dbConnect from '@/lib/dbConnect';
-import OrderModel from '@/lib/models/OrderModel';
-import { auth } from '@/lib/auth';
+import { auth } from '@/lib/auth'
+import dbConnect from '@/lib/dbConnect'
+import OrderModel from '@/lib/models/OrderModel'
 
-export const PUT = auth(async (req, res) => {
-  await dbConnect();
-
-  const orderId = req.query.id;
-  const { newPaymentMethod } = req.body;
-
-  const allowedPaymentMethods = ['PayPal', 'Stripe'];
-
-  if (!allowedPaymentMethods.includes(newPaymentMethod)) {
-    return res.status(400).json({ message: 'Invalid payment method' });
-  }
-
-  try {
-    const updatedOrder = await OrderModel.findByIdAndUpdate(
-      orderId,
-      { paymentMethod: newPaymentMethod },
-      { new: true }
-    );
-
-    if (!updatedOrder) {
-      return res.status(404).json({ message: 'Order not found' });
+export const PUT = auth(async (...request: any) => {
+    const [req, { params }] = request;
+    console.log("Request:", request);
+    if (!req.auth) {
+      return Response.json({ message: 'Unauthorized' }, { status: 401 });
     }
+    if (req.bodyUsed) {
+        console.log("Body has already been read");
+        return Response.json({ message: 'Request body already read' }, { status: 400 });
+    }
+    const body = await req.json();
+    const { paymentMethod } = body;
+    console.log("Received paymentMethod:", paymentMethod);
 
-    res.status(200).json(updatedOrder);
-  } catch (error) {
-    console.error('Error updating payment method:', error);
-    res.status(500).json({ message: 'Error updating payment method', error: error.message });
-  }
+    await dbConnect();
+    const order = await OrderModel.findById(params.id);
+    if (!order) {
+      return Response.json({ message: 'Order not found' }, { status: 404 });
+    }
+    console.log("Order found:", order);
+
+    if (order.user.toString() === req.auth.user._id) {
+        order.paymentMethod = paymentMethod;
+        const updatedOrder = await order.save();
+        console.log("Order updated successfully: ", updatedOrder);
+        return Response.json(updatedOrder);
+    } else {
+        return Response.json({ message: 'User does not have permission to update this order' }, { status: 403 });
+    }
 });

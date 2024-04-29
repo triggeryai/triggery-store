@@ -1,3 +1,4 @@
+// app\api\auth\profile\route.ts
 import { auth } from '@/lib/auth'
 import dbConnect from '@/lib/dbConnect'
 import UserModel from '@/lib/models/UserModel'

@@ -9,7 +9,7 @@ import toast from 'react-hot-toast'
 import useSWR from 'swr'
 import useSWRMutation from 'swr/mutation'
 import { useEffect, useState } from 'react'
-import ChangePaymentMethodButton from '@/components/ChangePaymentMethodButton'
+import Select from 'react-select';
 
 export default function OrderDetails({
   orderId,
@@ -18,6 +18,8 @@ export default function OrderDetails({
   orderId: string
   paypalClientId: string
 }) {
+
+  console.log("Order ID on entry:", orderId); // Log przy wejściu do komponentu
   const { trigger: deliverOrder, isMutating: isDelivering } = useSWRMutation(
     `/api/orders/${orderId}`,
     async (url) => {
@@ -33,6 +35,61 @@ export default function OrderDetails({
         : toast.error(data.message)
     }
   )
+  const { data, error } = useSWR(`/api/orders/${orderId}`)
+
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
+
+  useEffect(() => {
+    if (data && data.paymentMethod) {
+      console.log("Loaded payment method from data:", data.paymentMethod);
+      setSelectedPaymentMethod(data.paymentMethod);
+    }
+}, [data]);
+
+  const handlePaymentMethodChange = (selectedOption) => {
+    console.log("Selected payment method:", selectedOption.value);
+    console.log("Current state before update:", selectedPaymentMethod);
+    setSelectedPaymentMethod(selectedOption.value);
+    console.log("New state after update:", selectedOption.value); // Stan zmieni się asynchronicznie
+    updatePaymentMethodInDatabase(selectedOption.value);
+};
+
+  
+
+const updatePaymentMethodInDatabase = async (newPaymentMethod) => {
+   console.log("Order ID before sending request:", orderId); // Log przed wysłaniem żądania
+    console.log("Value before sending:", newPaymentMethod);
+    const payload = JSON.stringify({ paymentMethod: newPaymentMethod });
+    console.log("Sending paymentMethod update with payload:", payload);
+    console.log("Value before sending:", newPaymentMethod);
+    console.log("Sending paymentMethod update with value:", newPaymentMethod);
+  if (!newPaymentMethod) {
+    toast.error('No payment method selected');
+    return;
+  }
+  try {
+    const response = await fetch(`/api/orders/${orderId}/update-payment-method`, {
+      method: 'PUT',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ paymentMethod: newPaymentMethod })
+    });
+    
+    
+    
+    const data = await response.json();
+    console.log("Response from server:", data);  // Odpowiedź serwera na żądanie aktualizacji
+    if (response.ok) {
+      toast.success('Payment method updated successfully');
+    } else {
+      toast.error(data.message || 'Failed to update payment method');
+    }
+  } catch (error) {
+    toast.error('Network error when trying to update payment method');
+    console.error("Network error:", error);
+  }
+};
 
   const { trigger: undeliverOrder, isMutating: isUndelivering } = useSWRMutation(
     `/api/admin/orders/${orderId}/undeliver`,
@@ -91,7 +148,6 @@ const createStripeSession = async () => {
 };
 
 
-  
 
 useEffect(() => {
   if (stripeSessionUrl) {
@@ -143,7 +199,6 @@ useEffect(() => {
     });
   }
 
-  const { data, error } = useSWR(`/api/orders/${orderId}`)
 
   if (error) return error.message
   if (!data) return 'Loading...'
@@ -186,7 +241,18 @@ useEffect(() => {
           <div className="card bg-base-300 mt-4">
             <div className="card-body">
               <h2 className="card-title">Payment Method</h2>
-              <p>{paymentMethod}</p>
+              {!isPaid && (
+                <Select
+                  defaultValue={{ label: paymentMethod, value: paymentMethod }}
+                  onChange={handlePaymentMethodChange}
+                  options={[
+                    { label: 'PayPal', value: 'PayPal' },
+                    { label: 'Stripe', value: 'Stripe' },
+                    { label: 'Cash On Delivery', value: 'CashOnDelivery' },
+                  ]}
+                />
+                
+              )}
               {isPaid ? (
                 <div className="text-success">Paid at {paidAt}</div>
               ) : (
@@ -278,6 +344,7 @@ useEffect(() => {
                     </button>
                   ) : null}
                 </li>
+                
               )}
 
   {session?.user.isAdmin && (
@@ -333,28 +400,14 @@ useEffect(() => {
         </ul>
       )}
 
+
+
+
+
+                
               </ul>
             </div>
           </div>
-
-          
-          <div className="card bg-base-300 mt-4">
-            <div className="card-body">
-              <h2 className="card-title">Payment Method</h2>
-              <p>{paymentMethod}</p>
-              {isPaid ? (
-                <div className="text-success">Paid at {paidAt}</div>
-              ) : (
-                <div className="text-error">
-                  Not Paid
-                  <ChangePaymentMethodButton orderId={orderId} />
-                </div>
-              )}
-            </div>
-</div>
-
-
-
         </div>
       </div>
     </div>

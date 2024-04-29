@@ -1,3 +1,4 @@
+// app\api\admin\orders\[id]\pay\route.ts
 import { auth } from '@/lib/auth'
 import dbConnect from '@/lib/dbConnect'
 import OrderModel from '@/lib/models/OrderModel'

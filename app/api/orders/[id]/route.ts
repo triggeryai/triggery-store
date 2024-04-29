@@ -39,3 +39,5 @@ export const DELETE = auth(async (req: any) => {
     return Response.json({ message: err.message }, { status: 500 })
   }
 }) as any
+
+

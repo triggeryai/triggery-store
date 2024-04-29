@@ -1,3 +1,4 @@
+// app\(front)\payment\Form.tsx
 'use client'
 import CheckoutSteps from '@/components/CheckoutSteps'
 import useCartService from '@/lib/hooks/useCartStore'
