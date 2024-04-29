@@ -57,39 +57,40 @@ export default function OrderDetails({
   
 
 const updatePaymentMethodInDatabase = async (newPaymentMethod) => {
-   console.log("Order ID before sending request:", orderId); // Log przed wysłaniem żądania
-    console.log("Value before sending:", newPaymentMethod);
-    const payload = JSON.stringify({ paymentMethod: newPaymentMethod });
-    console.log("Sending paymentMethod update with payload:", payload);
-    console.log("Value before sending:", newPaymentMethod);
-    console.log("Sending paymentMethod update with value:", newPaymentMethod);
+  console.log("Order ID before sending request:", orderId); // Log before sending the request
+  console.log("Value before sending:", newPaymentMethod);
+  const payload = JSON.stringify({ paymentMethod: newPaymentMethod });
+  console.log("Sending paymentMethod update with payload:", payload);
+  console.log("Value before sending:", newPaymentMethod);
+  console.log("Sending paymentMethod update with value:", newPaymentMethod);
   if (!newPaymentMethod) {
-    toast.error('No payment method selected');
-    return;
+      toast.error('No payment method selected');
+      return;
   }
   try {
-    const response = await fetch(`/api/orders/${orderId}/update-payment-method`, {
-      method: 'PUT',
-      headers: {
-          'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ paymentMethod: newPaymentMethod })
-    });
-    
-    
-    
-    const data = await response.json();
-    console.log("Response from server:", data);  // Odpowiedź serwera na żądanie aktualizacji
-    if (response.ok) {
-      toast.success('Payment method updated successfully');
-    } else {
-      toast.error(data.message || 'Failed to update payment method');
-    }
+      const response = await fetch(`/api/orders/${orderId}/update-payment-method`, {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ paymentMethod: newPaymentMethod })
+      });
+      
+      const data = await response.json();
+      console.log("Response from server:", data);  // Server response to the update request
+      if (response.ok) {
+          toast.success('Payment method updated successfully');
+          // Reload the page to reflect the updated data
+          window.location.reload();
+      } else {
+          toast.error(data.message || 'Failed to update payment method');
+      }
   } catch (error) {
-    toast.error('Network error when trying to update payment method');
-    console.error("Network error:", error);
+      toast.error('Network error when trying to update payment method');
+      console.error("Network error:", error);
   }
 };
+
 
   const { trigger: undeliverOrder, isMutating: isUndelivering } = useSWRMutation(
     `/api/admin/orders/${orderId}/undeliver`,
