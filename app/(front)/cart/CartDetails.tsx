@@ -21,10 +21,9 @@ export default function CartDetails() {
   const handleClearCartConfirmation = () => setShowModal(true);
 
   const handleClearCart = () => {
-    clear(); // Zaktualizowano z clearCart() na clear()
-    setShowModal(false); // Zamknij modal po wyczyszczeniu koszyka
+    clear();
+    setShowModal(false);
   };
-  
 
   return (
     <>
@@ -96,7 +95,8 @@ export default function CartDetails() {
                       <button
                         className="btn"
                         type="button"
-                        onClick={() => increase(item)}
+                        onClick={() => item.qty < item.countInStock ? increase(item) : null}
+                        disabled={item.qty >= item.countInStock}
                       >
                         +
                       </button>
