@@ -116,13 +116,18 @@ const updatePaymentMethodInDatabase = async (newPaymentMethod) => {
         headers: {
           'Content-Type': 'application/json',
         },
-      })
-      const data = await res.json()
-      res.ok
-        ? toast.success('Order marked as unpaid')
-        : toast.error(data.message)
+      });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success('Order marked as unpaid');
+        // Automatyczne odświeżanie strony, aby odzwierciedlić zmiany
+        window.location.reload();
+      } else {
+        toast.error(data.message);
+      }
     }
-  )
+  );
+  
   const [stripeSessionUrl, setStripeSessionUrl] = useState(null);
   // Dodaj funkcję do inicjowania płatności Stripe
 
@@ -193,6 +198,7 @@ useEffect(() => {
     .then((response) => response.json())
     .then((data) => {
       toast.success('Order marked as paid successfully');
+      window.location.reload();
       // Możesz również odświeżyć dane zamówienia, aby UI odzwierciedlało zmianę
     })
     .catch((error) => {
@@ -250,6 +256,8 @@ useEffect(() => {
                     { label: 'PayPal', value: 'PayPal' },
                     { label: 'Stripe', value: 'Stripe' },
                     { label: 'Cash On Delivery', value: 'CashOnDelivery' },
+                    { label: 'Direct bank transfer to account', value: 'DirectBankTransferToAccount' },
+
                   ]}
                 />
                 
@@ -303,52 +311,59 @@ useEffect(() => {
         </div>
 
         <div>
-          <div className="card bg-base-300">
-            <div className="card-body">
-              <h2 className="card-title">Order Summary</h2>
-              <ul>
-                <li>
-                  <div className="mb-2 flex justify-between">
-                    <div>Items</div>
-                    <div>${itemsPrice}</div>
-                  </div>
-                </li>
-                <li>
-                  <div className="mb-2 flex justify-between">
-                    <div>Tax</div>
-                    <div>${taxPrice}</div>
-                  </div>
-                </li>
-                <li>
-                  <div className="mb-2 flex justify-between">
-                    <div>Shipping</div>
-                    <div>${shippingPrice}</div>
-                  </div>
-                </li>
-                <li>
-                  <div className="mb-2 flex justify-between">
-                    <div>Total</div>
-                    <div>${totalPrice}</div>
-                  </div>
-                </li>
+        <div className="card bg-base-300">
+  <div className="card-body">
+    <h2 className="card-title">Order Summary</h2>
+    <ul>
+      <li>
+        <div className="mb-2 flex justify-between">
+          <div>Items</div>
+          <div>${itemsPrice}</div>
+        </div>
+      </li>
+      <li>
+        <div className="mb-2 flex justify-between">
+          <div>Tax</div>
+          <div>${taxPrice}</div>
+        </div>
+      </li>
+      <li>
+        <div className="mb-2 flex justify-between">
+          <div>Shipping</div>
+          <div>${shippingPrice}</div>
+        </div>
+      </li>
+      <li>
+        <div className="mb-2 flex justify-between">
+          <div>Total</div>
+          <div>${totalPrice}</div>
+        </div>
+      </li>
+      {paymentMethod === 'DirectBankTransferToAccount' && !isPaid && (
+        <li>
+          <div className="mb-2">
+            <div className="font-bold">Send Money here:</div>
+            <div>The transfer title: {orderId}</div>
+            <div>The account number: 1234 1234 1234 1234 1234 1234 1234</div>
+          </div>
+        </li>
+      )}
+      {!isPaid && (
+        <li>
+          {paymentMethod === 'PayPal' ? (
+            <PayPalScriptProvider options={{ clientId: paypalClientId }}>
+              <PayPalButtons createOrder={createPayPalOrder} onApprove={onApprovePayPalOrder} />
+            </PayPalScriptProvider>
+          ) : paymentMethod === 'Stripe' ? (
+            <button onClick={createStripeSession} className="btn btn-primary w-full my-2">
+              Pay with Stripe
+            </button>
+          ) : null}
+        </li>
+      )}
 
-                {!isPaid && (
-                  
-                <li>
-                  {paymentMethod === 'PayPal' ? (
-                    <PayPalScriptProvider options={{ clientId: paypalClientId }}>
-                      <PayPalButtons createOrder={createPayPalOrder} onApprove={onApprovePayPalOrder} />
-                    </PayPalScriptProvider>
-                  ) : paymentMethod === 'Stripe' ? (
-                    <button onClick={createStripeSession} className="btn btn-primary w-full my-2">
-                      Pay with Stripe
-                    </button>
-                  ) : null}
-                </li>
-                
-              )}
 
-  {session?.user.isAdmin && (
+{session?.user.isAdmin && (
     <li>
       {isDelivered ? (
         <button
@@ -402,13 +417,10 @@ useEffect(() => {
       )}
 
 
+    </ul>
+  </div>
+</div>
 
-
-
-                
-              </ul>
-            </div>
-          </div>
         </div>
       </div>
     </div>
