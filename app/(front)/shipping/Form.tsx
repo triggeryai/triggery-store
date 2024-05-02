@@ -3,7 +3,7 @@ import CheckoutSteps from '@/components/CheckoutSteps'
 import useCartService from '@/lib/hooks/useCartStore'
 import { ShippingAddress } from '@/lib/models/OrderModel'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import Select from 'react-select';
 
@@ -17,7 +17,7 @@ const Form = () => {
     formState: { errors, isSubmitting },
     watch,
   } = useForm<ShippingAddress>({
-    defaultValues: {
+    defaultValues: shippingAddress || {
       fullName: '',
       address: '',
       city: '',
@@ -29,12 +29,9 @@ const Form = () => {
 
   useEffect(() => {
     if (shippingAddress) {
-      setValue('fullName', shippingAddress.fullName)
-      setValue('address', shippingAddress.address)
-      setValue('city', shippingAddress.city)
-      setValue('postalCode', shippingAddress.postalCode)
-      setValue('country', shippingAddress.country)
-      setValue('shippingMethod', shippingAddress.shippingMethod || 'Inpost Paczkomat')
+      Object.keys(shippingAddress).forEach(key => {
+        setValue(key, shippingAddress[key])
+      });
     }
   }, [setValue, shippingAddress])
 
@@ -43,13 +40,24 @@ const Form = () => {
     router.push('/payment')
   }
 
+  const [shippingPrice, setShippingPrice] = useState(0);
+
   const shippingOptions = [
-    { value: 'Inpost Paczkomat', label: 'Inpost Paczkomat' },
-    { value: 'Pocztex Poczta Polska', label: 'Pocztex Poczta Polska' },
-    { value: 'Inpost Kurier', label: 'Inpost Kurier' },
-    { value: 'DPD Kurier', label: 'DPD Kurier' },
-    { value: 'DHL Kurier', label: 'DHL Kurier' },
+    { value: 'Inpost Paczkomat', label: 'Inpost Paczkomat - $5', price: 5 },
+    { value: 'Pocztex Poczta Polska', label: 'Pocztex Poczta Polska - $7', price: 7 },
+    { value: 'Inpost Kurier', label: 'Inpost Kurier - $10', price: 10 },
+    { value: 'DPD Kurier', label: 'DPD Kurier - $12', price: 12 },
+    { value: 'DHL Kurier', label: 'DHL Kurier - $15', price: 15 },
+    { value: 'Orlen Paczkomat', label: 'Orlen Paczkomat - $15', price: 15 },
+    { value: 'Odbior osobisty', label: 'Odbior osobisty - $0', price: 0 },
+
+
   ];
+
+  const handleShippingChange = option => {
+    setValue('shippingMethod', option.value);
+    setShippingPrice(option.price);
+  };
 
   return (
     <div>
@@ -61,10 +69,14 @@ const Form = () => {
             <Select
               options={shippingOptions}
               defaultValue={shippingOptions.find(option => option.value === watch('shippingMethod'))}
-              onChange={(option) => setValue('shippingMethod', option?.value)}
+              onChange={handleShippingChange}
               className="mb-4"
               placeholder="Select shipping method"
             />
+            <div className="text-right mb-4">
+              <strong>Shipping Cost:</strong> ${shippingPrice}
+            </div>
+            {/* Full Name */}
             <div className="mb-2">
               <label className="label" htmlFor="fullName">Full Name</label>
               <input
@@ -77,6 +89,7 @@ const Form = () => {
                 <div className="text-error">{errors.fullName.message}</div>
               )}
             </div>
+            {/* Address */}
             <div className="mb-2">
               <label className="label" htmlFor="address">Address</label>
               <input
@@ -89,6 +102,7 @@ const Form = () => {
                 <div className="text-error">{errors.address.message}</div>
               )}
             </div>
+            {/* City */}
             <div className="mb-2">
               <label className="label" htmlFor="city">City</label>
               <input
@@ -101,6 +115,7 @@ const Form = () => {
                 <div className="text-error">{errors.city.message}</div>
               )}
             </div>
+            {/* Postal Code */}
             <div className="mb-2">
               <label className="label" htmlFor="postalCode">Postal Code</label>
               <input
@@ -113,6 +128,7 @@ const Form = () => {
                 <div className="text-error">{errors.postalCode.message}</div>
               )}
             </div>
+            {/* Country */}
             <div className="mb-2">
               <label className="label" htmlFor="country">Country</label>
               <input
@@ -125,16 +141,14 @@ const Form = () => {
                 <div className="text-error">{errors.country.message}</div>
               )}
             </div>
+            {/* Submit Button */}
             <div className="my-2">
               <button
                 type="submit"
                 disabled={isSubmitting}
                 className="btn btn-primary w-full"
               >
-                {isSubmitting && (
-                  <span className="loading loading-spinner"></span>
-                )}
-                Next
+                {isSubmitting ? <span className="loading loading-spinner"></span> : 'Next'}
               </button>
             </div>
           </form>
