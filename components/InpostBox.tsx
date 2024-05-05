@@ -5,15 +5,23 @@ export default function InpostBox({ closeModal }) {
   const [selectedPoint, setSelectedPoint] = useState(null);
 
   useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://geowidget.easypack24.net/js/sdk-for-javascript.js';
-    script.onload = initEasyPack; 
-    document.body.appendChild(script);
+    const scriptId = 'easyPackScript';
+    if (!document.getElementById(scriptId)) {
+      // First, create and append the stylesheet link
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://geowidget.easypack24.net/css/easypack.css';
+      link.onload = appendScript;  // Load script after CSS is loaded
+      document.head.appendChild(link);
+    }
 
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'https://geowidget.easypack24.net/css/easypack.css';
-    document.head.appendChild(link);
+    function appendScript() {
+      const script = document.createElement('script');
+      script.id = scriptId;
+      script.src = 'https://geowidget.easypack24.net/js/sdk-for-javascript.js';
+      script.onload = initEasyPack;
+      document.body.appendChild(script);
+    }
 
     function initEasyPack() {
       if (window.easyPack) {
@@ -22,19 +30,19 @@ export default function InpostBox({ closeModal }) {
           searchType: 'osm',
         });
         window.easyPack.mapWidget('easypack-map', function(point) {
-          // Update the state with selected point details
           setSelectedPoint(point);
-          // Save selected point to localStorage
           localStorage.setItem('selectedPaczkomat', JSON.stringify(point));
-          // Show toast notification
           toast.success(`You have selected Paczkomat: ${point.name}`);
         });
       }
     }
 
+    // Cleanup to remove the script and link when component unmounts
     return () => {
-      document.body.removeChild(script);
-      document.head.removeChild(link);
+      const script = document.getElementById(scriptId);
+      script && document.body.removeChild(script);
+      const styles = document.querySelector('link[href="https://geowidget.easypack24.net/css/easypack.css"]');
+      styles && document.head.removeChild(styles);
     };
   }, []);
 
@@ -48,14 +56,14 @@ export default function InpostBox({ closeModal }) {
       background: '#fff',
       border: '1px solid #ccc',
       boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-      padding: '20px',
+      padding: '5px',
       zIndex: 1050,
-      width: '95%',  
-      height: '95%', 
+      width: '100%',  
+      height: '100%', 
       borderRadius: '8px',
       overflow: 'auto'
     }}>
-      <div id="easypack-map" style={{ height: '75%', width: '100%' }}></div>
+      <div id="easypack-map" style={{ height: '100%', width: '100%' }}></div>
       {selectedPoint && (
         <div style={{ paddingTop: '20px' }}>
           <p><strong>Selected Paczkomat:</strong></p>
@@ -67,7 +75,7 @@ export default function InpostBox({ closeModal }) {
         position: 'absolute',
         top: '10px',
         right: '10px',
-        padding: '5px 10px',
+        padding: '1px 1px',
         fontSize: '16px',
         background: 'red',
         color: 'white',

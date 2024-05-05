@@ -82,9 +82,11 @@ const Form = () => {
               placeholder="Select shipping method"
             />
             <div className="flex justify-between items-center mb-4">
-              <strong>Shipping Cost:</strong> ${shippingPrice}
+              <div className="flex-1 min-w-0">
+                <strong>Shipping Cost:</strong> ${shippingPrice}
+              </div>
               {watch("shippingMethod") === "Inpost Paczkomat" && selectedPaczkomat && (
-                <div>
+                <div className="flex-1 min-w-0">
                   <strong>Selected Paczkomat:</strong> {selectedPaczkomat.name}
                 </div>
               )}
