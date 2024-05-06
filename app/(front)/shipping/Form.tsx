@@ -1,3 +1,4 @@
+// app\(front)\shipping\Form.tsx
 "use client";
 import React, { useState, useEffect } from "react";
 import CheckoutSteps from "@/components/CheckoutSteps";
@@ -60,6 +61,10 @@ const Form = () => {
     setShowInpostModal(option.value === "Inpost Paczkomat");
   };
 
+  const handleOpenModal = () => {
+    setShowInpostModal(true);
+  };
+
   const formSubmit = async (data) => {
     saveShippingAddrress(data);
     router.push("/payment");
@@ -88,6 +93,7 @@ const Form = () => {
               {watch("shippingMethod") === "Inpost Paczkomat" && selectedPaczkomat && (
                 <div className="flex-1 min-w-0">
                   <strong>Selected Paczkomat:</strong> {selectedPaczkomat.name}
+                  <button type="button" onClick={handleOpenModal} className="btn btn-link">Change Paczkomat</button>
                 </div>
               )}
             </div>
