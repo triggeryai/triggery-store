@@ -28,8 +28,7 @@ const Form = () => {
       shippingMethod: "",
     },
   });
-
-  const [shippingPrice, setShippingPrice] = useState(0);
+  const [shippingMethod, setShippingMethod] = useState(() => localStorage.getItem('shippingMethod') || '');  const [shippingPrice, setShippingPrice] = useState(0);
   const [selectedPaczkomat, setSelectedPaczkomat] = useState(null);
   const [showInpostModal, setShowInpostModal] = useState(false);
 
@@ -43,11 +42,29 @@ const Form = () => {
     if (paczkomatInfo) {
       setSelectedPaczkomat(JSON.parse(paczkomatInfo));
     }
-  }, [setValue, shippingAddress]);
+  }, [setValue, shippingAddress]); // Include modal state if needed
+
+
+  useEffect(() => {
+    if (shippingMethod === "Pocztex Poczta Odbior Punkt") {
+      router.push("/pocztex/pocztex.html");
+    }
+  }, [shippingMethod, router]);
+  
+
+  useEffect(() => {
+    const method = localStorage.getItem('shippingMethod');
+    if (method) {
+      setShippingMethod(method);
+      setValue('shippingMethod', method);
+    }
+  }, [setValue]);
+  
 
   const shippingOptions = [
     { value: "Inpost Paczkomat", label: "Inpost Paczkomat - $5", price: 5 },
-    { value: "Pocztex Poczta Polska", label: "Pocztex Poczta Polska - $7", price: 7 },
+    { value: "Pocztex Poczta Polska Kurier", label: "Pocztex Poczta Kurier - $7", price: 7 },
+    { value: "Pocztex Poczta Odbior Punkt", label: "Pocztex Poczta Odbior Punkt - $7", price: 7 },
     { value: "Inpost Kurier", label: "Inpost Kurier - $10", price: 10 },
     { value: "DPD Kurier", label: "DPD Kurier - $12", price: 12 },
     { value: "DHL Kurier", label: "DHL Kurier - $15", price: 15 },
@@ -56,15 +73,20 @@ const Form = () => {
   ];
 
   const handleShippingChange = (option) => {
-    setValue("shippingMethod", option.value);
+    console.log(option.value); // Debug: check the selected option value
+    setShippingMethod(option.value);
+    localStorage.setItem('shippingMethod', option.value); // Save to localStorage
     setShippingPrice(option.price);
     setShowInpostModal(option.value === "Inpost Paczkomat");
   };
+  
+  
 
   const handleOpenModal = () => {
     setShowInpostModal(true);
   };
 
+  
   const formSubmit = async (data) => {
     saveShippingAddrress(data);
     router.push("/payment");
