@@ -31,6 +31,7 @@ const Form = () => {
   const [shippingMethod, setShippingMethod] = useState(() => localStorage.getItem('shippingMethod') || '');  const [shippingPrice, setShippingPrice] = useState(0);
   const [selectedPaczkomat, setSelectedPaczkomat] = useState(null);
   const [showInpostModal, setShowInpostModal] = useState(false);
+  const [selectedPocztex, setSelectedPocztex] = useState(null);
 
   useEffect(() => {
     if (shippingAddress) {
@@ -56,6 +57,26 @@ const Form = () => {
       }
     }
   }, [shippingMethod, router]);
+  
+
+  useEffect(() => {
+    const savedPoint = localStorage.getItem("selectedPoint");
+    if (savedPoint) {
+      setSelectedPocztex(JSON.parse(savedPoint));
+    }
+  }, []);
+  
+  // Dodatkowo, pamiętaj o aktualizacji tego stanu przy każdej zmianie metody wysyłki
+  useEffect(() => {
+    if (shippingMethod === "Pocztex Poczta Odbior Punkt") {
+      const savedPoint = localStorage.getItem("selectedPoint");
+      if (savedPoint) {
+        setSelectedPocztex(JSON.parse(savedPoint));
+      } else {
+        setSelectedPocztex(null); // Resetuj, jeśli nie ma zapisanego punktu
+      }
+    }
+  }, [shippingMethod]);
   
 
   useEffect(() => {
@@ -124,6 +145,13 @@ const Form = () => {
                   <button type="button" onClick={handleOpenModal} className="btn btn-link">Change Paczkomat</button>
                 </div>
               )}
+                  {watch("shippingMethod") === "Pocztex Poczta Odbior Punkt" && (
+                    <div className="flex-1 min-w-0">
+  <strong>Selected Pocztex Point:</strong> {selectedPocztex ? `${selectedPocztex.name}, ${selectedPocztex.street}, ${selectedPocztex.city}` : "None"}
+  <button type="button" onClick={() => router.push("/pocztex/pocztex.html")} className="btn btn-link">Change Pocztex Point</button>
+</div>
+
+    )}
             </div>
             {/* Form fields for the shipping address */}
             <div className="mb-2">

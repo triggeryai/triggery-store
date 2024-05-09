@@ -1,4 +1,3 @@
-<!-- components\pocztex.html -->
 <!DOCTYPE html>
 <html lang="pl" style="height: 100%;">
 <head>
@@ -6,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <meta http-equiv="x-ua-compatible" content="IE=edge">
     <title>Mapa Punktów Poczty Polskiej</title>
-    <!-- Script for Poczta Polska -->
     <script src="https://mapa.ecommerce.poczta-polska.pl/widget/scripts/ppwidget.js"></script>
     <style>
         #mapContainer {
@@ -55,66 +53,61 @@
     </div>
     <div id="detailsPopup">Placeholder for details</div>
     <script>
-        // Initialize Poczta Polska Map
         if (typeof PPWidgetApp !== 'undefined') {
             PPWidgetApp.toggleMap({
-    elementId: 'pocztaMap',
-    callback: function (point) {
-        console.log('Received point data:', point); // To jest już zrobione, ale dodaje dodatkowy log poniżej
-        console.log(point); // Tutaj dokładnie zobaczysz cały obiekt point
-        if (!point) {
-            console.error('No point data received.');
-            return; // Dodaj wczesne zatrzymanie jeśli point jest undefined/null
+                elementId: 'pocztaMap',
+                callback: function (point) {
+                    if (!point) {
+                        console.error('No point data received.');
+                        return;
+                    }
+                    showDetails(point);
+                },
+                type: ["POCZTA", "ORLEN", "AUTOMAT_POCZTOWY", "RUCH", "ZABKA", "FRESHMARKET", "AUTOMAT_BIEDRONKA", "AUTOMAT_CARREFOUR", "AUTOMAT_PLACOWKA", "AUTOMAT_SPOLEM", "SKRZYNKA_POCZTOWA", "AUTOMAT_LEWIATAN", "ABC", "DELIKATESY_CENTRUM", "LEWIATAN", "BIEDRONKA", "KAUFLAND"]
+            });
         }
-        showDetails(point);
-    },
-    type: ["POCZTA", "ORLEN", "AUTOMAT_POCZTOWY", "RUCH", "ZABKA", "FRESHMARKET", "AUTOMAT_BIEDRONKA", "AUTOMAT_CARREFOUR", "AUTOMAT_PLACOWKA", "AUTOMAT_SPOLEM", "SKRZYNKA_POCZTOWA", "AUTOMAT_LEWIATAN", "ABC", "DELIKATESY_CENTRUM", "LEWIATAN", "BIEDRONKA", "KAUFLAND"]
-});
 
-}
+        function showDetails(point) {
+            var popup = document.getElementById('detailsPopup');
+            popup.innerHTML = '<p><strong>' + point.type + ' ' + point.name + '</strong></p>' +
+                              '<p><strong>' + point.street + '</strong></p>' +
+                              '<p><strong>' + point.zipCode + ' ' + point.city + '</strong></p>' +
+                              '<p>You will be redirected in 2 seconds...</p>' +
+                              '<button onclick="hidePopupAndRedirect()">Close</button>';
+            popup.style.display = 'block';
+            savePointDetailsToLocalStorage(point);
+            setTimeout(function() {
+                window.location.href = '/shipping';
+            }, 2000);
+        }
 
+        function savePointDetailsToLocalStorage(point) {
+            localStorage.removeItem('selectedPoint'); // Clear previous point before saving new one
+            var pointData = {
+                type: point.type,
+                name: point.name,
+                street: point.street,
+                zipCode: point.zipCode,
+                city: point.city
+            };
+            localStorage.setItem('selectedPoint', JSON.stringify(pointData));
+        }
 
-function showDetails(point) {
-    var popup = document.getElementById('detailsPopup');
-    setTimeout(function() {
-        var openingHours = point.openingHours || 'N/D';
-        var disabledAccess = point.disabledAccess ? 'Tak' : 'Nie';
-        var cashOnDelivery = point.cashOnDelivery ? 'Tak' : 'Nie';
-        var maxCashOnDeliveryAmount = point.maxCashOnDeliveryAmount || 'N/D';
-
-        // Ustawienie zawartości popup
-        popup.innerHTML = '<p><strong>' + (point.type + ' ' + point.name || 'Nieznany punkt') + '</strong></p>' +
-                          '<p><strong>' + (point.street || 'Nieznany adres') + '</strong></p>' +
-                          '<p><strong>' + (point.zipCode + ' ' + point.city || 'Nieznany adres') + '</strong></p>' +
-                          '<button onclick="hidePopup()">Zamknij</button>';
-        console.log('Popup content set:', popup.innerHTML);
-        popup.style.display = 'block';
-
-        // Zapisanie danych do localStorage
-        savePointDetailsToLocalStorage(point);
-    }, 500);
-}
-
-function savePointDetailsToLocalStorage(point) {
-    var pointData = {
-        type: point.type,
-        name: point.name,
-        street: point.street,
-        zipCode: point.zipCode,
-        city: point.city
-    };
-    // Zapis danych jako string JSON
-    localStorage.setItem('selectedPoint', JSON.stringify(pointData));
-    console.log('Point details saved to localStorage');
-}
-
-
-
-
-        function hidePopup() {
+        function hidePopupAndRedirect() {
             document.getElementById('detailsPopup').style.display = 'none';
+            window.location.href = '/shipping';
         }
-        window.hidePopup = hidePopup;
+
+        var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                mutation.removedNodes.forEach(function(node) {
+                    if (node.id === 'pp-widget-iframe' || node.querySelector('#pp-widget-iframe')) {
+                        window.location.href = '/shipping';
+                    }
+                });
+            });
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
     </script>
 </body>
 </html>
