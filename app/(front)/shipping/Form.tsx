@@ -46,8 +46,14 @@ const Form = () => {
 
 
   useEffect(() => {
-    if (shippingMethod === "Pocztex Poczta Odbior Punkt") {
-      router.push("/pocztex/pocztex.html");
+    const method = localStorage.getItem('shippingMethod');
+    const redirected = localStorage.getItem('redirected');
+  
+    if (method && !redirected) {
+      if (method === "Pocztex Poczta Odbior Punkt") {
+        localStorage.setItem('redirected', 'true'); // Zapisz, że przekierowanie nastąpiło
+        router.push("/pocztex/pocztex.html");
+      }
     }
   }, [shippingMethod, router]);
   
@@ -73,9 +79,10 @@ const Form = () => {
   ];
 
   const handleShippingChange = (option) => {
-    console.log(option.value); // Debug: check the selected option value
+    console.log(option.value); // Debug: sprawdź wybraną wartość opcji
     setShippingMethod(option.value);
-    localStorage.setItem('shippingMethod', option.value); // Save to localStorage
+    localStorage.setItem('shippingMethod', option.value); // Zapisz do localStorage
+    localStorage.removeItem('redirected'); // Resetuj stan przekierowania
     setShippingPrice(option.price);
     setShowInpostModal(option.value === "Inpost Paczkomat");
   };
@@ -99,11 +106,10 @@ const Form = () => {
         <div className="card-body">
           <h1 className="card-title">Shipping Address</h1>
           <form onSubmit={handleSubmit(formSubmit)}>
-            <Select
+
+          <Select
               options={shippingOptions}
-              defaultValue={shippingOptions.find(
-                (option) => option.value === watch("shippingMethod")
-              )}
+              value={shippingOptions.find(option => option.value === shippingMethod)}
               onChange={handleShippingChange}
               className="mb-4"
               placeholder="Select shipping method"
