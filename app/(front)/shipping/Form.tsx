@@ -81,6 +81,14 @@ const Form = () => {
       } else {
         setSelectedPocztex(null);
       }
+    } else if (shippingMethod !== "Inpost Paczkomat") {
+      setSelectedPaczkomat(null);
+      localStorage.removeItem("selectedPaczkomat");
+    }
+
+    if (shippingMethod !== "Pocztex Poczta Odbior Punkt") {
+      setSelectedPocztex(null);
+      localStorage.removeItem("selectedPoint");
     }
   }, [shippingMethod]);
 
@@ -91,7 +99,6 @@ const Form = () => {
     { value: "Inpost Kurier", label: "Inpost Kurier - $10", price: 10 },
     { value: "DPD Kurier", label: "DPD Kurier - $12", price: 12 },
     { value: "DHL Kurier", label: "DHL Kurier - $15", price: 15 },
-    { value: "Orlen Paczkomat", label: "Orlen Paczkomat - $15", price: 15 },
     { value: "Odbior osobisty", label: "Odbior osobisty - $0", price: 0 },
   ];
 
@@ -101,6 +108,13 @@ const Form = () => {
     localStorage.removeItem('redirected');
     setShippingPrice(option.price);
     setShowInpostModal(option.value === "Inpost Paczkomat");
+
+    if (option.value !== "Inpost Paczkomat" && option.value !== "Pocztex Poczta Odbior Punkt") {
+      setSelectedPaczkomat(null);
+      localStorage.removeItem("selectedPaczkomat");
+      setSelectedPocztex(null);
+      localStorage.removeItem("selectedPoint");
+    }
   };
 
   const handleOpenModal = () => {
@@ -136,7 +150,7 @@ const Form = () => {
                   <button type="button" onClick={handleOpenModal} className="btn btn-link">Change Paczkomat</button>
                 </div>
               )}
-              {watch("shippingMethod") === "Pocztex Poczta Odbior Punkt" && (
+              {watch("shippingMethod") === "Pocztex Poczta Odbior Punkt" && selectedPocztex && (
                 <div className="flex-1 min-w-0">
                   <strong>Selected Pocztex Point:</strong> {selectedPocztex ? `${selectedPocztex.name}, ${selectedPocztex.street}, ${selectedPocztex.city}` : "None"}
                   <button type="button" onClick={() => router.push("/pocztex/pocztex.html")} className="btn btn-link">Change Pocztex Point</button>
@@ -172,7 +186,7 @@ const Form = () => {
               )}
             </div>
             <div className="mb-2">
-              <label class="label" htmlFor="city">
+              <label className="label" htmlFor="city">
                 City
               </label>
               <input
