@@ -1,4 +1,3 @@
-// app\(front)\shipping\Form.tsx
 "use client";
 import React, { useState, useEffect } from "react";
 import CheckoutSteps from "@/components/CheckoutSteps";
@@ -28,65 +27,62 @@ const Form = () => {
       shippingMethod: "",
     },
   });
-  const [shippingMethod, setShippingMethod] = useState(() => localStorage.getItem('shippingMethod') || '');  const [shippingPrice, setShippingPrice] = useState(0);
+
+  const [shippingMethod, setShippingMethod] = useState(localStorage.getItem('shippingMethod') || '');  // Initialize from localStorage
+  const [shippingPrice, setShippingPrice] = useState(0);
   const [selectedPaczkomat, setSelectedPaczkomat] = useState(null);
   const [showInpostModal, setShowInpostModal] = useState(false);
   const [selectedPocztex, setSelectedPocztex] = useState(null);
 
+  // Combined useEffect to handle all initial state setup from localStorage and shippingAddress
   useEffect(() => {
     if (shippingAddress) {
       Object.keys(shippingAddress).forEach((key) => {
         setValue(key, shippingAddress[key]);
       });
     }
+
     const paczkomatInfo = localStorage.getItem("selectedPaczkomat");
     if (paczkomatInfo) {
       setSelectedPaczkomat(JSON.parse(paczkomatInfo));
     }
-  }, [setValue, shippingAddress]); // Include modal state if needed
 
-
-  useEffect(() => {
-    const method = localStorage.getItem('shippingMethod');
-    const redirected = localStorage.getItem('redirected');
-  
-    if (method && !redirected) {
-      if (method === "Pocztex Poczta Odbior Punkt") {
-        localStorage.setItem('redirected', 'true'); // Zapisz, że przekierowanie nastąpiło
-        router.push("/pocztex/pocztex.html");
-      }
-    }
-  }, [shippingMethod, router]);
-  
-
-  useEffect(() => {
     const savedPoint = localStorage.getItem("selectedPoint");
     if (savedPoint) {
       setSelectedPocztex(JSON.parse(savedPoint));
     }
-  }, []);
-  
-  // Dodatkowo, pamiętaj o aktualizacji tego stanu przy każdej zmianie metody wysyłki
+
+    const method = localStorage.getItem('shippingMethod');
+    if (method) {
+      setShippingMethod(method);
+      setValue('shippingMethod', method);
+    }
+  }, [setValue, shippingAddress]);
+
+  // Handle redirection for Pocztex method
+  useEffect(() => {
+    const method = localStorage.getItem('shippingMethod');
+    const redirected = localStorage.getItem('redirected');
+
+    if (method && !redirected) {
+      if (method === "Pocztex Poczta Odbior Punkt") {
+        localStorage.setItem('redirected', 'true');
+        router.push("/pocztex/pocztex.html");
+      }
+    }
+  }, [shippingMethod, router]);
+
+  // Update selected Pocztex point when shipping method changes
   useEffect(() => {
     if (shippingMethod === "Pocztex Poczta Odbior Punkt") {
       const savedPoint = localStorage.getItem("selectedPoint");
       if (savedPoint) {
         setSelectedPocztex(JSON.parse(savedPoint));
       } else {
-        setSelectedPocztex(null); // Resetuj, jeśli nie ma zapisanego punktu
+        setSelectedPocztex(null);
       }
     }
   }, [shippingMethod]);
-  
-
-  useEffect(() => {
-    const method = localStorage.getItem('shippingMethod');
-    if (method) {
-      setShippingMethod(method);
-      setValue('shippingMethod', method);
-    }
-  }, [setValue]);
-  
 
   const shippingOptions = [
     { value: "Inpost Paczkomat", label: "Inpost Paczkomat - $5", price: 5 },
@@ -100,21 +96,17 @@ const Form = () => {
   ];
 
   const handleShippingChange = (option) => {
-    console.log(option.value); // Debug: sprawdź wybraną wartość opcji
     setShippingMethod(option.value);
-    localStorage.setItem('shippingMethod', option.value); // Zapisz do localStorage
-    localStorage.removeItem('redirected'); // Resetuj stan przekierowania
+    localStorage.setItem('shippingMethod', option.value);
+    localStorage.removeItem('redirected');
     setShippingPrice(option.price);
     setShowInpostModal(option.value === "Inpost Paczkomat");
   };
-  
-  
 
   const handleOpenModal = () => {
     setShowInpostModal(true);
   };
 
-  
   const formSubmit = async (data) => {
     saveShippingAddrress(data);
     router.push("/payment");
@@ -127,8 +119,7 @@ const Form = () => {
         <div className="card-body">
           <h1 className="card-title">Shipping Address</h1>
           <form onSubmit={handleSubmit(formSubmit)}>
-
-          <Select
+            <Select
               options={shippingOptions}
               value={shippingOptions.find(option => option.value === shippingMethod)}
               onChange={handleShippingChange}
@@ -145,15 +136,13 @@ const Form = () => {
                   <button type="button" onClick={handleOpenModal} className="btn btn-link">Change Paczkomat</button>
                 </div>
               )}
-                  {watch("shippingMethod") === "Pocztex Poczta Odbior Punkt" && (
-                    <div className="flex-1 min-w-0">
-  <strong>Selected Pocztex Point:</strong> {selectedPocztex ? `${selectedPocztex.name}, ${selectedPocztex.street}, ${selectedPocztex.city}` : "None"}
-  <button type="button" onClick={() => router.push("/pocztex/pocztex.html")} className="btn btn-link">Change Pocztex Point</button>
-</div>
-
-    )}
+              {watch("shippingMethod") === "Pocztex Poczta Odbior Punkt" && (
+                <div className="flex-1 min-w-0">
+                  <strong>Selected Pocztex Point:</strong> {selectedPocztex ? `${selectedPocztex.name}, ${selectedPocztex.street}, ${selectedPocztex.city}` : "None"}
+                  <button type="button" onClick={() => router.push("/pocztex/pocztex.html")} className="btn btn-link">Change Pocztex Point</button>
+                </div>
+              )}
             </div>
-            {/* Form fields for the shipping address */}
             <div className="mb-2">
               <label className="label" htmlFor="fullName">
                 Full Name
