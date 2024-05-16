@@ -1,16 +1,16 @@
-// app\(front)\place-order\Form.tsx
-'use client'
-import CheckoutSteps from '@/components/CheckoutSteps'
-import useCartService from '@/lib/hooks/useCartStore'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
-import useSWRMutation from 'swr/mutation'
-import Image from 'next/image'
+// app(front)/place-order/Form.tsx
+'use client';
+import CheckoutSteps from '@/components/CheckoutSteps';
+import useCartService from '@/lib/hooks/useCartStore';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import useSWRMutation from 'swr/mutation';
+import Image from 'next/image';
 
 const Form = () => {
-  const router = useRouter()
+  const router = useRouter();
   const {
     paymentMethod,
     shippingAddress,
@@ -20,7 +20,7 @@ const Form = () => {
     shippingPrice,
     totalPrice,
     clear,
-  } = useCartService()
+  } = useCartService();
 
   const { trigger: placeOrder, isMutating: isPlacing } = useSWRMutation(
     `/api/orders/mine`,
@@ -32,40 +32,52 @@ const Form = () => {
         },
         body: JSON.stringify({
           paymentMethod,
-          shippingAddress,
+          shippingAddress: {
+            ...shippingAddress,
+            shippingMethod: localStorage.getItem('shippingMethod'),
+            selectedPaczkomat: localStorage.getItem('selectedPaczkomat'),
+            selectedPocztex: localStorage.getItem('selectedPoint'),
+            shippingCost: parseFloat(localStorage.getItem('shippingPrice')),
+          },
           items,
           itemsPrice,
           taxPrice,
           shippingPrice,
           totalPrice,
         }),
-      })
-      const data = await res.json()
+      });
+      const data = await res.json();
       if (res.ok) {
-        clear()
-        toast.success('Order placed successfully')
-        return router.push(`/order/${data.order._id}`)
+        clear();
+        toast.success('Order placed successfully');
+        return router.push(`/order/${data.order._id}`);
       } else {
-        toast.error(data.message)
+        toast.error(data.message);
       }
     }
-  )
+  );
+
   useEffect(() => {
     if (!paymentMethod) {
-      return router.push('/payment')
+      return router.push('/payment');
     }
     if (items.length === 0) {
-      return router.push('/')
+      return router.push('/');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paymentMethod, router])
+  }, [paymentMethod, router]);
 
-  const [mounted, setMounted] = useState(false)
+  const [mounted, setMounted] = useState(false);
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
-  if (!mounted) return <></>
+  if (!mounted) return <></>;
+
+  const shippingMethod = localStorage.getItem('shippingMethod');
+  const shippingCost = localStorage.getItem('shippingPrice');
+  const selectedPaczkomat = JSON.parse(localStorage.getItem('selectedPaczkomat') || '{}');
+  const selectedPocztex = JSON.parse(localStorage.getItem('selectedPoint') || '{}');
 
   return (
     <div>
@@ -78,9 +90,17 @@ const Form = () => {
               <h2 className="card-title">Shipping Address</h2>
               <p>{shippingAddress.fullName}</p>
               <p>
-                {shippingAddress.address}, {shippingAddress.city},{' '}
-                {shippingAddress.postalCode}, {shippingAddress.country}{' '}
+                {shippingAddress.address}, {shippingAddress.city}, {shippingAddress.postalCode}, {shippingAddress.country}{' '}
               </p>
+              <p>
+                Shipping Method: {shippingMethod} - ${shippingCost}
+              </p>
+              {shippingMethod === 'Inpost Paczkomat' && selectedPaczkomat && selectedPaczkomat.name && (
+                <p>Selected Paczkomat: {selectedPaczkomat.name}</p>
+              )}
+              {shippingMethod === 'Pocztex Poczta Odbior Punkt' && selectedPocztex && selectedPocztex.name && (
+                <p>Selected Pocztex Point: {selectedPocztex.name}</p>
+              )}
               <div>
                 <Link className="btn" href="/shipping">
                   Edit
@@ -196,6 +216,7 @@ const Form = () => {
         </div>
       </div>
     </div>
-  )
-}
-export default Form
+  );
+};
+
+export default Form;

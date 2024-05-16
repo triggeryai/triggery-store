@@ -1,3 +1,4 @@
+// app(front)/shipping/Form.tsx
 "use client";
 import React, { useState, useEffect } from "react";
 import CheckoutSteps from "@/components/CheckoutSteps";
@@ -28,13 +29,12 @@ const Form = () => {
     },
   });
 
-  const [shippingMethod, setShippingMethod] = useState(localStorage.getItem('shippingMethod') || '');  // Initialize from localStorage
+  const [shippingMethod, setShippingMethod] = useState(localStorage.getItem('shippingMethod') || '');
   const [shippingPrice, setShippingPrice] = useState(0);
   const [selectedPaczkomat, setSelectedPaczkomat] = useState(null);
   const [showInpostModal, setShowInpostModal] = useState(false);
   const [selectedPocztex, setSelectedPocztex] = useState(null);
 
-  // Combined useEffect to handle all initial state setup from localStorage and shippingAddress
   useEffect(() => {
     if (shippingAddress) {
       Object.keys(shippingAddress).forEach((key) => {
@@ -59,7 +59,6 @@ const Form = () => {
     }
   }, [setValue, shippingAddress]);
 
-  // Handle redirection for Pocztex method
   useEffect(() => {
     const method = localStorage.getItem('shippingMethod');
     const redirected = localStorage.getItem('redirected');
@@ -72,7 +71,6 @@ const Form = () => {
     }
   }, [shippingMethod, router]);
 
-  // Update selected Pocztex point when shipping method changes
   useEffect(() => {
     if (shippingMethod === "Pocztex Poczta Odbior Punkt") {
       const savedPoint = localStorage.getItem("selectedPoint");
@@ -105,6 +103,7 @@ const Form = () => {
   const handleShippingChange = (option) => {
     setShippingMethod(option.value);
     localStorage.setItem('shippingMethod', option.value);
+    localStorage.setItem('shippingPrice', option.price);
     localStorage.removeItem('redirected');
     setShippingPrice(option.price);
     setShowInpostModal(option.value === "Inpost Paczkomat");
@@ -129,10 +128,10 @@ const Form = () => {
   return (
     <div>
       <CheckoutSteps current={1} />
-      <div className="max-w-sm mx-auto card bg-base-300 my-4">
+      <div className="max-w-lg mx-auto card bg-base-300 my-4 p-6">
         <div className="card-body">
-          <h1 className="card-title">Shipping Address</h1>
-          <form onSubmit={handleSubmit(formSubmit)}>
+          <h1 className="card-title text-2xl mb-4">Shipping Address</h1>
+          <form onSubmit={handleSubmit(formSubmit)} className="space-y-4">
             <Select
               options={shippingOptions}
               value={shippingOptions.find(option => option.value === shippingMethod)}
@@ -141,8 +140,9 @@ const Form = () => {
               placeholder="Select shipping method"
             />
             <div className="flex justify-between items-center mb-4">
+              {/* another div */}
               <div className="flex-1 min-w-0">
-                <strong>Shipping Cost:</strong> ${shippingPrice}
+                <strong>Shipping Cost:</strong> ${shippingPrice} ({shippingMethod})
               </div>
               {watch("shippingMethod") === "Inpost Paczkomat" && selectedPaczkomat && (
                 <div className="flex-1 min-w-0">
@@ -165,7 +165,7 @@ const Form = () => {
                 type="text"
                 id="fullName"
                 {...register("fullName", { required: "Full Name is required" })}
-                className="input input-bordered w-full max-w-xs"
+                className="input input-bordered w-full"
               />
               {errors.fullName && (
                 <div className="text-error">{errors.fullName.message}</div>
@@ -179,7 +179,7 @@ const Form = () => {
                 type="text"
                 id="address"
                 {...register("address", { required: "Address is required" })}
-                className="input input-bordered w-full max-w-xs"
+                className="input input-bordered w-full"
               />
               {errors.address && (
                 <div className="text-error">{errors.address.message}</div>
@@ -193,7 +193,7 @@ const Form = () => {
                 type="text"
                 id="city"
                 {...register("city", { required: "City is required" })}
-                className="input input-bordered w-full max-w-xs"
+                className="input input-bordered w-full"
               />
               {errors.city && (
                 <div className="text-error">{errors.city.message}</div>
@@ -209,7 +209,7 @@ const Form = () => {
                 {...register("postalCode", {
                   required: "Postal Code is required",
                 })}
-                className="input input-bordered w-full max-w-xs"
+                className="input input-bordered w-full"
               />
               {errors.postalCode && (
                 <div className="text-error">{errors.postalCode.message}</div>
@@ -223,13 +223,13 @@ const Form = () => {
                 type="text"
                 id="country"
                 {...register("country", { required: "Country is required" })}
-                className="input input-bordered w-full max-w-xs"
+                className="input input-bordered w-full"
               />
               {errors.country && (
                 <div className="text-error">{errors.country.message}</div>
               )}
             </div>
-            <div className="my-2">
+            <div className="my-4">
               <button
                 type="submit"
                 disabled={isSubmitting}

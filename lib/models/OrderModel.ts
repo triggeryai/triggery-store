@@ -1,5 +1,5 @@
 // lib\models\OrderModel.ts
-import mongoose from 'mongoose'
+import mongoose from 'mongoose';
 
 const orderSchema = new mongoose.Schema(
   {
@@ -28,6 +28,10 @@ const orderSchema = new mongoose.Schema(
       city: { type: String, required: true },
       postalCode: { type: String, required: true },
       country: { type: String, required: true },
+      shippingMethod: { type: String, required: true },
+      selectedPaczkomat: { type: String },
+      selectedPocztex: { type: String },
+      shippingCost: { type: Number, required: true },
     },
     paymentMethod: { type: String, required: true },
     paymentResult: { id: String, status: String, email_address: String },
@@ -43,49 +47,57 @@ const orderSchema = new mongoose.Schema(
   {
     timestamps: true,
   }
-)
-const OrderModel = mongoose.models.Order || mongoose.model('Order', orderSchema)
+);
+const OrderModel = mongoose.models.Order || mongoose.model('Order', orderSchema);
 
-export default OrderModel
+export default OrderModel;
 
 export type Order = {
-  _id: string
-  user?: { name: string }
-  items: [OrderItem]
+  _id: string;
+  user?: { name: string };
+  items: [OrderItem];
   shippingAddress: {
-    fullName: string
-    address: string
-    city: string
-    postalCode: string
-    country: string
-  }
-  paymentMethod: string
-  paymentResult?: { id: string; status: string; email_address: string }
-  itemsPrice: number
-  shippingPrice: number
-  taxPrice: number
-  totalPrice: number
-  isPaid: boolean
-  isDelivered: boolean
-  paidAt?: string
-  deliveredAt?: string
-  createdAt: string
-}
+    fullName: string;
+    address: string;
+    city: string;
+    postalCode: string;
+    country: string;
+    shippingMethod: string;
+    selectedPaczkomat?: string;
+    selectedPocztex?: string;
+    shippingCost: number;
+  };
+  paymentMethod: string;
+  paymentResult?: { id: string; status: string; email_address: string };
+  itemsPrice: number;
+  shippingPrice: number;
+  taxPrice: number;
+  totalPrice: number;
+  isPaid: boolean;
+  isDelivered: boolean;
+  paidAt?: string;
+  deliveredAt?: string;
+  createdAt: string;
+};
 
 export type OrderItem = {
-  name: string
-  slug: string
-  qty: number
-  image: string
-  price: number
-  color: string
-  size: string
-}
+  name: string;
+  slug: string;
+  qty: number;
+  image: string;
+  price: number;
+  color: string;
+  size: string;
+};
 
 export type ShippingAddress = {
-  fullName: string
-  address: string
-  city: string
-  postalCode: string
-  country: string
-}
+  fullName: string;
+  address: string;
+  city: string;
+  postalCode: string;
+  country: string;
+  shippingMethod: string;
+  selectedPaczkomat?: string;
+  selectedPocztex?: string;
+  shippingCost: number;
+};

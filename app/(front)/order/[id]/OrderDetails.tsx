@@ -1,4 +1,3 @@
-// app\(front)\order\[id]\OrderDetails.tsx
 'use client'
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js'
 import { OrderItem } from '@/lib/models/OrderModel'
@@ -18,8 +17,8 @@ export default function OrderDetails({
   orderId: string
   paypalClientId: string
 }) {
-
   console.log("Order ID on entry:", orderId); // Log przy wejściu do komponentu
+
   const { trigger: deliverOrder, isMutating: isDelivering } = useSWRMutation(
     `/api/orders/${orderId}`,
     async (url) => {
@@ -35,6 +34,7 @@ export default function OrderDetails({
         : toast.error(data.message)
     }
   )
+
   const { data, error } = useSWR(`/api/orders/${orderId}`)
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
@@ -44,7 +44,7 @@ export default function OrderDetails({
       console.log("Loaded payment method from data:", data.paymentMethod);
       setSelectedPaymentMethod(data.paymentMethod);
     }
-}, [data]);
+  }, [data]);
 
   const handlePaymentMethodChange = (selectedOption) => {
     console.log("Selected payment method:", selectedOption.value);
@@ -52,45 +52,42 @@ export default function OrderDetails({
     setSelectedPaymentMethod(selectedOption.value);
     console.log("New state after update:", selectedOption.value); // Stan zmieni się asynchronicznie
     updatePaymentMethodInDatabase(selectedOption.value);
-};
+  };
 
-  
-
-const updatePaymentMethodInDatabase = async (newPaymentMethod) => {
-  console.log("Order ID before sending request:", orderId); // Log before sending the request
-  console.log("Value before sending:", newPaymentMethod);
-  const payload = JSON.stringify({ paymentMethod: newPaymentMethod });
-  console.log("Sending paymentMethod update with payload:", payload);
-  console.log("Value before sending:", newPaymentMethod);
-  console.log("Sending paymentMethod update with value:", newPaymentMethod);
-  if (!newPaymentMethod) {
+  const updatePaymentMethodInDatabase = async (newPaymentMethod) => {
+    console.log("Order ID before sending request:", orderId); // Log before sending the request
+    console.log("Value before sending:", newPaymentMethod);
+    const payload = JSON.stringify({ paymentMethod: newPaymentMethod });
+    console.log("Sending paymentMethod update with payload:", payload);
+    console.log("Value before sending:", newPaymentMethod);
+    console.log("Sending paymentMethod update with value:", newPaymentMethod);
+    if (!newPaymentMethod) {
       toast.error('No payment method selected');
       return;
-  }
-  try {
+    }
+    try {
       const response = await fetch(`/api/orders/${orderId}/update-payment-method`, {
-          method: 'PUT',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ paymentMethod: newPaymentMethod })
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ paymentMethod: newPaymentMethod })
       });
       
       const data = await response.json();
       console.log("Response from server:", data);  // Server response to the update request
       if (response.ok) {
-          toast.success('Payment method updated successfully');
-          // Reload the page to reflect the updated data
-          window.location.reload();
+        toast.success('Payment method updated successfully');
+        // Reload the page to reflect the updated data
+        window.location.reload();
       } else {
-          toast.error(data.message || 'Failed to update payment method');
+        toast.error(data.message || 'Failed to update payment method');
       }
-  } catch (error) {
+    } catch (error) {
       toast.error('Network error when trying to update payment method');
       console.error("Network error:", error);
-  }
-};
-
+    }
+  };
 
   const { trigger: undeliverOrder, isMutating: isUndelivering } = useSWRMutation(
     `/api/admin/orders/${orderId}/undeliver`,
@@ -127,42 +124,39 @@ const updatePaymentMethodInDatabase = async (newPaymentMethod) => {
       }
     }
   );
-  
+
   const [stripeSessionUrl, setStripeSessionUrl] = useState(null);
-  // Dodaj funkcję do inicjowania płatności Stripe
 
-
-const createStripeSession = async () => {
-  try {
-    const response = await fetch(`/api/orders/${orderId}/create-stripe-session`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const session = await response.json();
-    if (response.ok) {
-      setStripeSessionUrl(session.url);
-    } else {
-      console.error('Failed to initiate Stripe payment:', session.message);
-      toast.error('Could not initiate Stripe payment: ' + session.message);
+  const createStripeSession = async () => {
+    try {
+      const response = await fetch(`/api/orders/${orderId}/create-stripe-session`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const session = await response.json();
+      if (response.ok) {
+        setStripeSessionUrl(session.url);
+      } else {
+        console.error('Failed to initiate Stripe payment:', session.message);
+        toast.error('Could not initiate Stripe payment: ' + session.message);
+      }
+    } catch (error) {
+      console.error('Network error when connecting to the payment gateway:', error);
+      toast.error('There was a network error connecting to the payment gateway.');
     }
-  } catch (error) {
-    console.error('Network error when connecting to the payment gateway:', error);
-    toast.error('There was a network error connecting to the payment gateway.');
-  }
-};
+  };
 
-
-
-useEffect(() => {
-  if (stripeSessionUrl) {
-    window.location.href = stripeSessionUrl; // Przekieruj do Stripe
-  }
-}, [stripeSessionUrl]);
+  useEffect(() => {
+    if (stripeSessionUrl) {
+      window.location.href = stripeSessionUrl; // Przekieruj do Stripe
+    }
+  }, [stripeSessionUrl]);
 
   const { data: session } = useSession()
   console.log(session)
+
   function createPayPalOrder() {
     return fetch(`/api/orders/${orderId}/create-paypal-order`, {
       method: 'POST',
@@ -199,13 +193,11 @@ useEffect(() => {
     .then((data) => {
       toast.success('Order marked as paid successfully');
       window.location.reload();
-      // Możesz również odświeżyć dane zamówienia, aby UI odzwierciedlało zmianę
     })
     .catch((error) => {
       toast.error('Failed to mark order as paid');
     });
   }
-
 
   if (error) return error.message
   if (!data) return 'Loading...'
@@ -224,6 +216,9 @@ useEffect(() => {
     paidAt,
   } = data
 
+  const shippingMethod = shippingAddress.shippingMethod;
+  const selectedPaczkomat = shippingAddress.selectedPaczkomat;
+
   return (
     <div>
       <h1 className="text-2xl py-4">Order {orderId}</h1>
@@ -237,6 +232,15 @@ useEffect(() => {
                 {shippingAddress.address}, {shippingAddress.city},{' '}
                 {shippingAddress.postalCode}, {shippingAddress.country}{' '}
               </p>
+              <p>
+                Shipping Method: {shippingMethod} - ${shippingPrice}
+              </p>
+              {shippingMethod === 'Inpost Paczkomat' && selectedPaczkomat && (
+                <p>Selected Paczkomat: {selectedPaczkomat}</p>
+              )}
+              {shippingMethod === 'Pocztex Poczta Odbior Punkt' && shippingAddress.selectedPocztex && (
+                <p>Selected Pocztex Point: {shippingAddress.selectedPocztex}</p>
+              )}
               {isDelivered ? (
                 <div className="text-success">Delivered at {deliveredAt}</div>
               ) : (
@@ -257,10 +261,8 @@ useEffect(() => {
                     { label: 'Stripe', value: 'Stripe' },
                     { label: 'Cash On Delivery', value: 'CashOnDelivery' },
                     { label: 'Direct bank transfer to account', value: 'DirectBankTransferToAccount' },
-
                   ]}
                 />
-                
               )}
               {isPaid ? (
                 <div className="text-success">Paid at {paidAt}</div>
@@ -311,116 +313,110 @@ useEffect(() => {
         </div>
 
         <div>
-        <div className="card bg-base-300">
-  <div className="card-body">
-    <h2 className="card-title">Order Summary</h2>
-    <ul>
-      <li>
-        <div className="mb-2 flex justify-between">
-          <div>Items</div>
-          <div>${itemsPrice}</div>
-        </div>
-      </li>
-      <li>
-        <div className="mb-2 flex justify-between">
-          <div>Tax</div>
-          <div>${taxPrice}</div>
-        </div>
-      </li>
-      <li>
-        <div className="mb-2 flex justify-between">
-          <div>Shipping</div>
-          <div>${shippingPrice}</div>
-        </div>
-      </li>
-      <li>
-        <div className="mb-2 flex justify-between">
-          <div>Total</div>
-          <div>${totalPrice}</div>
-        </div>
-      </li>
-      {paymentMethod === 'DirectBankTransferToAccount' && !isPaid && (
-        <li>
-          <div className="mb-2">
-            <div className="font-bold">Send Money here:</div>
-            <div>The transfer title: {orderId}</div>
-            <div>The account number: 1234 1234 1234 1234 1234 1234 1234</div>
+          <div className="card bg-base-300">
+            <div className="card-body">
+              <h2 className="card-title">Order Summary</h2>
+              <ul>
+                <li>
+                  <div className="mb-2 flex justify-between">
+                    <div>Items</div>
+                    <div>${itemsPrice}</div>
+                  </div>
+                </li>
+                <li>
+                  <div className="mb-2 flex justify-between">
+                    <div>Tax</div>
+                    <div>${taxPrice}</div>
+                  </div>
+                </li>
+                <li>
+                  <div className="mb-2 flex justify-between">
+                    <div>Shipping</div>
+                    <div>${shippingPrice}</div>
+                  </div>
+                </li>
+                <li>
+                  <div className="mb-2 flex justify-between">
+                    <div>Total</div>
+                    <div>${totalPrice}</div>
+                  </div>
+                </li>
+                {paymentMethod === 'DirectBankTransferToAccount' && !isPaid && (
+                  <li>
+                    <div className="mb-2">
+                      <div className="font-bold">Send Money here:</div>
+                      <div>The transfer title: {orderId}</div>
+                      <div>The account number: 1234 1234 1234 1234 1234 1234 1234</div>
+                    </div>
+                  </li>
+                )}
+                {!isPaid && (
+                  <li>
+                    {paymentMethod === 'PayPal' ? (
+                      <PayPalScriptProvider options={{ clientId: paypalClientId }}>
+                        <PayPalButtons createOrder={createPayPalOrder} onApprove={onApprovePayPalOrder} />
+                      </PayPalScriptProvider>
+                    ) : paymentMethod === 'Stripe' ? (
+                      <button onClick={createStripeSession} className="btn btn-primary w-full my-2">
+                        Pay with Stripe
+                      </button>
+                    ) : null}
+                  </li>
+                )}
+                {session?.user.isAdmin && (
+                  <li>
+                    {isDelivered ? (
+                      <button
+                        className="btn w-full my-2"
+                        onClick={() => undeliverOrder()}
+                        disabled={isUndelivering}
+                      >
+                        {isUndelivering && (
+                          <span className="loading loading-spinner"></span>
+                        )}
+                        Mark as undelivered
+                      </button>
+                    ) : (
+                      <button
+                        className="btn w-full my-2"
+                        onClick={() => deliverOrder()}
+                        disabled={isDelivering}
+                      >
+                        {isDelivering && (
+                          <span className="loading loading-spinner"></span>
+                        )}
+                        Mark as delivered
+                      </button>
+                    )}
+                  </li>
+                )}
+                {session?.user.isAdmin && (
+                  <ul>
+                    {isPaid ? (
+                      <li>
+                        <button
+                          className="btn btn-warning w-full my-2"
+                          onClick={() => markOrderAsUnpaid()}
+                          disabled={isMarkingUnpaid}
+                        >
+                          {isMarkingUnpaid ? 'Processing...' : 'Mark as Unpaid'}
+                        </button>
+                      </li>
+                    ) : (
+                      <li>
+                        <button
+                          className="btn btn-success w-full my-2"
+                          onClick={markOrderAsPaid}
+                        >
+                          Mark as Paid
+                        </button>
+                      </li>
+                    )}
+                  </ul>
+                )}
+              </ul>
+            </div>
           </div>
-        </li>
-      )}
-      {!isPaid && (
-        <li>
-          {paymentMethod === 'PayPal' ? (
-            <PayPalScriptProvider options={{ clientId: paypalClientId }}>
-              <PayPalButtons createOrder={createPayPalOrder} onApprove={onApprovePayPalOrder} />
-            </PayPalScriptProvider>
-          ) : paymentMethod === 'Stripe' ? (
-            <button onClick={createStripeSession} className="btn btn-primary w-full my-2">
-              Pay with Stripe
-            </button>
-          ) : null}
-        </li>
-      )}
-
-
-{session?.user.isAdmin && (
-    <li>
-      {isDelivered ? (
-        <button
-          className="btn w-full my-2"
-          onClick={() => undeliverOrder()}
-          disabled={isUndelivering}
-        >
-          {isUndelivering && (
-            <span className="loading loading-spinner"></span>
-          )}
-          Mark as undelivered
-        </button>
-      ) : (
-        <button
-          className="btn w-full my-2"
-          onClick={() => deliverOrder()}
-          disabled={isDelivering}
-        >
-          {isDelivering && (
-            <span className="loading loading-spinner"></span>
-          )}
-          Mark as delivered
-        </button>
-      )}
-    </li>
-  )}
-
-{session?.user.isAdmin && (
-        <ul>
-          {isPaid ? (
-            <li>
-              <button
-                className="btn btn-warning w-full my-2"
-                onClick={() => markOrderAsUnpaid()}
-                disabled={isMarkingUnpaid}
-              >
-                {isMarkingUnpaid ? 'Processing...' : 'Mark as Unpaid'}
-              </button>
-            </li>
-          ) : (
-            <li>
-              <button
-                className="btn btn-success w-full my-2"
-                onClick={markOrderAsPaid}
-              >
-                Mark as Paid
-              </button>
-            </li>
-          )}
-        </ul>
-      )}
-
-
-    </ul>
-  </div>
-</div>
-
         </div>
       </div>
     </div>
