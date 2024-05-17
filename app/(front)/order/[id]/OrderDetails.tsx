@@ -1,3 +1,4 @@
+// app\(front)\order\[id]\OrderDetails.tsx
 'use client'
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js'
 import { OrderItem } from '@/lib/models/OrderModel'
