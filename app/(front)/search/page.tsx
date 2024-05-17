@@ -98,7 +98,7 @@ export default async function SearchPage({
   return (
     <div className="grid md:grid-cols-5 md:gap-5">
       <div>
-        <div className="text-xl pt-3">Categories</div>
+        <div className="text-xl pt-3 font-bold">Categories</div>
         <div>
           <ul>
             <li>
@@ -126,7 +126,7 @@ export default async function SearchPage({
           </ul>
         </div>
         <div>
-          <div className="text-xl pt-3">Price</div>
+          <div className="text-xl pt-3 font-bold">Price</div>
           <ul>
             <li>
               <Link
@@ -183,7 +183,7 @@ export default async function SearchPage({
       <div className="md:col-span-4">
         <div className="flex items-center justify-between  py-4">
           <div className="flex items-center">
-            {products.length === 0 ? 'No' : countProducts} Results
+          <span className="font-bold">{products.length === 0 ? 'No' : countProducts} Results</span>
             {q !== 'all' && q !== '' && ' : ' + q}
             {category !== 'all' && ' : ' + category}
             {price !== 'all' && ' : Price ' + price}
@@ -197,7 +197,7 @@ export default async function SearchPage({
             ) : null}
           </div>
           <div>
-            Sort by{' '}
+            <span className="font-bold">Sort by</span>{' '}
             {sortOrders.map((s) => (
               <Link
                 key={s}

@@ -1,4 +1,3 @@
-// app\(front)\order\[id]\OrderDetails.tsx
 'use client'
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js'
 import { OrderItem } from '@/lib/models/OrderModel'
@@ -54,7 +53,6 @@ export default function OrderDetails({
     console.log("New state after update:", selectedOption.value); // Stan zmieni się asynchronicznie
     updatePaymentMethodInDatabase(selectedOption.value);
   };
-
   const updatePaymentMethodInDatabase = async (newPaymentMethod) => {
     console.log("Order ID before sending request:", orderId); // Log before sending the request
     console.log("Value before sending:", newPaymentMethod);
@@ -74,13 +72,15 @@ export default function OrderDetails({
         },
         body: JSON.stringify({ paymentMethod: newPaymentMethod })
       });
-      
+  
       const data = await response.json();
       console.log("Response from server:", data);  // Server response to the update request
       if (response.ok) {
-        toast.success('Payment method updated successfully');
-        // Reload the page to reflect the updated data
-        window.location.reload();
+        toast.success(`Payment method updated successfully to ${newPaymentMethod}`);
+        // Reload the page to reflect the updated data after 2 seconds
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       } else {
         toast.error(data.message || 'Failed to update payment method');
       }
@@ -89,6 +89,7 @@ export default function OrderDetails({
       console.error("Network error:", error);
     }
   };
+  
 
   const { trigger: undeliverOrder, isMutating: isUndelivering } = useSWRMutation(
     `/api/admin/orders/${orderId}/undeliver`,
@@ -220,6 +221,11 @@ export default function OrderDetails({
   const shippingMethod = shippingAddress.shippingMethod;
   const selectedPaczkomat = shippingAddress.selectedPaczkomat;
 
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    toast.success('Copied to clipboard');
+  };
+
   return (
     <div>
       <h1 className="text-2xl py-4">Order {orderId}</h1>
@@ -344,10 +350,28 @@ export default function OrderDetails({
                 </li>
                 {paymentMethod === 'DirectBankTransferToAccount' && !isPaid && (
                   <li>
-                    <div className="mb-2">
-                      <div className="font-bold">Send Money here:</div>
-                      <div>The transfer title: {orderId}</div>
-                      <div>The account number: 1234 1234 1234 1234 1234 1234 1234</div>
+                    <div className="mb-4 p-4 border rounded-lg bg-gray-100">
+                      <div className="font-bold text-lg mb-2">Send Money here:</div>
+                      <div className="flex flex-col space-y-1">
+                        <div>
+                          <span className="font-semibold">The transfer title:</span>
+                          <span 
+                            className="text-blue-600 ml-2 cursor-pointer" 
+                            onClick={() => copyToClipboard(orderId)}
+                          >
+                            {orderId}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="font-semibold">The account number:</span>
+                          <span 
+                            className="text-blue-600 ml-2 cursor-pointer" 
+                            onClick={() => copyToClipboard('1234 1234 1234 1234 1234 1234 1234')}
+                          >
+                            1234 1234 1234 1234 1234 1234 1234
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </li>
                 )}

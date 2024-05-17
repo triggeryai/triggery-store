@@ -1,6 +1,5 @@
-// app\admin\products\Products.tsx
 'use client'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
@@ -9,7 +8,8 @@ import useSWRMutation from 'swr/mutation'
 import { v4 as uuidv4 } from 'uuid';
 
 export default function Products() {
-  const { data: products, error: productsError } = useSWR(`/api/admin/products`)
+  const [page, setPage] = useState(1)
+  const { data: productsData, error: productsError } = useSWR(`/api/admin/products?page=${page}&limit=15`)
   const { data: categories, error: categoriesError, mutate: mutateCategories } = useSWR(`/api/admin/categories`)
   const [showModal, setShowModal] = useState(false)
   const [productToDelete, setProductToDelete] = useState(null)
@@ -53,7 +53,6 @@ export default function Products() {
     };
   };
 
-
   const { trigger: deleteProduct } = useSWRMutation(
     `/api/admin/products`,
     async (url, { arg }: { arg: { productId: string } }) => {
@@ -66,17 +65,21 @@ export default function Products() {
       })
       const data = await res.json()
       setShowModal(false) // Hide modal after operation
-      res.ok
-        ? toast.success('Product deleted successfully', {
+      if (res.ok) {
+        setTimeout(() => {
+          toast.success('Product deleted successfully', {
             id: toastId,
           })
-        : toast.error(data.message, {
-            id: toastId,
-          })
-      // Refetch products after deletion
-      // if (res.ok) router.replace(router.asPath)
+          router.refresh()
+        }, 1000) // Odświeżenie strony po 1 sekundzie
+      } else {
+        toast.error(data.message, {
+          id: toastId,
+        })
+      }
     }
   )
+
   const { trigger: createProduct, isMutating: isCreating } = useSWRMutation(
     `/api/admin/products`,
     async (url) => {
@@ -116,8 +119,9 @@ export default function Products() {
   
 
   if (productsError || categoriesError) return <p>An error has occurred.</p>
-  if (!products || !categories) return <p>Loading...</p>
+  if (!productsData || !categories) return <p>Loading...</p>
 
+  const { products, totalPages } = productsData
 
   const handleDeleteClick = (productId: string) => {
     setProductToDelete(productId)
@@ -128,6 +132,14 @@ export default function Products() {
     if (productToDelete) {
       deleteProduct({ productId: productToDelete })
     }
+  }
+
+  const handlePreviousPage = () => {
+    if (page > 1) setPage(page - 1)
+  }
+
+  const handleNextPage = () => {
+    if (page < totalPages) setPage(page + 1)
   }
 
   return (
@@ -144,7 +156,7 @@ export default function Products() {
           ) : (
             "Create"
           )}
-    </button>
+        </button>
       </div>
 
       <div className="overflow-x-auto">
@@ -156,24 +168,24 @@ export default function Products() {
               <th><div className="badge">price</div></th>
               <th><div className="badge">category</div></th>
               <th><div className="badge">count in stock</div></th>
-             {/*} <th><div className="badge">rating</div></th> */}
+              {/* <th><div className="badge">rating</div></th> */}
               <th><div className="badge">actions</div></th>
             </tr>
           </thead>
           <tbody>
-            {products.map((product: Product) => (
+            {products.map((product: any) => (
               <tr key={product._id}>
                 <td>{product._id}</td>
                 <td>{product.name}</td>
                 <td>${product.price}</td>
                 <td>{product.category}</td>
                 <td>{product.countInStock}</td>
-                {/*<td>{product.rating}</td> */}
+                {/* <td>{product.rating}</td> */}
                 <td>
                   <Link href={`/admin/products/${product._id}`}>
-                  <button type="button" className="btn btn-info btn-sm">
-                   Edit
-                  </button>
+                    <button type="button" className="btn btn-info btn-sm">
+                      Edit
+                    </button>
                   </Link>
                   &nbsp;
                   <button
@@ -188,6 +200,24 @@ export default function Products() {
             ))}
           </tbody>
         </table>
+      </div>
+
+      <div className="flex justify-center items-center mt-4 space-x-4">
+        <button
+          onClick={handlePreviousPage}
+          disabled={page === 1}
+          className="bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50"
+        >
+          Previous
+        </button>
+        <span className="text-gray-700">Page {page} of {totalPages}</span>
+        <button
+          onClick={handleNextPage}
+          disabled={page === totalPages}
+          className="bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50"
+        >
+          Next
+        </button>
       </div>
 
       {/* Confirmation Modal */}

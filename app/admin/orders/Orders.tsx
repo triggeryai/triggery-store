@@ -1,4 +1,3 @@
-// Orders.tsx
 'use client'
 import { useState } from 'react'
 import { Order } from '@/lib/models/OrderModel'
@@ -8,7 +7,9 @@ import useSWRMutation from 'swr/mutation'
 import toast from 'react-hot-toast'
 
 export default function Orders() {
-  const { data: orders, error, mutate } = useSWR(`/api/admin/orders`)
+  const [page, setPage] = useState(1)
+  const [mounted, setMounted] = useState(false)
+  const { data: ordersData, error, mutate } = useSWR(`/api/admin/orders?page=${page}&limit=15`)
   const [showModal, setShowModal] = useState(false)
   const [orderToDelete, setOrderToDelete] = useState(null)
 
@@ -38,7 +39,9 @@ export default function Orders() {
   )
 
   if (error) return <p>An error has occurred.</p>
-  if (!orders) return <p>Loading...</p>
+  if (!ordersData) return <p>Loading...</p>
+
+  const { orders, totalPages } = ordersData
 
   const handleDeleteOrderClick = (orderId: string) => {
     setOrderToDelete(orderId)
@@ -51,46 +54,54 @@ export default function Orders() {
     }
   }
 
+  const handlePreviousPage = () => {
+    if (page > 1) setPage(page - 1)
+  }
+
+  const handleNextPage = () => {
+    if (page < totalPages) setPage(page + 1)
+  }
+
   return (
     <div>
       <h1 className="py-4 text-2xl">Orders</h1>
       <div className="overflow-x-auto">
-        <table className="table">
+        <table className="table-auto w-full border-collapse">
           <thead>
-            <tr>
-              <th><div className="badge">ID</div></th>
-              <th><div className="badge">USER</div></th>
-              <th><div className="badge">DATE</div></th>
-              <th><div className="badge">TOTAL</div></th>
-              <th><div className="badge">PAID</div></th>
-              <th><div className="badge">DELIVERED</div></th>
-              <th><div className="badge">ACTION</div></th>
+            <tr className="bg-gray-200">
+              <th className="border px-4 py-2"><div className="badge">ID</div></th>
+              <th className="border px-4 py-2"><div className="badge">USER</div></th>
+              <th className="border px-4 py-2"><div className="badge">DATE</div></th>
+              <th className="border px-4 py-2"><div className="badge">TOTAL</div></th>
+              <th className="border px-4 py-2"><div className="badge">PAID</div></th>
+              <th className="border px-4 py-2"><div className="badge">DELIVERED</div></th>
+              <th className="border px-4 py-2"><div className="badge">ACTION</div></th>
             </tr>
           </thead>
           <tbody>
             {orders.map((order: Order) => (
               <tr key={order._id}>
-                <td>..{order._id.substring(20, 24)}</td>
-                <td>{order.user?.name || 'Deleted user'}</td>
-                <td>{order.createdAt.substring(0, 10)}</td>
-                <td>${order.totalPrice}</td>
-                <td>
+                <td className="border px-4 py-2">..{order._id.substring(20, 24)}</td>
+                <td className="border px-4 py-2">{order.user?.name || 'Deleted user'}</td>
+                <td className="border px-4 py-2">{order.createdAt.substring(0, 10)}</td>
+                <td className="border px-4 py-2">${order.totalPrice}</td>
+                <td className="border px-4 py-2">
                   {order.isPaid && order.paidAt
                     ? `${order.paidAt.substring(0, 10)}`
                     : 'not paid'}
                 </td>
-                <td>
+                <td className="border px-4 py-2">
                   {order.isDelivered && order.deliveredAt
                     ? `${order.deliveredAt.substring(0, 10)}`
                     : 'not delivered'}
                 </td>
-                <td>
+                <td className="border px-4 py-2">
                   <Link href={`/order/${order._id}`} passHref>
                     <button className="btn btn-primary">
                       Details
                     </button>
                   </Link>
-                  &nbsp; {/* Add some space between buttons */}
+                  &nbsp;
                   <button
                     onClick={() => handleDeleteOrderClick(order._id)}
                     type="button"
@@ -103,6 +114,24 @@ export default function Orders() {
             ))}
           </tbody>
         </table>
+      </div>
+
+      <div className="flex justify-center items-center mt-4 space-x-4">
+        <button
+          onClick={handlePreviousPage}
+          disabled={page === 1}
+          className="bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50"
+        >
+          Previous
+        </button>
+        <span className="text-gray-700">Page {page} of {totalPages}</span>
+        <button
+          onClick={handleNextPage}
+          disabled={page === totalPages}
+          className="bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50"
+        >
+          Next
+        </button>
       </div>
 
       {/* Confirmation Modal */}

@@ -102,6 +102,18 @@ export default function useCartService() {
         items: [],
       })
     },
+    remove: (item: OrderItem) => {
+      const updatedCartItems = items.filter((x) => x.slug !== item.slug);
+      const { itemsPrice, shippingPrice, taxPrice, totalPrice } =
+        calcPrice(updatedCartItems);
+      cartStore.setState({
+        items: updatedCartItems,
+        itemsPrice,
+        shippingPrice,
+        taxPrice,
+        totalPrice,
+      });
+    },
     init: () => cartStore.setState(initialState),
   }
 }

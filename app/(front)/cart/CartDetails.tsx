@@ -70,7 +70,12 @@ export default function CartDetails() {
 
       {items.length === 0 ? (
         <div>
-          Cart is empty. <Link href="/">Go shopping</Link>
+          Cart is empty.         
+          <Link href="/search?q=">
+          <div className="inline-block px-6 py-3 text-sm font-medium leading-6 text-center text-white transition duration-300 ease-in-out bg-blue-500 rounded-md shadow-lg hover:bg-blue-600 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+            Go shopping
+          </div>
+        </Link>
         </div>
       ) : (
         <div className="grid md:grid-cols-4 md:gap-5">
