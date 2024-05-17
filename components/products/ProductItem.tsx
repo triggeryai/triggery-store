@@ -1,6 +1,7 @@
+// components/products/ProductItem.tsx
 "use client"
 import React, { useEffect, useState } from 'react';
-import AddToCart from '@/components/products/AddToCart';
+import AddToCartGoCart from '@/components/products/AddToCartGoCart';
 import QuickReviewModal from '@/components/products/QuickReviewModal';
 import { Product } from '@/lib/models/ProductModel';
 import Image from 'next/image';
@@ -57,7 +58,7 @@ export default function ProductItem({ product }: { product: Product }) {
         <p className="mb-2">{product.brand}</p>
         <div className="card-actions flex items-center justify-between">
           <span className="text-2xl">${product.price}</span>
-          <AddToCart item={item} />
+          <AddToCartGoCart item={item} />
         </div>
       </div>
       {showModal && (

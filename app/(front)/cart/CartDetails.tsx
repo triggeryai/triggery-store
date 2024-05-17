@@ -1,3 +1,4 @@
+// app\(front)\cart\CartDetails.tsx
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -5,6 +6,7 @@ import useCartService from '@/lib/hooks/useCartStore';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 export default function CartDetails() {
   const router = useRouter();
@@ -23,6 +25,21 @@ export default function CartDetails() {
   const handleClearCart = () => {
     clear();
     setShowModal(false);
+    toast.success('Cart has been cleared!');
+  };
+
+  const handleIncrease = (item) => {
+    if (item.countInStock > 0) {
+      increase(item);
+      toast.success('Product added to the cart!');
+    } else {
+      toast.error('This product is out of stock and cannot be added to the cart.');
+    }
+  };
+
+  const handleDecrease = (item) => {
+    decrease(item);
+    toast.success('Product removed from the cart!');
   };
 
   return (
@@ -87,7 +104,7 @@ export default function CartDetails() {
                       <button
                         className="btn"
                         type="button"
-                        onClick={() => decrease(item)}
+                        onClick={() => handleDecrease(item)}
                       >
                         -
                       </button>
@@ -95,7 +112,7 @@ export default function CartDetails() {
                       <button
                         className="btn"
                         type="button"
-                        onClick={() => item.qty < item.countInStock ? increase(item) : null}
+                        onClick={() => item.qty < item.countInStock ? handleIncrease(item) : null}
                         disabled={item.qty >= item.countInStock}
                       >
                         +
@@ -126,11 +143,11 @@ export default function CartDetails() {
                     </button>
                   </li>
                   <li>
-                  <div className="mt-4 text-center">
-                    <Link href="/search?category=all">
-                      <button className="btn btn-accent w-full">Back to Shopping</button>
-                    </Link>
-                  </div>
+                    <div className="mt-4 text-center">
+                      <Link href="/search?category=all">
+                        <button className="btn btn-accent w-full">Back to Shopping</button>
+                      </Link>
+                    </div>
                   </li>
                 </ul>
               </div>

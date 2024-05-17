@@ -1,62 +1,68 @@
-// components\products\AddToCartGoCart.tsx
+// components/products/AddToCartGoCart.tsx
 'use client'
 import useCartService from '@/lib/hooks/useCartStore'
 import { OrderItem } from '@/lib/models/OrderModel'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import toast from 'react-hot-toast';
 
-export default function AddToCart({ item }: { item: OrderItem }) {
+export default function AddToCartGoCart({ item }: { item: OrderItem }) {
   const router = useRouter()
   const { items, increase, decrease } = useCartService()
   const [existItem, setExistItem] = useState<OrderItem | undefined>()
-  const [itemAdded, setItemAdded] = useState(false) // New state to track if item has been added
 
   useEffect(() => {
-    const foundItem = items.find((x) => x.slug === item.slug)
-    setExistItem(foundItem)
-    // If the item exists in cart, set itemAdded to true
-    if (foundItem) {
-      setItemAdded(true)
-    }
+    setExistItem(items.find((x) => x.slug === item.slug))
   }, [item, items])
 
   const addToCartHandler = () => {
-    increase(item)
-    setItemAdded(true) // Update state to indicate item has been added
+    if (item.countInStock > 0) {
+      increase(item)
+      toast.success('Product added to the cart!') // Display success toast
+    } else {
+      toast.error('This product is out of stock and cannot be added to the cart.')
+    }
+  }
+
+  const decreaseHandler = (item: OrderItem) => {
+    decrease(item)
+    toast.success('Product removed from the cart!') // Display success toast
   }
 
   const goToCartHandler = () => {
     router.push('/cart') // Use Next.js router to redirect to the cart page
   }
 
-  return existItem ? (
+  const isDisabled = item.countInStock <= 0;  // Check if the item is out of stock
+
+  return existItem && existItem.qty > 0 ? (
     <div>
-      <button className="btn" type="button" onClick={() => decrease(existItem)}>
+      <button className="btn" type="button" onClick={() => decreaseHandler(existItem)}>
         -
       </button>
       <span className="px-2">{existItem.qty}</span>
-      <button className="btn" type="button" onClick={() => increase(existItem)}>
+      <button className="btn" type="button" onClick={() => {
+        if (existItem.countInStock > existItem.qty) {
+          increase(existItem)
+          toast.success('Product added to the cart!') // Display success toast
+        } else {
+          toast.error('No more stock available.')
+        }
+      }}>
         +
       </button>
       <button className="btn btn-secondary ml-2" type="button" onClick={goToCartHandler}>
         Go to cart
       </button>
     </div>
-  ) : itemAdded ? ( // Conditional rendering based on itemAdded
-    <button
-      className="btn btn-secondary w-full"
-      type="button"
-      onClick={goToCartHandler}
-    >
-      Go to cart
-    </button>
   ) : (
     <button
       className="btn btn-primary w-full"
       type="button"
       onClick={addToCartHandler}
+      disabled={isDisabled}  // Disable the button if the item is out of stock
     >
-      Add to cart
+      {isDisabled ? 'Lack of Products' : 'Add to cart'}
     </button>
   )
 }
