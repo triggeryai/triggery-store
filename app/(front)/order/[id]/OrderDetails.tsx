@@ -36,8 +36,10 @@ export default function OrderDetails({
   )
 
   const { data, error } = useSWR(`/api/orders/${orderId}`)
+  const { data: bankAccountData } = useSWR('/api/admin/payments')
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
+  const [bankAccount, setBankAccount] = useState('1234 1234 1234 1234 1234 1234 1234');
 
   useEffect(() => {
     if (data && data.paymentMethod) {
@@ -46,6 +48,12 @@ export default function OrderDetails({
     }
   }, [data]);
 
+  useEffect(() => {
+    if (bankAccountData) {
+      setBankAccount(bankAccountData.accountNumber);
+    }
+  }, [bankAccountData]);
+
   const handlePaymentMethodChange = (selectedOption) => {
     console.log("Selected payment method:", selectedOption.value);
     console.log("Current state before update:", selectedPaymentMethod);
@@ -53,6 +61,7 @@ export default function OrderDetails({
     console.log("New state after update:", selectedOption.value); // Stan zmieni się asynchronicznie
     updatePaymentMethodInDatabase(selectedOption.value);
   };
+
   const updatePaymentMethodInDatabase = async (newPaymentMethod) => {
     console.log("Order ID before sending request:", orderId); // Log before sending the request
     console.log("Value before sending:", newPaymentMethod);
@@ -89,7 +98,6 @@ export default function OrderDetails({
       console.error("Network error:", error);
     }
   };
-  
 
   const { trigger: undeliverOrder, isMutating: isUndelivering } = useSWRMutation(
     `/api/admin/orders/${orderId}/undeliver`,
@@ -219,8 +227,9 @@ export default function OrderDetails({
   } = data
 
   const shippingMethod = shippingAddress.shippingMethod;
-  const selectedPaczkomat = shippingAddress.selectedPaczkomat;
-
+  const selectedPaczkomat = JSON.parse(shippingAddress.selectedPaczkomat || '{}');
+  const selectedPocztex = shippingAddress.selectedPocztex;
+  
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
     toast.success('Copied to clipboard');
@@ -243,10 +252,11 @@ export default function OrderDetails({
                 Shipping Method: {shippingMethod} - ${shippingPrice}
               </p>
               {shippingMethod === 'Inpost Paczkomat' && selectedPaczkomat && (
-                <p>Selected Paczkomat: {selectedPaczkomat}</p>
+                <p>Selected Paczkomat: {selectedPaczkomat.name}</p>
               )}
-              {shippingMethod === 'Pocztex Poczta Odbior Punkt' && shippingAddress.selectedPocztex && (
-                <p>Selected Pocztex Point: {shippingAddress.selectedPocztex}</p>
+              
+              {shippingMethod === 'Pocztex Poczta Odbior Punkt' && selectedPocztex && (
+                <p>Selected Pocztex Point: {selectedPocztex}</p>
               )}
               {isDelivered ? (
                 <div className="text-success">Delivered at {deliveredAt}</div>
@@ -366,9 +376,9 @@ export default function OrderDetails({
                           <span className="font-semibold">The account number:</span>
                           <span 
                             className="text-blue-600 ml-2 cursor-pointer" 
-                            onClick={() => copyToClipboard('1234 1234 1234 1234 1234 1234 1234')}
+                            onClick={() => copyToClipboard(bankAccount)}
                           >
-                            1234 1234 1234 1234 1234 1234 1234
+                            {bankAccount}
                           </span>
                         </div>
                       </div>

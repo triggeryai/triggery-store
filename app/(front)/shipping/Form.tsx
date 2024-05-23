@@ -1,4 +1,3 @@
-// app(front)/shipping/Form.tsx
 "use client";
 import React, { useState, useEffect } from "react";
 import CheckoutSteps from "@/components/CheckoutSteps";
@@ -30,7 +29,7 @@ const Form = () => {
   });
 
   const [shippingMethod, setShippingMethod] = useState(localStorage.getItem('shippingMethod') || '');
-  const [shippingPrice, setShippingPrice] = useState(0);
+  const [shippingPrice, setShippingPrice] = useState(parseFloat(localStorage.getItem('shippingPrice')) || 0);
   const [selectedPaczkomat, setSelectedPaczkomat] = useState(null);
   const [showInpostModal, setShowInpostModal] = useState(false);
   const [selectedPocztex, setSelectedPocztex] = useState(null);
@@ -53,8 +52,10 @@ const Form = () => {
     }
 
     const method = localStorage.getItem('shippingMethod');
+    const price = parseFloat(localStorage.getItem('shippingPrice')) || 0;
     if (method) {
       setShippingMethod(method);
+      setShippingPrice(price);
       setValue('shippingMethod', method);
     }
   }, [setValue, shippingAddress]);

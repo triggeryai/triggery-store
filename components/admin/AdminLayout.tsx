@@ -65,6 +65,22 @@ const AdminLayout = async ({
                 Users
               </Link>
             </li>
+            <li>
+              <Link
+                className={'payments' === activeItem ? 'active' : ''}
+                href="/admin/payments"
+              >
+                Payments
+              </Link>
+            </li>
+            <li>
+              <Link
+                className={'shipping' === activeItem ? 'active' : ''}
+                href="/admin/shipping"
+              >
+                Shipping
+              </Link>
+            </li>
           </ul>
         </div>
         <div className="md:col-span-4 px-4">{children} </div>

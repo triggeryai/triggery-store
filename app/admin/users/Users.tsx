@@ -45,6 +45,7 @@ export default function Users() {
         toast.success('User deleted successfully', {
           id: toastId,
         });
+        mutate(); // Revalidate the SWR cache to update the list
       } else {
         toast.error(data.message, {
           id: toastId,
@@ -57,6 +58,13 @@ export default function Users() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const usersPerPage = 15; // Number of users per page, change as needed
+
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = users ? users.slice(indexOfFirstUser, indexOfLastUser) : [];
+
   const handleDeleteClick = (userId) => {
     setSelectedUserId(userId);
     setModalOpen(true);
@@ -67,6 +75,10 @@ export default function Users() {
       deleteUser({ userId: selectedUserId });
     }
     setModalOpen(false);
+  };
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
   if (error) return <div>An error has occurred.</div>;
@@ -92,7 +104,7 @@ export default function Users() {
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
+            {currentUsers.map((user) => (
               <tr key={user._id}>
                 <td>{user._id}</td>
                 <td>{user.name}</td>
@@ -117,6 +129,21 @@ export default function Users() {
             ))}
           </tbody>
         </table>
+        <div className="mt-4 flex justify-center">
+          {Array.isArray(users) && users.length > usersPerPage && (
+            <div className="btn-group">
+              {Array.from({ length: Math.ceil(users.length / usersPerPage) }, (_, index) => (
+                <button
+                  key={index + 1}
+                  className={`btn ${index + 1 === currentPage ? 'btn-active' : ''}`}
+                  onClick={() => handlePageChange(index + 1)}
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

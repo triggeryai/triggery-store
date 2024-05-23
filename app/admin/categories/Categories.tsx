@@ -95,18 +95,21 @@ const CategoriesPage = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const categoriesPerPage = 15; // Liczba kategorii na stronę, zmień według potrzeb
+
+  const indexOfLastCategory = currentPage * categoriesPerPage;
+  const indexOfFirstCategory = indexOfLastCategory - categoriesPerPage;
+  const currentCategories = categories ? categories.slice(indexOfFirstCategory, indexOfLastCategory) : [];
+
   const handleOpenModal = (category) => {
-    console.log("Selected category for editing:", category);
-    
-    // Set the entire category object for editing
-    setCurrentCategory(category); // Teraz currentCategory zawiera cały obiekt, w tym _id
+    setCurrentCategory(category);
     setModalOpen(true);
   };
-  
+
   const handleCloseModal = () => {
     setModalOpen(false);
   };
-
 
   const handleOpenDeleteConfirm = (category) => {
     setCategoryToDelete(category);
@@ -117,25 +120,10 @@ const CategoriesPage = () => {
     setShowDeleteConfirm(false);
   };
 
-  const ConfirmDeleteModal = ({ onClose, onConfirm }) => {
-    return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 z-50" onClick={onClose}>
-        <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-5 rounded-lg shadow-lg"
-             onClick={(e) => e.stopPropagation()}>
-          <div className="text-center">
-            <h3 className="mb-4 text-[#222]">Are you sure you want to delete this category?</h3>
-            <button type="button" className="btn btn-error mr-2" onClick={onConfirm}>Yes, Delete</button>
-            <button type="button" className="btn btn-primary" onClick={onClose}>Cancel</button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-  
   const handleAddOrUpdateCategory = async (categoryData) => {
     const method = currentCategory ? 'PUT' : 'POST';
     const url = currentCategory ? `/api/admin/categories/${currentCategory._id}` : '/api/admin/categories';
-  
+
     try {
       const response = await fetch(url, {
         method,
@@ -144,7 +132,7 @@ const CategoriesPage = () => {
         },
         body: JSON.stringify(categoryData),
       });
-  
+
       if (response.ok) {
         toast.success('Category updated successfully');
         mutate();
@@ -160,7 +148,6 @@ const CategoriesPage = () => {
       toast.error('An error occurred while sending the request.');
     }
   };
-  
 
   const handleDeleteCategory = async (categoryId) => {
     try {
@@ -179,8 +166,6 @@ const CategoriesPage = () => {
       toast.error('An error occurred while sending the request.');
     }
   };
-  
-  
 
   const handleAddCategory = async (categoryData) => {
     try {
@@ -207,18 +192,22 @@ const CategoriesPage = () => {
       toast.error('An error occurred while sending the request.');
     }
   };
-  
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
     <div className="container mx-auto p-4">
-    <button className="btn btn-primary mb-4" onClick={() => handleOpenModal()}>Add Category</button>
-    {isModalOpen && (
-      <Modal
-        onClose={handleCloseModal}
-        onSubmit={currentCategory ? handleAddOrUpdateCategory : handleAddCategory}
-        initialCategory={currentCategory || { name: '', slug: '' }}
-        isEditing={!!currentCategory}
-      />
-    )}
+      <button className="btn btn-primary mb-4" onClick={() => handleOpenModal()}>Add Category</button>
+      {isModalOpen && (
+        <Modal
+          onClose={handleCloseModal}
+          onSubmit={currentCategory ? handleAddOrUpdateCategory : handleAddCategory}
+          initialCategory={currentCategory || { name: '', slug: '' }}
+          isEditing={!!currentCategory}
+        />
+      )}
       {showDeleteConfirm && (
         <ConfirmDeleteModal
           onClose={handleCloseDeleteConfirm}
@@ -226,7 +215,7 @@ const CategoriesPage = () => {
         />
       )}
       <ul className="space-y-2">
-        {Array.isArray(categories) && categories.map((category) => (
+        {Array.isArray(currentCategories) && currentCategories.map((category) => (
           <li key={category._id} className="flex justify-between items-center p-2 bg-base-100 rounded shadow">
             <div>
               <span className="font-bold">ID: </span>{category._id} - <span className="font-semibold">{category.name}</span>
@@ -238,6 +227,21 @@ const CategoriesPage = () => {
           </li>
         ))}
       </ul>
+      <div className="mt-4 flex justify-center">
+        {Array.isArray(categories) && categories.length > categoriesPerPage && (
+          <div className="btn-group">
+            {Array.from({ length: Math.ceil(categories.length / categoriesPerPage) }, (_, index) => (
+              <button
+                key={index + 1}
+                className={`btn ${index + 1 === currentPage ? 'btn-active' : ''}`}
+                onClick={() => handlePageChange(index + 1)}
+              >
+                {index + 1}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
