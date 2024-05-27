@@ -1,5 +1,4 @@
 // app\admin\payments\Payments.tsx
-// app\admin\payments\Payments.tsx
 'use client';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
