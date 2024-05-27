@@ -1,4 +1,3 @@
-// app(front)/place-order/Form.tsx
 'use client';
 import CheckoutSteps from '@/components/CheckoutSteps';
 import useCartService from '@/lib/hooks/useCartStore';
@@ -17,10 +16,33 @@ const Form = () => {
     items,
     itemsPrice,
     taxPrice,
-    shippingPrice,
-    totalPrice,
     clear,
   } = useCartService();
+
+  const [shippingPrice, setShippingPrice] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(itemsPrice + taxPrice + shippingPrice);
+
+  useEffect(() => {
+    const fetchShippingPrice = async () => {
+      try {
+        const response = await fetch('/api/shipping');
+        if (!response.ok) {
+          throw new Error('Failed to fetch shipping options');
+        }
+        const data = await response.json();
+        const selectedMethod = localStorage.getItem('shippingMethod');
+        const selectedOption = data.find(option => option.value === selectedMethod);
+        if (selectedOption) {
+          setShippingPrice(selectedOption.price);
+          setTotalPrice(itemsPrice + taxPrice + selectedOption.price);
+        }
+      } catch (error) {
+        console.error('Error fetching shipping options:', error);
+      }
+    };
+
+    fetchShippingPrice();
+  }, [itemsPrice, taxPrice]);
 
   const { trigger: placeOrder, isMutating: isPlacing } = useSWRMutation(
     `/api/orders/mine`,
@@ -37,7 +59,7 @@ const Form = () => {
             shippingMethod: localStorage.getItem('shippingMethod'),
             selectedPaczkomat: localStorage.getItem('selectedPaczkomat'),
             selectedPocztex: localStorage.getItem('selectedPoint'),
-            shippingCost: parseFloat(localStorage.getItem('shippingPrice')),
+            shippingCost: shippingPrice,
           },
           items,
           itemsPrice,
@@ -75,7 +97,6 @@ const Form = () => {
   if (!mounted) return <></>;
 
   const shippingMethod = localStorage.getItem('shippingMethod');
-  const shippingCost = localStorage.getItem('shippingPrice');
   const selectedPaczkomat = JSON.parse(localStorage.getItem('selectedPaczkomat') || '{}');
   const selectedPocztex = JSON.parse(localStorage.getItem('selectedPoint') || '{}');
 
@@ -93,7 +114,7 @@ const Form = () => {
                 {shippingAddress.address}, {shippingAddress.city}, {shippingAddress.postalCode}, {shippingAddress.country}{' '}
               </p>
               <p>
-                Shipping Method: {shippingMethod} - ${shippingCost}
+                Shipping Method: {shippingMethod} - ${shippingPrice}
               </p>
               {shippingMethod === 'Inpost Paczkomat' && selectedPaczkomat && selectedPaczkomat.name && (
                 <p>Selected Paczkomat: {selectedPaczkomat.name}</p>

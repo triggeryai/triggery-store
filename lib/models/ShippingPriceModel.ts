@@ -1,10 +1,18 @@
 // lib/models/ShippingPriceModel.ts
-import mongoose, { Schema, model, models } from 'mongoose';
+import mongoose, { Schema, model, models, Document } from 'mongoose';
 
-const shippingOptionSchema = new Schema({
+interface IShippingOption extends Document {
+  value: string;
+  label: string;
+  price: number;
+  isActive: boolean;
+}
+
+const shippingOptionSchema = new Schema<IShippingOption>({
   value: {
     type: String,
     required: true,
+    unique: true,
   },
   label: {
     type: String,
@@ -14,10 +22,14 @@ const shippingOptionSchema = new Schema({
     type: Number,
     required: true,
   },
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
 }, {
   timestamps: true,
 });
 
-const ShippingOption = models.ShippingOption || model('ShippingOption', shippingOptionSchema);
+const ShippingOption = models.ShippingOption || model<IShippingOption>('ShippingOption', shippingOptionSchema);
 
 export default ShippingOption;

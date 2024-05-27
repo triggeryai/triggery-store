@@ -1,3 +1,5 @@
+// app/api/shipping/route.ts
+import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import ShippingOption from '@/lib/models/ShippingPriceModel';
 
@@ -11,28 +13,42 @@ const defaultShippingOptions = [
   { value: "Odbior osobisty", label: "Odbior osobisty - $0", price: 0 },
 ];
 
-export default async function handler(req, res) {
+export async function GET() {
   await dbConnect();
 
-  if (req.method === 'GET') {
+  try {
     let shippingOptions = await ShippingOption.find({});
     if (shippingOptions.length === 0) {
       // Insert default options if none exist
       shippingOptions = await ShippingOption.insertMany(defaultShippingOptions);
     }
-    res.status(200).json(shippingOptions);
+    return NextResponse.json(shippingOptions);
+  } catch (error) {
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
-  
-  if (req.method === 'POST') {
-    const { value, label, price } = req.body;
+}
+
+export async function POST(req) {
+  await dbConnect();
+
+  try {
+    const { value, label, price } = await req.json();
     const newOption = new ShippingOption({ value, label, price });
     await newOption.save();
-    res.status(201).json(newOption);
+    return NextResponse.json(newOption, { status: 201 });
+  } catch (error) {
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
+}
 
-  if (req.method === 'DELETE') {
-    const { id } = req.body;
+export async function DELETE(req) {
+  await dbConnect();
+
+  try {
+    const { id } = await req.json();
     await ShippingOption.findByIdAndDelete(id);
-    res.status(204).end();
+    return NextResponse.json(null, { status: 204 });
+  } catch (error) {
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

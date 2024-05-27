@@ -1,4 +1,4 @@
-// app/front/shipping/Form.tsx
+// app(front)/shipping/Form.tsx
 "use client";
 import React, { useState, useEffect } from "react";
 import CheckoutSteps from "@/components/CheckoutSteps";
@@ -29,12 +29,11 @@ const Form = () => {
     },
   });
 
-  const [shippingMethod, setShippingMethod] = useState('');
+  const [shippingMethod, setShippingMethod] = useState(localStorage.getItem('shippingMethod') || '');
   const [shippingPrice, setShippingPrice] = useState(0);
   const [selectedPaczkomat, setSelectedPaczkomat] = useState(null);
   const [showInpostModal, setShowInpostModal] = useState(false);
   const [selectedPocztex, setSelectedPocztex] = useState(null);
-  const [shippingOptions, setShippingOptions] = useState([]);
 
   useEffect(() => {
     if (shippingAddress) {
@@ -54,10 +53,8 @@ const Form = () => {
     }
 
     const method = localStorage.getItem('shippingMethod');
-    const price = parseFloat(localStorage.getItem('shippingPrice')) || 0;
     if (method) {
       setShippingMethod(method);
-      setShippingPrice(price);
       setValue('shippingMethod', method);
     }
   }, [setValue, shippingAddress]);
@@ -93,25 +90,15 @@ const Form = () => {
     }
   }, [shippingMethod]);
 
-  useEffect(() => {
-    const fetchShippingOptions = async () => {
-      try {
-        const response = await fetch('/api/shipping');
-        if (!response.ok) {
-          throw new Error('Failed to fetch shipping options');
-        }
-        const data = await response.json();
-        // Filter out inactive options
-        const activeOptions = data.filter(option => option.isActive);
-        setShippingOptions(activeOptions);
-      } catch (error) {
-        console.error('Error fetching shipping options:', error);
-        setShippingOptions([]);
-      }
-    };
-
-    fetchShippingOptions();
-  }, []);
+  const shippingOptions = [
+    { value: "Inpost Paczkomat", label: "Inpost Paczkomat - $5", price: 5 },
+    { value: "Pocztex Poczta Polska Kurier", label: "Pocztex Poczta Kurier - $7", price: 7 },
+    { value: "Pocztex Poczta Odbior Punkt", label: "Pocztex Poczta Odbior Punkt - $7", price: 7 },
+    { value: "Inpost Kurier", label: "Inpost Kurier - $10", price: 10 },
+    { value: "DPD Kurier", label: "DPD Kurier - $12", price: 12 },
+    { value: "DHL Kurier", label: "DHL Kurier - $15", price: 15 },
+    { value: "Odbior osobisty", label: "Odbior osobisty - $0", price: 0 },
+  ];
 
   const handleShippingChange = (option) => {
     setShippingMethod(option.value);
@@ -146,17 +133,14 @@ const Form = () => {
           <h1 className="card-title text-2xl mb-4">Shipping Address</h1>
           <form onSubmit={handleSubmit(formSubmit)} className="space-y-4">
             <Select
-              options={shippingOptions.map(option => ({
-                value: option.value,
-                label: option.label,
-                price: option.price
-              }))}
+              options={shippingOptions}
               value={shippingOptions.find(option => option.value === shippingMethod)}
               onChange={handleShippingChange}
               className="mb-4"
               placeholder="Select shipping method"
             />
             <div className="flex justify-between items-center mb-4">
+              {/* another div */}
               <div className="flex-1 min-w-0">
                 <strong>Shipping Cost:</strong> ${shippingPrice} ({shippingMethod})
               </div>

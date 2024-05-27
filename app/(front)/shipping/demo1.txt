@@ -1,4 +1,3 @@
-// app/front/shipping/Form.tsx
 "use client";
 import React, { useState, useEffect } from "react";
 import CheckoutSteps from "@/components/CheckoutSteps";
@@ -101,9 +100,7 @@ const Form = () => {
           throw new Error('Failed to fetch shipping options');
         }
         const data = await response.json();
-        // Filter out inactive options
-        const activeOptions = data.filter(option => option.isActive);
-        setShippingOptions(activeOptions);
+        setShippingOptions(data);
       } catch (error) {
         console.error('Error fetching shipping options:', error);
         setShippingOptions([]);
