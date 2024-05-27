@@ -1,4 +1,4 @@
-// app\(front)\place-order\Form.tsx
+// app(front)/place-order/Form.tsx
 'use client';
 import CheckoutSteps from '@/components/CheckoutSteps';
 import useCartService from '@/lib/hooks/useCartStore';
@@ -16,11 +16,11 @@ const Form = () => {
     shippingAddress,
     items,
     itemsPrice,
-    taxPrice,
     clear,
   } = useCartService();
 
   const [shippingPrice, setShippingPrice] = useState(0);
+  const [taxPrice, setTaxPrice] = useState(0);
   const [totalPrice, setTotalPrice] = useState(itemsPrice + taxPrice + shippingPrice);
 
   useEffect(() => {
@@ -35,7 +35,7 @@ const Form = () => {
         const selectedOption = data.find(option => option.value === selectedMethod);
         if (selectedOption) {
           setShippingPrice(selectedOption.price);
-          setTotalPrice(itemsPrice + taxPrice + selectedOption.price);
+          calculateTotalPrice(selectedOption.price, taxPrice);
         }
       } catch (error) {
         console.error('Error fetching shipping options:', error);
@@ -44,6 +44,33 @@ const Form = () => {
 
     fetchShippingPrice();
   }, [itemsPrice, taxPrice]);
+
+  useEffect(() => {
+    const fetchTaxSettings = async () => {
+      try {
+        const response = await fetch('/api/admin/tax');
+        if (!response.ok) {
+          throw new Error('Failed to fetch tax settings');
+        }
+        const data = await response.json();
+        if (data.isActive) {
+          const taxValue = data.type === 'percentage'
+            ? (itemsPrice * data.value) / 100
+            : data.value;
+          setTaxPrice(taxValue);
+          calculateTotalPrice(shippingPrice, taxValue);
+        }
+      } catch (error) {
+        console.error('Error fetching tax settings:', error);
+      }
+    };
+
+    fetchTaxSettings();
+  }, [itemsPrice, shippingPrice]);
+
+  const calculateTotalPrice = (shipping, tax) => {
+    setTotalPrice(itemsPrice + tax + shipping);
+  };
 
   const { trigger: placeOrder, isMutating: isPlacing } = useSWRMutation(
     `/api/orders/mine`,
@@ -201,12 +228,14 @@ const Form = () => {
                     <div>${itemsPrice}</div>
                   </div>
                 </li>
-                <li>
-                  <div className=" flex justify-between">
-                    <div>Tax</div>
-                    <div>${taxPrice}</div>
-                  </div>
-                </li>
+                {taxPrice > 0 && (
+                  <li>
+                    <div className=" flex justify-between">
+                      <div>Tax</div>
+                      <div>${taxPrice}</div>
+                    </div>
+                  </li>
+                )}
                 <li>
                   <div className=" flex justify-between">
                     <div>Shipping</div>
