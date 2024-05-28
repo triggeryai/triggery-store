@@ -1,10 +1,11 @@
-// app\(front)\signin\Form.tsx
 'use client'
 import { signIn, useSession } from 'next-auth/react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 import Link from 'next/link'
+import confetti from 'canvas-confetti'
+import toast from 'react-hot-toast'
 
 type Inputs = {
   email: string
@@ -31,6 +32,17 @@ const Form = () => {
 
   useEffect(() => {
     if (session && session.user) {
+      // Wyświetl confetti
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+      })
+
+      // Wyświetl powiadomienie toast
+      toast.success('Logged in successfully!')
+
+      // Przekierowanie
       router.push(callbackUrl)
     }
   }, [callbackUrl, params, router, session])
@@ -42,6 +54,7 @@ const Form = () => {
       password,
     })
   }
+
   return (
     <div className="max-w-sm  mx-auto card bg-base-300 my-4">
       <div className="card-body">
@@ -122,4 +135,5 @@ const Form = () => {
     </div>
   )
 }
+
 export default Form
