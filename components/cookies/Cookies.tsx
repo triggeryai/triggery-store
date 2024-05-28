@@ -46,7 +46,7 @@ const Cookies: React.FC = () => {
           We use cookies to enhance your experience. By continuing to visit this site, you agree to our use of cookies.
           {/* Dodajemy link do polityki prywatności */}
           <Link href="/privacy">
-            <a className="text-blue-600 hover:underline">Learn more about our Privacy Policy.</a>
+            <button className="text-blue-600 hover:underline">Learn more about our Privacy Policy.</button>
           </Link>
         </p>
         <div className="flex justify-between">

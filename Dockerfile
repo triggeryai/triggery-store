@@ -10,6 +10,7 @@ COPY package*.json ./
 # Install the dependencies.
 RUN npm install
 
+# Run the codemod to update <Link> components
 # Copy the rest of the source files into the image.
 COPY . .
 
