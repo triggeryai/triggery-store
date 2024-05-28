@@ -1,3 +1,4 @@
+// components\PocztexBox.tsx
 import React, { useEffect, useState, useRef } from 'react';
 
 const PocztexBox = ({ closeModal }) => {

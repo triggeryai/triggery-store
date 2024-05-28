@@ -1,3 +1,4 @@
+// components\Providers.tsx
 import { SessionProvider } from 'next-auth/react'
 import { auth } from '@/lib/auth'
 import ClientProviders from './ClientProviders'

@@ -1,3 +1,4 @@
+// components\Sidebar.tsx
 'use client'
 
 import useLayoutService from '@/lib/hooks/useLayout'
