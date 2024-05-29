@@ -1,12 +1,12 @@
 // plik: page.tsx
 import React from 'react';
-import BackQuote from './BackQuote'; // Upewnij się, że ścieżka do importu jest poprawna
-import BackQuoteRight from './BackQuoteRight'; // Upewnij się, że ścieżka do importu jest poprawna
+import BackQuote from './BackQuote'; // Ensure the import path is correct
+import BackQuoteRight from './BackQuoteRight'; // Ensure the import path is correct
 import FourGridImages from './FourGridImages';
 import GoogleMap from './GoogleMap';
 
 export const metadata = {
-  title: 'Some Page Title',
+  title: 'Domestico - Your Chemical Store',
 };
 
 const Page: React.FC = () => {
@@ -16,7 +16,12 @@ const Page: React.FC = () => {
       <BackQuoteRight />
       <FourGridImages />
       <GoogleMap />
-      {/* Tutaj mogą być inne sekcje lub komponenty strony */}
+      <footer className="bg-gray-800 text-white py-6">
+        <div className="max-w-6xl mx-auto px-4 text-center">
+          <p>&copy; 2024 Domestico. All rights reserved.</p>
+          <p>Wrocławska 29, Dzierzoniow, Poland | biuro.domestico@gmail.com | domestico.pl</p>
+        </div>
+      </footer>
     </>
   );
 }

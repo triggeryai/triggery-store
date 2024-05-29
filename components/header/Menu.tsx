@@ -38,9 +38,11 @@ const Menu = () => {
       </div>
       <div>
         <ul className="flex items-stretch">
-        <li>
-           <DropDownMenuToggle />
-        </li>
+          {/*
+          <li>
+            <DropDownMenuToggle />
+          </li>
+        */}
           <i>
             {mounted && (
               <label className="swap swap-rotate">

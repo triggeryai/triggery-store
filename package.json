@@ -30,7 +30,8 @@
     "nodemailer": "^6.9.9",
     "canvas-confetti": "^1.9.2",
     "stripe": "^14.11.0",
-    "react-select": "5.7.0"
+    "react-select": "5.7.0",
+    "fuse.js": "7.0.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

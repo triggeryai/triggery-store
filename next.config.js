@@ -1,19 +1,21 @@
-
-// next.config.js
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'res.cloudinary.com', // if your website has no www, drop it
+        hostname: 'res.cloudinary.com', // Existing configuration
       },
       {
         protocol: 'http',
-        hostname: 'localhost',
+        hostname: 'localhost', // Existing configuration
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.postimg.cc', // Added configuration
       },
     ],
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
