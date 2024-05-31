@@ -1,7 +1,7 @@
-// components\support_bot\SupportBotModal.tsx
+"use client"
 import React, { useState, useEffect, useRef } from 'react';
 import { CSSTransition } from 'react-transition-group';
-import './SupportBotModal.css'; // Import the CSS file for transitions
+import './SupportBotModal.css';
 import { FaTimes } from 'react-icons/fa';
 import Fuse from 'fuse.js';
 
@@ -26,11 +26,10 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
     { question: 'Can I return a product?', answer: "Yes, you can return products within 30 days of purchase. Please refer to our Return Policy for details." }
   ];
 
-  // Initialize Fuse.js with the questions and answers array
   const fuse = new Fuse(questionsAndAnswers, {
     keys: ['question'],
     includeScore: true,
-    threshold: 0.4, // Lower threshold for stricter matching
+    threshold: 0.4,
   });
 
   useEffect(() => {
@@ -54,26 +53,30 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
     setIsTyping(true);
 
     if (isContactingWorker) {
-      await fetch('/api/send-support-email', {
+      const response = await fetch('/api/send-message', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userEmail, message: userMessage }),
+        body: JSON.stringify({ sender: userEmail, recipient: 'admin', message: userMessage }),
       });
-      setChatHistory([...newChatHistory, { sender: 'bot', message: 'Your message has been sent to the shop worker. They will reply shortly.' }]);
+      
+      if (response.ok) {
+        setChatHistory([...newChatHistory, { sender: 'bot', message: 'Your message has been sent to the shop worker. They will reply shortly.' }]);
+      } else {
+        setChatHistory([...newChatHistory, { sender: 'bot', message: 'Failed to send your message. Please try again later.' }]);
+      }
       setIsTyping(false);
     } else {
       const botResponse = getBotResponse(userMessage);
       setTimeout(() => {
         setIsTyping(false);
         setChatHistory([...newChatHistory, { sender: 'bot', message: botResponse }]);
-      }, 2000); // Simulate thinking time
+      }, 2000);
     }
   };
 
   const getBotResponse = (message: string) => {
-    // Use Fuse.js to search for the closest matching question
     const result = fuse.search(message.toLowerCase());
     if (result.length > 0 && result[0].score !== undefined && result[0].score <= 0.4) {
       return result[0].item.answer;
