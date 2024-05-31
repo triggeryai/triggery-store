@@ -1,3 +1,4 @@
+// components\admin\AdminLayout.tsx
 import { auth } from '@/lib/auth'
 import Link from 'next/link'
 
@@ -79,6 +80,14 @@ const AdminLayout = async ({
                 href="/admin/shipping"
               >
                 Shipping
+              </Link>
+            </li>
+            <li>
+              <Link
+                className={'support' === activeItem ? 'active' : ''}
+                href="/admin/support"
+              >
+                Support
               </Link>
             </li>
           </ul>

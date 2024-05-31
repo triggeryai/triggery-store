@@ -1,3 +1,4 @@
+// components\support_bot\SupportBotModal.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import './SupportBotModal.css'; // Import the CSS file for transitions
@@ -8,7 +9,9 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
   const [showModal, setShowModal] = useState(false);
   const [chatHistory, setChatHistory] = useState<{ sender: string, message: string }[]>([]);
   const [userMessage, setUserMessage] = useState('');
+  const [userEmail, setUserEmail] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isContactingWorker, setIsContactingWorker] = useState(false);
   const messageEndRef = useRef<HTMLDivElement | null>(null);
 
   const questionsAndAnswers = [
@@ -43,18 +46,30 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatHistory]);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (userMessage.trim() === '') return;
     const newChatHistory = [...chatHistory, { sender: 'user', message: userMessage }];
     setChatHistory(newChatHistory);
     setUserMessage('');
     setIsTyping(true);
 
-    const botResponse = getBotResponse(userMessage);
-    setTimeout(() => {
+    if (isContactingWorker) {
+      await fetch('/api/send-support-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userEmail, message: userMessage }),
+      });
+      setChatHistory([...newChatHistory, { sender: 'bot', message: 'Your message has been sent to the shop worker. They will reply shortly.' }]);
       setIsTyping(false);
-      setChatHistory([...newChatHistory, { sender: 'bot', message: botResponse }]);
-    }, 2000); // Simulate thinking time
+    } else {
+      const botResponse = getBotResponse(userMessage);
+      setTimeout(() => {
+        setIsTyping(false);
+        setChatHistory([...newChatHistory, { sender: 'bot', message: botResponse }]);
+      }, 2000); // Simulate thinking time
+    }
   };
 
   const getBotResponse = (message: string) => {
@@ -68,6 +83,15 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
 
   const handleUserMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserMessage(e.target.value);
+  };
+
+  const handleUserEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserEmail(e.target.value);
+  };
+
+  const handleToggleChatMode = () => {
+    setIsContactingWorker(!isContactingWorker);
+    setChatHistory([{ sender: 'bot', message: `You are now chatting with a ${!isContactingWorker ? 'shop worker' : 'support bot'}. How can we assist you today?` }]);
   };
 
   return (
@@ -86,6 +110,12 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
               <FaTimes size={20} />
             </button>
           </div>
+          <button
+            onClick={handleToggleChatMode}
+            className="bg-green-500 text-white px-4 py-2 rounded-lg mb-4"
+          >
+            {isContactingWorker ? 'Chat with Support Bot' : 'Contact Shop Worker'}
+          </button>
           <div className="flex-1 overflow-y-auto mt-4 mb-4" style={{ maxHeight: '400px' }}>
             {chatHistory.map((chat, index) => (
               <div key={index} className={`flex ${chat.sender === 'bot' ? 'justify-start' : 'justify-end'}`}>
@@ -103,6 +133,15 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
             )}
             <div ref={messageEndRef}></div>
           </div>
+          {isContactingWorker && (
+            <input
+              type="email"
+              value={userEmail}
+              onChange={handleUserEmailChange}
+              className="border border-gray-300 rounded-lg p-2 mb-2 w-full"
+              placeholder="Enter your email"
+            />
+          )}
           <div className="flex items-center">
             <input
               type="text"
