@@ -1,3 +1,4 @@
+// components\support_bot\SupportBotModal.tsx
 "use client"
 import React, { useState, useEffect, useRef } from 'react';
 import { CSSTransition } from 'react-transition-group';
