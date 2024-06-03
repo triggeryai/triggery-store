@@ -14,7 +14,12 @@ export const POST = auth(async (req) => {
   const { recipient, message } = await req.json();
 
   try {
-    const chatMessage = new ChatMessageModel({ sender: req.auth.user.name, recipient, message });
+    const chatMessage = new ChatMessageModel({
+      sender: req.auth.user.name,
+      recipient,
+      message,
+      timestamp: new Date()
+    });
     await chatMessage.save();
     return NextResponse.json({ success: true, data: chatMessage }, { status: 200 });
   } catch (error) {

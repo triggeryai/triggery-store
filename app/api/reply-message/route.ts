@@ -11,22 +11,23 @@ export const POST = auth(async (req) => {
     return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { messageId, reply } = await req.json();
+  const { recipient, message } = await req.json();
 
-  if (!messageId || !reply) {
-    return NextResponse.json({ success: false, error: 'Message ID and reply are required' }, { status: 400 });
+  if (!recipient || !message) {
+    return NextResponse.json({ success: false, error: 'Recipient and message are required' }, { status: 400 });
   }
 
   try {
-    const message = await ChatMessageModel.findById(messageId);
-    if (!message) {
-      return NextResponse.json({ success: false, error: 'Message not found' }, { status: 404 });
-    }
+    const replyMessage = new ChatMessageModel({
+      sender: 'admin',
+      recipient,
+      message,
+      timestamp: new Date()
+    });
 
-    message.reply = reply;
-    await message.save();
+    await replyMessage.save();
 
-    return NextResponse.json({ success: true, data: message }, { status: 200 });
+    return NextResponse.json({ success: true, data: replyMessage }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }

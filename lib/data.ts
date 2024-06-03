@@ -1,3 +1,4 @@
+// lib\data.ts
 import bcrypt from 'bcryptjs'
 
 const data = {

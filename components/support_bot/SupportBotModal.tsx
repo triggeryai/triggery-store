@@ -4,39 +4,22 @@ import React, { useState, useEffect, useRef } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import { useSession } from 'next-auth/react';
 import './SupportBotModal.css';
-import { FaTimes } from 'react-icons/fa';
+import { FaTimes, FaSync } from 'react-icons/fa';
 import Fuse from 'fuse.js';
 
 const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
   const { data: session } = useSession();
   const [showModal, setShowModal] = useState(false);
-  const [chatHistory, setChatHistory] = useState<{ sender: string, message: string, reply?: string }[]>([]);
+  const [chatHistory, setChatHistory] = useState<{ sender: string, message: string }[]>([]);
   const [userMessage, setUserMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const messageEndRef = useRef<HTMLDivElement | null>(null);
-
-  const questionsAndAnswers = [
-    { question: 'How to buy?', answer: "To buy a product, navigate to the 'Buy something' section and add items to your cart." },
-    { question: 'Where is the shop?', answer: "Our shop is located at Wrocławska 29, Dzierzoniow, Poland." },
-    { question: 'Contact information', answer: "You can contact us at biuro.domestico@gmail.com." },
-    { question: 'What are the opening hours?', answer: "Our shop is open from 9 AM to 6 PM from Monday to Friday." },
-    { question: 'Do you offer home delivery?', answer: "Yes, we offer home delivery within 50 km of our shop." },
-    { question: 'Are there any discounts?', answer: "We offer seasonal discounts and promotions. Check our website for the latest offers." },
-    { question: 'What brands do you carry?', answer: "We carry a variety of leading brands in cleaning products, including ABC, XYZ, and more." },
-    { question: 'How can I track my order?', answer: "You can track your order status in the 'My Orders' section of your account." },
-    { question: 'Can I return a product?', answer: "Yes, you can return products within 30 days of purchase. Please refer to our Return Policy for details." }
-  ];
-
-  const fuse = new Fuse(questionsAndAnswers, {
-    keys: ['question'],
-    includeScore: true,
-    threshold: 0.4,
-  });
 
   useEffect(() => {
     if (isOpen) {
       setShowModal(true);
-      setChatHistory([{ sender: 'bot', message: 'Hello! What is the problem?' }]);
+      fetchChatHistory();
     } else {
       setShowModal(false);
     }
@@ -45,6 +28,15 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
   useEffect(() => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatHistory]);
+
+  const fetchChatHistory = async () => {
+    if (!session) return;
+    const response = await fetch(`/api/get-messages?user=${session.user.name}`);
+    if (response.ok) {
+      const data = await response.json();
+      setChatHistory(data.data);
+    }
+  };
 
   const handleSendMessage = async () => {
     if (userMessage.trim() === '') return;
@@ -58,11 +50,12 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ sender: session?.user.name, recipient: 'admin', message: userMessage }),
+      body: JSON.stringify({ recipient: 'admin', message: userMessage }),
     });
 
     if (response.ok) {
-      setChatHistory([...newChatHistory, { sender: 'bot', message: 'Your message has been sent to the shop worker. They will reply shortly.' }]);
+      setChatHistory([...newChatHistory, { sender: session.user.name, message: userMessage }]);
+      fetchChatHistory(); // Fetch updated chat history including admin replies
     } else {
       setChatHistory([...newChatHistory, { sender: 'bot', message: 'Failed to send your message. Please try again later.' }]);
     }
@@ -71,6 +64,12 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
 
   const handleUserMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserMessage(e.target.value);
+  };
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchChatHistory();
+    setIsRefreshing(false);
   };
 
   return (
@@ -86,16 +85,19 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
           </div>
           {session ? (
             <>
+              <div className="flex justify-end mb-2">
+                <button 
+                  onClick={handleRefresh} 
+                  className={`text-blue-500 hover:text-blue-700 ${isRefreshing ? 'animate-spin' : ''}`}
+                >
+                  <FaSync />
+                </button>
+              </div>
               <div className="flex-1 overflow-y-auto mt-4 mb-4" style={{ maxHeight: '400px' }}>
                 {chatHistory.map((chat, index) => (
-                  <div key={index} className={`flex ${chat.sender === 'bot' ? 'justify-start' : 'justify-end'}`}>
-                    <div className={`bg-${chat.sender === 'bot' ? 'blue-100' : 'green-100'} rounded-lg p-2 m-2 max-w-xs`}>
+                  <div key={index} className={`flex ${chat.sender === 'admin' ? 'justify-start' : 'justify-end'}`}>
+                    <div className={`bg-${chat.sender === 'admin' ? 'green-100' : 'blue-100'} rounded-lg p-2 m-2 max-w-xs`}>
                       <p className="text-sm text-gray-800">{chat.message}</p>
-                      {chat.reply && (
-                        <div className="mt-2 bg-gray-200 rounded-lg p-2">
-                          <p className="text-sm text-gray-800">Reply: {chat.reply}</p>
-                        </div>
-                      )}
                     </div>
                   </div>
                 ))}
