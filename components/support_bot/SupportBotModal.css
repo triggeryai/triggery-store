@@ -1,4 +1,3 @@
-/* components\support_bot\SupportBotModal.css */
 .modal-enter {
   opacity: 0;
   transform: scale(0.9);
@@ -16,4 +15,52 @@
   opacity: 0;
   transform: scale(0.9);
   transition: opacity 300ms, transform 300ms;
+}
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  max-height: 50vh; /* Adjust this value as needed */
+}
+
+.message {
+  display: flex;
+  padding: 8px 16px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  max-width: 75%;
+  align-self: flex-end;
+  animation: slideIn 0.3s ease;
+}
+
+.message.admin {
+  background-color: #e0f7fa;
+  align-self: flex-start;
+}
+
+.message.user {
+  background-color: #d1c4e9;
+}
+
+.message.typing {
+  background-color: #fff59d;
+  align-self: flex-start;
+}
+
+.message-content {
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #f1f1f1;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }

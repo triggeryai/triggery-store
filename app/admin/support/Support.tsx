@@ -1,6 +1,6 @@
 // app/admin/support/Support.tsx
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import useSWR from 'swr';
 import { useSession } from 'next-auth/react';
 import { FaSync } from 'react-icons/fa';
@@ -14,6 +14,7 @@ const AdminSupport = () => {
   const [messages, setMessages] = useState<{ sender: string, message: string }[]>([]);
   const [replyMessage, setReplyMessage] = useState<string>('');
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const messageContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (data && !error) {
@@ -21,7 +22,7 @@ const AdminSupport = () => {
       if (uniqueSenders.length > 0) {
         setSelectedSender(uniqueSenders[0]);
         const userMessages = data.data.filter((msg: any) => msg.sender === uniqueSenders[0] || msg.recipient === uniqueSenders[0]);
-        setMessages(userMessages);
+        setMessages(userMessages.reverse());  // Reverse the order of messages
       }
     }
   }, [data, error]);
@@ -29,7 +30,7 @@ const AdminSupport = () => {
   const handleSenderClick = (sender: string) => {
     setSelectedSender(sender);
     const userMessages = data.data.filter((msg: any) => msg.sender === sender || msg.recipient === sender);
-    setMessages(userMessages);
+    setMessages(userMessages.reverse());  // Reverse the order of messages
   };
 
   const handleReplyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,6 +52,7 @@ const AdminSupport = () => {
       const updatedMessages = [...messages, { sender: 'admin', message: replyMessage }];
       setMessages(updatedMessages);
       setReplyMessage('');
+      scrollToBottom();
     } else {
       console.error('Failed to send reply');
     }
@@ -61,6 +63,16 @@ const AdminSupport = () => {
     await mutate();
     setIsRefreshing(false);
   };
+
+  const scrollToBottom = () => {
+    if (messageContainerRef.current) {
+      messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   if (!session?.user.isAdmin) {
     return <p className="text-center text-gray-600">You do not have access to this page.</p>;
@@ -95,12 +107,14 @@ const AdminSupport = () => {
       </div>
       <div className="w-3/4 bg-white p-4">
         <h2 className="text-xl font-semibold mb-4">Messages</h2>
-        {messages.map((msg, index) => (
-          <div key={index} className={`mb-2 p-2 rounded ${msg.sender === 'admin' ? 'bg-green-100' : 'bg-blue-100'}`}>
-            <p className="font-semibold">{msg.sender}</p>
-            <p>{msg.message}</p>
-          </div>
-        ))}
+        <div ref={messageContainerRef} className="overflow-y-auto" style={{ maxHeight: '70vh' }}>
+          {messages.map((msg, index) => (
+            <div key={index} className={`mb-2 p-2 rounded ${msg.sender === 'admin' ? 'bg-green-100' : 'bg-blue-100'}`}>
+              <p className="font-semibold">{msg.sender}</p>
+              <p>{msg.message}</p>
+            </div>
+          ))}
+        </div>
         <div className="mt-4">
           <input
             type="text"

@@ -1,11 +1,9 @@
-// components/support_bot/SupportBotModal.tsx
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import { useSession } from 'next-auth/react';
 import './SupportBotModal.css';
 import { FaTimes, FaSync } from 'react-icons/fa';
-import Fuse from 'fuse.js';
 
 const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
   const { data: session } = useSession();
@@ -14,7 +12,7 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
   const [userMessage, setUserMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const messageEndRef = useRef<HTMLDivElement | null>(null);
+  const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -26,8 +24,24 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
   }, [isOpen]);
 
   useEffect(() => {
-    messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    scrollToBottom();
   }, [chatHistory]);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isOpen) {
+      interval = setInterval(() => {
+        fetchChatHistory();
+      }, 60000); // Refresh every 60 seconds
+    }
+    return () => clearInterval(interval);
+  }, [isOpen]);
+
+  const scrollToBottom = () => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  };
 
   const fetchChatHistory = async () => {
     if (!session) return;
@@ -35,6 +49,7 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
     if (response.ok) {
       const data = await response.json();
       setChatHistory(data.data);
+      scrollToBottom();
     }
   };
 
@@ -55,9 +70,11 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
 
     if (response.ok) {
       setChatHistory([...newChatHistory, { sender: session.user.name, message: userMessage }]);
-      fetchChatHistory(); // Fetch updated chat history including admin replies
+      await fetchChatHistory(); // Fetch updated chat history including admin replies
+      scrollToBottom();
     } else {
       setChatHistory([...newChatHistory, { sender: 'bot', message: 'Failed to send your message. Please try again later.' }]);
+      scrollToBottom();
     }
     setIsTyping(false);
   };
@@ -70,13 +87,14 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
     setIsRefreshing(true);
     await fetchChatHistory();
     setIsRefreshing(false);
+    scrollToBottom();
   };
 
   return (
     <CSSTransition in={showModal} timeout={300} classNames="modal" unmountOnExit>
       <div className="fixed inset-0 flex items-center justify-center z-50">
         <div className="fixed inset-0 bg-black opacity-50" onClick={onClose}></div>
-        <div className="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto z-10 flex flex-col">
+        <div className="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto z-10 flex flex-col" style={{ maxHeight: '80vh' }}>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-gray-800">Support Bot</h2>
             <button onClick={onClose} className="text-gray-500 hover:text-gray-800">
@@ -93,24 +111,23 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
                   <FaSync />
                 </button>
               </div>
-              <div className="flex-1 overflow-y-auto mt-4 mb-4" style={{ maxHeight: '400px' }}>
-                {chatHistory.map((chat, index) => (
-                  <div key={index} className={`flex ${chat.sender === 'admin' ? 'justify-start' : 'justify-end'}`}>
-                    <div className={`bg-${chat.sender === 'admin' ? 'green-100' : 'blue-100'} rounded-lg p-2 m-2 max-w-xs`}>
-                      <p className="text-sm text-gray-800">{chat.message}</p>
+              <div ref={chatContainerRef} className="flex-1 overflow-y-auto mt-4 mb-4 chat-container">
+                {chatHistory.slice().reverse().map((chat, index) => (
+                  <div key={index} className={`message ${chat.sender === 'admin' ? 'admin' : 'user'}`}>
+                    <div className="message-content">
+                      <p>{chat.message}</p>
                     </div>
                   </div>
                 ))}
                 {isTyping && (
-                  <div className="flex justify-start">
-                    <div className="bg-blue-100 rounded-lg p-2 m-2 max-w-xs">
-                      <p className="text-sm text-gray-800">...</p>
+                  <div className="message typing">
+                    <div className="message-content">
+                      <p>...</p>
                     </div>
                   </div>
                 )}
-                <div ref={messageEndRef}></div>
               </div>
-              <div className="flex items-center">
+              <div className="flex items-center mt-4">
                 <input
                   type="text"
                   value={userMessage}
