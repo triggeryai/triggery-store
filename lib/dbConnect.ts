@@ -1,3 +1,4 @@
+// lib\dbConnect.ts
 import mongoose from 'mongoose'
 
 async function dbConnect() {

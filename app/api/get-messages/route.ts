@@ -1,12 +1,17 @@
-// app\api\get-messages\route.ts
+// app/api/get-messages/route.ts
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import ChatMessageModel from '@/lib/models/ChatMessageModel';
+import { auth } from '@/lib/auth';
 
-export async function GET(request: Request) {
+export const GET = auth(async (req) => {
   await dbConnect();
 
-  const url = new URL(request.url);
+  if (!req.auth || !req.auth.user || !req.auth.user.isAdmin) {
+    return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const url = new URL(req.url);
   const recipient = url.searchParams.get('recipient');
 
   if (!recipient) {
@@ -19,4 +24,4 @@ export async function GET(request: Request) {
   } catch (error) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
-}
+});

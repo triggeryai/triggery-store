@@ -1,18 +1,18 @@
-// components\support_bot\SupportBotModal.tsx
-"use client"
+// components/support_bot/SupportBotModal.tsx
+"use client";
 import React, { useState, useEffect, useRef } from 'react';
 import { CSSTransition } from 'react-transition-group';
+import { useSession } from 'next-auth/react';
 import './SupportBotModal.css';
 import { FaTimes } from 'react-icons/fa';
 import Fuse from 'fuse.js';
 
 const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
+  const { data: session } = useSession();
   const [showModal, setShowModal] = useState(false);
-  const [chatHistory, setChatHistory] = useState<{ sender: string, message: string }[]>([]);
+  const [chatHistory, setChatHistory] = useState<{ sender: string, message: string, reply?: string }[]>([]);
   const [userMessage, setUserMessage] = useState('');
-  const [userEmail, setUserEmail] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [isContactingWorker, setIsContactingWorker] = useState(false);
   const messageEndRef = useRef<HTMLDivElement | null>(null);
 
   const questionsAndAnswers = [
@@ -48,63 +48,33 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
 
   const handleSendMessage = async () => {
     if (userMessage.trim() === '') return;
-    const newChatHistory = [...chatHistory, { sender: 'user', message: userMessage }];
+    const newChatHistory = [...chatHistory, { sender: session?.user.name || 'user', message: userMessage }];
     setChatHistory(newChatHistory);
     setUserMessage('');
     setIsTyping(true);
 
-    if (isContactingWorker) {
-      const response = await fetch('/api/send-message', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ sender: userEmail, recipient: 'admin', message: userMessage }),
-      });
-      
-      if (response.ok) {
-        setChatHistory([...newChatHistory, { sender: 'bot', message: 'Your message has been sent to the shop worker. They will reply shortly.' }]);
-      } else {
-        setChatHistory([...newChatHistory, { sender: 'bot', message: 'Failed to send your message. Please try again later.' }]);
-      }
-      setIsTyping(false);
-    } else {
-      const botResponse = getBotResponse(userMessage);
-      setTimeout(() => {
-        setIsTyping(false);
-        setChatHistory([...newChatHistory, { sender: 'bot', message: botResponse }]);
-      }, 2000);
-    }
-  };
+    const response = await fetch('/api/send-message', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ sender: session?.user.name, recipient: 'admin', message: userMessage }),
+    });
 
-  const getBotResponse = (message: string) => {
-    const result = fuse.search(message.toLowerCase());
-    if (result.length > 0 && result[0].score !== undefined && result[0].score <= 0.4) {
-      return result[0].item.answer;
+    if (response.ok) {
+      setChatHistory([...newChatHistory, { sender: 'bot', message: 'Your message has been sent to the shop worker. They will reply shortly.' }]);
+    } else {
+      setChatHistory([...newChatHistory, { sender: 'bot', message: 'Failed to send your message. Please try again later.' }]);
     }
-    return "I'm sorry, I don't understand the question.";
+    setIsTyping(false);
   };
 
   const handleUserMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserMessage(e.target.value);
   };
 
-  const handleUserEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUserEmail(e.target.value);
-  };
-
-  const handleToggleChatMode = () => {
-    setIsContactingWorker(!isContactingWorker);
-    setChatHistory([{ sender: 'bot', message: `You are now chatting with a ${!isContactingWorker ? 'shop worker' : 'support bot'}. How can we assist you today?` }]);
-  };
-
   return (
-    <CSSTransition
-      in={showModal}
-      timeout={300}
-      classNames="modal"
-      unmountOnExit
-    >
+    <CSSTransition in={showModal} timeout={300} classNames="modal" unmountOnExit>
       <div className="fixed inset-0 flex items-center justify-center z-50">
         <div className="fixed inset-0 bg-black opacity-50" onClick={onClose}></div>
         <div className="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto z-10 flex flex-col">
@@ -114,51 +84,47 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
               <FaTimes size={20} />
             </button>
           </div>
-          <button
-            onClick={handleToggleChatMode}
-            className="bg-green-500 text-white px-4 py-2 rounded-lg mb-4"
-          >
-            {isContactingWorker ? 'Chat with Support Bot' : 'Contact Shop Worker'}
-          </button>
-          <div className="flex-1 overflow-y-auto mt-4 mb-4" style={{ maxHeight: '400px' }}>
-            {chatHistory.map((chat, index) => (
-              <div key={index} className={`flex ${chat.sender === 'bot' ? 'justify-start' : 'justify-end'}`}>
-                <div className={`bg-${chat.sender === 'bot' ? 'blue-100' : 'green-100'} rounded-lg p-2 m-2 max-w-xs`}>
-                  <p className="text-sm text-gray-800">{chat.message}</p>
-                </div>
+          {session ? (
+            <>
+              <div className="flex-1 overflow-y-auto mt-4 mb-4" style={{ maxHeight: '400px' }}>
+                {chatHistory.map((chat, index) => (
+                  <div key={index} className={`flex ${chat.sender === 'bot' ? 'justify-start' : 'justify-end'}`}>
+                    <div className={`bg-${chat.sender === 'bot' ? 'blue-100' : 'green-100'} rounded-lg p-2 m-2 max-w-xs`}>
+                      <p className="text-sm text-gray-800">{chat.message}</p>
+                      {chat.reply && (
+                        <div className="mt-2 bg-gray-200 rounded-lg p-2">
+                          <p className="text-sm text-gray-800">Reply: {chat.reply}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+                {isTyping && (
+                  <div className="flex justify-start">
+                    <div className="bg-blue-100 rounded-lg p-2 m-2 max-w-xs">
+                      <p className="text-sm text-gray-800">...</p>
+                    </div>
+                  </div>
+                )}
+                <div ref={messageEndRef}></div>
               </div>
-            ))}
-            {isTyping && (
-              <div className="flex justify-start">
-                <div className="bg-blue-100 rounded-lg p-2 m-2 max-w-xs">
-                  <p className="text-sm text-gray-800">...</p>
-                </div>
+              <div className="flex items-center">
+                <input
+                  type="text"
+                  value={userMessage}
+                  onChange={handleUserMessageChange}
+                  className="flex-1 border border-gray-300 rounded-lg p-2 mr-2"
+                  placeholder="Type your message..."
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') handleSendMessage();
+                  }}
+                />
+                <button onClick={handleSendMessage} className="bg-blue-500 text-white px-4 py-2 rounded-lg">Send</button>
               </div>
-            )}
-            <div ref={messageEndRef}></div>
-          </div>
-          {isContactingWorker && (
-            <input
-              type="email"
-              value={userEmail}
-              onChange={handleUserEmailChange}
-              className="border border-gray-300 rounded-lg p-2 mb-2 w-full"
-              placeholder="Enter your email"
-            />
+            </>
+          ) : (
+            <p className="text-center text-gray-600">Please log in to chat with the support bot.</p>
           )}
-          <div className="flex items-center">
-            <input
-              type="text"
-              value={userMessage}
-              onChange={handleUserMessageChange}
-              className="flex-1 border border-gray-300 rounded-lg p-2 mr-2"
-              placeholder="Type your message..."
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') handleSendMessage();
-              }}
-            />
-            <button onClick={handleSendMessage} className="bg-blue-500 text-white px-4 py-2 rounded-lg">Send</button>
-          </div>
           <button onClick={onClose} className="mt-4 w-full text-center py-2 bg-red-500 text-white rounded-lg">Close</button>
         </div>
       </div>

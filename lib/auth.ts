@@ -1,3 +1,4 @@
+// lib\auth.ts
 import CredentialsProvider from 'next-auth/providers/credentials'
 import bcrypt from 'bcryptjs'
 import dbConnect from './dbConnect'
