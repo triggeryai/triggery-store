@@ -1,3 +1,4 @@
+// app\api\admin\users\[id]\route.ts
 import { auth } from '@/lib/auth'
 import dbConnect from '@/lib/dbConnect'
 import UserModel from '@/lib/models/UserModel'
@@ -36,7 +37,7 @@ export const PUT = auth(async (...p: any) => {
     )
   }
 
-  const { name, email, isAdmin } = await req.json()
+  const { name, email, isAdmin, isActive } = await req.json()
 
   try {
     await dbConnect()
@@ -45,6 +46,7 @@ export const PUT = auth(async (...p: any) => {
       user.name = name
       user.email = email
       user.isAdmin = Boolean(isAdmin)
+      user.isActive = Boolean(isActive)
 
       const updatedUser = await user.save()
       return Response.json({

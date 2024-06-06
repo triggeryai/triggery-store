@@ -90,6 +90,14 @@ const AdminLayout = async ({
                 Support
               </Link>
             </li>
+            <li>
+              <Link
+                className={'emails' === activeItem ? 'active' : ''}
+                href="/admin/emails"
+              >
+                Emails
+              </Link>
+            </li>
           </ul>
         </div>
         <div className="md:col-span-4 px-4">{children} </div>

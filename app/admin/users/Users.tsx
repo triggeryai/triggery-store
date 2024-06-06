@@ -1,3 +1,5 @@
+// app\admin\users\Users.tsx
+'use client';
 'use client';
 import UserModel from '@/lib/models/UserModel';
 import { useState } from 'react';
@@ -100,6 +102,7 @@ export default function Users() {
               <th><div className="badge">name</div></th>
               <th><div className="badge">email</div></th>
               <th><div className="badge">admin</div></th>
+              <th><div className="badge">active</div></th> {/* New isActive header */}
               <th><div className="badge">actions</div></th>
             </tr>
           </thead>
@@ -110,6 +113,7 @@ export default function Users() {
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>{user.isAdmin ? 'YES' : 'NO'}</td>
+                <td>{user.isActive ? 'YES' : 'NO'}</td> {/* Display isActive status */}
                 <td>
                   <Link href={`/admin/users/${user._id}`}>
                     <button type="button" className="btn btn-info btn-sm">

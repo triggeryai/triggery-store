@@ -1,3 +1,4 @@
+// app\api\admin\users\route.ts
 import { auth } from '@/lib/auth'
 import dbConnect from '@/lib/dbConnect'
 import UserModel from '@/lib/models/UserModel'
@@ -12,6 +13,6 @@ export const GET = auth(async (req: any) => {
     )
   }
   await dbConnect()
-  const users = await UserModel.find()
+  const users = await UserModel.find({}, 'name email isAdmin isActive') // Include isActive field
   return Response.json(users)
 }) as any

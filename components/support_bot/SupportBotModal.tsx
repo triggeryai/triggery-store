@@ -1,3 +1,4 @@
+// components\support_bot\SupportBotModal.tsx
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
 import { CSSTransition } from 'react-transition-group';
@@ -15,6 +16,7 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showLiveSupport, setShowLiveSupport] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState<string | null>(null);
+  const [isSupportOff, setIsSupportOff] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
   const questions = [
@@ -35,11 +37,25 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
   useEffect(() => {
     if (isOpen) {
       setShowModal(true);
-      fetchChatHistory();
+      checkSupportStatus();
     } else {
       setShowModal(false);
     }
   }, [isOpen]);
+
+  const checkSupportStatus = async () => {
+    try {
+      const response = await fetch('/api/support-status');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      setIsSupportOff(data.isOff);
+    } catch (error) {
+      console.error('Failed to fetch support status:', error);
+      setIsSupportOff(true);  // Assuming default to off if there's an error
+    }
+  };
 
   useEffect(() => {
     scrollToBottom();
@@ -114,6 +130,26 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
       setSelectedQuestion(result.answer);
     }
   };
+
+  if (isSupportOff) {
+    return (
+      <CSSTransition in={showModal} timeout={300} classNames="modal" unmountOnExit>
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="fixed inset-0 bg-black opacity-50" onClick={onClose}></div>
+          <div className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-auto z-10 flex flex-col" style={{ maxHeight: '80vh' }}>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold text-gray-800">Support Bot</h2>
+              <button onClick={onClose} className="text-gray-500 hover:text-gray-800">
+                <FaTimes size={20} />
+              </button>
+            </div>
+            <p className="text-center text-gray-600">Support bot is currently turned off. Please try again later.</p>
+            <button onClick={onClose} className="mt-4 w-full text-center py-2 bg-red-500 text-white rounded-lg">Close</button>
+          </div>
+        </div>
+      </CSSTransition>
+    );
+  }
 
   return (
     <CSSTransition in={showModal} timeout={300} classNames="modal" unmountOnExit>

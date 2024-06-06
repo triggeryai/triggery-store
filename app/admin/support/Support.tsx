@@ -4,16 +4,19 @@ import React, { useEffect, useState, useRef } from 'react';
 import useSWR from 'swr';
 import { useSession } from 'next-auth/react';
 import { FaSync } from 'react-icons/fa';
+import toast, { Toaster } from 'react-hot-toast';
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 const AdminSupport = () => {
   const { data: session } = useSession();
   const { data, error, mutate } = useSWR('/api/get-messages', fetcher);
+  const { data: statusData, error: statusError, mutate: mutateStatus } = useSWR('/api/support-status', fetcher);
   const [selectedSender, setSelectedSender] = useState<string | null>(null);
   const [messages, setMessages] = useState<{ sender: string, message: string }[]>([]);
   const [replyMessage, setReplyMessage] = useState<string>('');
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isBotOff, setIsBotOff] = useState(false);
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -26,6 +29,12 @@ const AdminSupport = () => {
       }
     }
   }, [data, error]);
+
+  useEffect(() => {
+    if (statusData && !statusError) {
+      setIsBotOff(statusData.isOff);
+    }
+  }, [statusData, statusError]);
 
   const handleSenderClick = (sender: string) => {
     setSelectedSender(sender);
@@ -61,7 +70,27 @@ const AdminSupport = () => {
   const handleRefresh = async () => {
     setIsRefreshing(true);
     await mutate();
+    await mutateStatus();
     setIsRefreshing(false);
+  };
+
+  const handleBotToggle = async () => {
+    const response = await fetch('/api/admin/support', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ isOff: !isBotOff }),
+    });
+
+    if (response.ok) {
+      setIsBotOff(!isBotOff);
+      await mutateStatus();
+      toast.success(`Chat bot ${isBotOff ? 'enabled' : 'disabled'}`);
+    } else {
+      console.error('Failed to toggle bot status');
+      toast.error('Failed to toggle bot status');
+    }
   };
 
   const scrollToBottom = () => {
@@ -78,13 +107,14 @@ const AdminSupport = () => {
     return <p className="text-center text-gray-600">You do not have access to this page.</p>;
   }
 
-  if (error) return <div>Failed to load</div>;
-  if (!data) return <div>Loading...</div>;
+  if (error || statusError) return <div>Failed to load</div>;
+  if (!data || !statusData) return <div>Loading...</div>;
 
   const uniqueSenders = Array.from(new Set(data.data.map((msg: any) => msg.sender !== 'admin' ? msg.sender : msg.recipient)));
 
   return (
     <div className="flex h-screen">
+      <Toaster />
       <div className="w-1/4 bg-gray-100 p-4">
         <h2 className="text-xl font-semibold mb-4 flex justify-between items-center">
           Support Inbox
@@ -106,7 +136,19 @@ const AdminSupport = () => {
         ))}
       </div>
       <div className="w-3/4 bg-white p-4">
-        <h2 className="text-xl font-semibold mb-4">Messages</h2>
+        <h2 className="text-xl font-semibold mb-4 flex justify-between items-center">
+          Messages
+          <div className="flex items-center">
+            <label htmlFor="bot-toggle" className="mr-2">Support Bot:</label>
+            <input
+              type="checkbox"
+              id="bot-toggle"
+              checked={!isBotOff}
+              onChange={handleBotToggle}
+              className="cursor-pointer"
+            />
+          </div>
+        </h2>
         <div ref={messageContainerRef} className="overflow-y-auto" style={{ maxHeight: '70vh' }}>
           {messages.map((msg, index) => (
             <div key={index} className={`mb-2 p-2 rounded ${msg.sender === 'admin' ? 'bg-green-100' : 'bg-blue-100'}`}>

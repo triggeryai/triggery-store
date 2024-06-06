@@ -15,7 +15,7 @@ const transporter = nodemailer.createTransport({
 export async function sendVerificationEmail(email: string, token: string) {
   const verificationUrl = `${process.env.NEXT_PUBLIC_DOMAIN}/activate/${token}`; // Use environment variable for domain
   await transporter.sendMail({
-    from: `"Your App Name" <${process.env.EMAIL_USER}>`,
+    from: `"Trigerry - Rapid Websites For Everyone" <${process.env.EMAIL_USER}>`,
     to: email,
     subject: "Verify Your Email",
     html: `Please click on the following link to verify your email: <a href="${verificationUrl}">${verificationUrl}</a>`,
