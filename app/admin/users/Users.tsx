@@ -1,6 +1,5 @@
 // app\admin\users\Users.tsx
 'use client';
-'use client';
 import UserModel from '@/lib/models/UserModel';
 import { useState } from 'react';
 import Link from 'next/link';
@@ -29,9 +28,107 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
   );
 };
 
+// Add User Modal component
+const AddUserModal = ({ isOpen, onClose, onAdd }) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    isAdmin: false,
+    isActive: true,
+  });
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === 'checkbox' ? checked : value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await onAdd(formData);
+    onClose();
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-30 z-50 flex justify-center items-center">
+      <div className="bg-white p-4 rounded-md shadow-xl">
+        <h4 className="text-lg mb-4">Add New User</h4>
+        <form onSubmit={handleSubmit}>
+          <div className="my-3">
+            <label className="block">Name</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className="input input-bordered w-full max-w-md"
+              required
+            />
+          </div>
+          <div className="my-3">
+            <label className="block">Email</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="input input-bordered w-full max-w-md"
+              required
+            />
+          </div>
+          <div className="my-3">
+            <label className="block">Password</label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              className="input input-bordered w-full max-w-md"
+              required
+            />
+          </div>
+          <div className="my-3">
+            <label className="block">Admin</label>
+            <input
+              type="checkbox"
+              name="isAdmin"
+              checked={formData.isAdmin}
+              onChange={handleChange}
+              className="toggle"
+            />
+          </div>
+          <div className="my-3">
+            <label className="block">Active</label>
+            <input
+              type="checkbox"
+              name="isActive"
+              checked={formData.isActive}
+              onChange={handleChange}
+              className="toggle"
+            />
+          </div>
+          <div className="flex justify-end">
+            <button type="submit" className="btn btn-primary mr-2">
+              Add
+            </button>
+            <button onClick={onClose} className="btn btn-secondary">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
 // Users component
 export default function Users() {
-  const { data: users, error } = useSWR(`/api/admin/users`);
+  const { data: users, error, mutate } = useSWR(`/api/admin/users`);
   const { trigger: deleteUser } = useSWRMutation(
     `/api/admin/users`,
     async (url, { arg }: { arg: { userId: string } }) => {
@@ -56,9 +153,32 @@ export default function Users() {
     }
   );
 
+  const { trigger: addUser } = useSWRMutation(
+    `/api/admin/users`,
+    async (url, { arg }) => {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(arg),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success('User added successfully');
+        mutate(); // Revalidate the SWR cache to update the list
+      } else {
+        toast.error(data.message);
+      }
+    }
+  );
+
   // State for the confirmation modal
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
+
+  // State for the add user modal
+  const [isAddUserModalOpen, setAddUserModalOpen] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 15; // Number of users per page, change as needed
@@ -83,6 +203,15 @@ export default function Users() {
     setCurrentPage(pageNumber);
   };
 
+  const handleAddUserClick = () => {
+    setAddUserModalOpen(true);
+  };
+
+  const handleAddUser = async (formData) => {
+    await addUser({ ...formData });
+    setAddUserModalOpen(false);
+  };
+
   if (error) return <div>An error has occurred.</div>;
   if (!users) return <div>Loading...</div>;
 
@@ -93,7 +222,20 @@ export default function Users() {
         onClose={() => setModalOpen(false)}
         onConfirm={handleConfirmDelete}
       />
-      <h1 className="py-4 text-2xl">Users</h1>
+      <AddUserModal
+        isOpen={isAddUserModalOpen}
+        onClose={() => setAddUserModalOpen(false)}
+        onAdd={handleAddUser}
+      />
+      <div className="flex justify-between items-center py-4">
+        <h1 className="text-2xl">Users</h1>
+        <button
+          className="btn btn-warning"
+          onClick={handleAddUserClick}
+        >
+          Add User
+        </button>
+      </div>
       <div className="overflow-x-auto">
         <table className="table table-zebra">
           <thead>
