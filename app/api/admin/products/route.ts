@@ -1,3 +1,4 @@
+// app\api\admin\products\route.ts
 import { auth } from '@/lib/auth'
 import dbConnect from '@/lib/dbConnect'
 import ProductModel from '@/lib/models/ProductModel'

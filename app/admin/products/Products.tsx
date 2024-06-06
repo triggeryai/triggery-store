@@ -1,3 +1,4 @@
+// app\admin\products\Products.tsx
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
@@ -6,6 +7,7 @@ import toast from 'react-hot-toast'
 import useSWR from 'swr'
 import useSWRMutation from 'swr/mutation'
 import { v4 as uuidv4 } from 'uuid';
+import LackProductButton from '@/components/LackProductButton';
 
 export default function Products() {
   const [page, setPage] = useState(1)
@@ -146,6 +148,7 @@ export default function Products() {
     <div>
       <div className="flex justify-between items-center">
         <h1 className="py-4 text-2xl">Products</h1>
+        <LackProductButton /> {/* Dodanie komponentu */}
         <button
           disabled={isCreating}
           onClick={() => createProduct()}
