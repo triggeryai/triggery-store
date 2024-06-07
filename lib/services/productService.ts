@@ -1,21 +1,32 @@
-// lib\services\productService.ts
 import { cache } from 'react';
 import mongoose from 'mongoose';
 import dbConnect from '@/lib/dbConnect';
 import ProductModel, { Product } from '@/lib/models/ProductModel';
-import CategoryModel from '@/lib/models/CategoryModel'; // Make sure to import the CategoryModel
+import CategoryModel from '@/lib/models/CategoryModel';
+import ProductLackShowOnOff from '@/lib/models/ProductLackShowOnOff'; // Import the ProductLackShowOnOff model
 
 export const revalidate = 3600;
 
+const getStockFilter = async () => {
+  await dbConnect();
+  const productLackShowOnOff = await ProductLackShowOnOff.findOne({}).lean();
+  if (productLackShowOnOff && productLackShowOnOff.isOn) {
+    return { countInStock: { $gte: 1 } };
+  }
+  return {};
+};
+
 const getLatest = cache(async () => {
   await dbConnect();
-  const products = await ProductModel.find({}).sort({ _id: -1 }).limit(6).lean();
+  const stockFilter = await getStockFilter();
+  const products = await ProductModel.find({ ...stockFilter }).sort({ _id: -1 }).limit(6).lean();
   return products as Product[];
 });
 
 const getFeatured = cache(async () => {
   await dbConnect();
-  const products = await ProductModel.find({ isFeatured: true }).limit(3).lean();
+  const stockFilter = await getStockFilter();
+  const products = await ProductModel.find({ isFeatured: true, ...stockFilter }).limit(3).lean();
   return products as Product[];
 });
 
@@ -64,27 +75,30 @@ const getByQuery = async ({
     sort === 'highest' ? { price: -1 } :
     { _id: -1 };
 
+  const stockFilter = await getStockFilter();
+
   let products = await ProductModel.find({
     ...queryFilter,
     ...categoryFilter,
     ...priceFilter,
+    ...stockFilter,
   })
   .sort(order)
   .skip(PAGE_SIZE * (Number(page) - 1))
   .limit(PAGE_SIZE)
-  .populate('category', 'name') // Populate the 'category' field
+  .populate('category', 'name')
   .lean();
 
-  // Transform the populated category into a category name.
   products = products.map(product => ({
     ...product,
-    category: product.category?.name || 'Uncategorized', // Fallback in case category is not populated
+    category: product.category?.name || 'Uncategorized',
   }));
 
   const countProducts = await ProductModel.countDocuments({
     ...queryFilter,
     ...categoryFilter,
     ...priceFilter,
+    ...stockFilter,
   });
 
   const categories = await CategoryModel.find({}, 'name').lean();
@@ -94,14 +108,14 @@ const getByQuery = async ({
     countProducts,
     page,
     pages: Math.ceil(countProducts / PAGE_SIZE),
-    categories: categories.map(c => c.name), // Return just the names
+    categories: categories.map(c => c.name),
   };
 };
 
 const getCategories = cache(async () => {
   await dbConnect();
   const categories = await CategoryModel.find({}, 'name').lean();
-  return categories.map(c => c.name); // Return just the names
+  return categories.map(c => c.name);
 });
 
 const productService = {

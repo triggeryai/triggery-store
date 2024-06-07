@@ -1,6 +1,5 @@
 // components/LackProductButton.tsx
 "use client"
-// components/LackProductButton.tsx
 import { useState, useEffect } from 'react';
 
 const LackProductButton = () => {

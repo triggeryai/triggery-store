@@ -37,7 +37,7 @@ export async function sendNewPasswordEmail(email: string, newPassword: string) {
     from: `"Your App Name" <${process.env.EMAIL_USER}>`,
     to: email,
     subject: "Your New Password",
-    html: `Your password has been reset. Here is your new password: <strong>${newPassword}</strong>. It is recommended to change this password after logging in.`,
+    html: `Your password has been reset.  It is recommended to change this password after logging in. Here is your new password: <strong>${newPassword}</strong>.`,
   });
 }
 

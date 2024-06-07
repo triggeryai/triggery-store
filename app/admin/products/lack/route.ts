@@ -1,5 +1,4 @@
 // app\api\admin\products\lack\route.ts
-// app\api\admin\products\lack\route.ts
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import ProductLackShowOnOff from '@/lib/models/ProductLackShowOnOff';
