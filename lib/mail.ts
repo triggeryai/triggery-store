@@ -1,53 +1,75 @@
 // lib/mail.ts
 import nodemailer from 'nodemailer';
+import EmailTemplate from './models/EmailTemplate';
+import dbConnect from './dbConnect';
 
-// Create a transporter using environment variables
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
   secure: false, // true for 465, false for other ports
   auth: {
-    user: process.env.EMAIL_USER, // Use environment variable for user
-    pass: process.env.EMAIL_PASS, // Use environment variable for password
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
+async function getTemplateContent(templateName: string, replacements: Record<string, string>) {
+  await dbConnect();
+  const template = await EmailTemplate.findOne({ templateName });
+  if (!template) throw new Error(`Template ${templateName} not found`);
+
+  let { from, subject, html } = template;
+  from = from.replace('${process.env.EMAIL_USER}', process.env.EMAIL_USER);
+
+  for (const [key, value] of Object.entries(replacements)) {
+    html = html.replace(new RegExp(`\\\${${key}}`, 'g'), value);
+  }
+
+  return { from, subject, html };
+}
+
 export async function sendVerificationEmail(email: string, token: string) {
-  const verificationUrl = `${process.env.NEXT_PUBLIC_DOMAIN}/activate/${token}`; // Use environment variable for domain
+  const verificationUrl = `${process.env.NEXT_PUBLIC_DOMAIN}/activate/${token}`;
+  const { from, subject, html } = await getTemplateContent('sendVerificationEmail', { verificationUrl });
+
   await transporter.sendMail({
-    from: `"Trigerry - Rapid Websites For Everyone" <${process.env.EMAIL_USER}>`,
+    from,
     to: email,
-    subject: "Verify Your Email",
-    html: `Please click on the following link to verify your email: <a href="${verificationUrl}">${verificationUrl}</a>`,
+    subject,
+    html,
   });
 }
 
 export async function sendPasswordResetEmail(email: string, token: string) {
   const resetPasswordUrl = `${process.env.NEXT_PUBLIC_DOMAIN}/reset-password/${encodeURIComponent(token)}`;
+  const { from, subject, html } = await getTemplateContent('sendPasswordResetEmail', { resetPasswordUrl });
+
   await transporter.sendMail({
-    from: `"Your App Name" <${process.env.EMAIL_USER}>`,
+    from,
     to: email,
-    subject: "Password Reset Request",
-    html: `We received a request to reset your password for our app. Please click on the following link to reset your password: <a href="${resetPasswordUrl}">Reset Password</a>. If you did not request a password reset, please ignore this email.`,
+    subject,
+    html,
   });
 }
 
 export async function sendNewPasswordEmail(email: string, newPassword: string) {
+  const { from, subject, html } = await getTemplateContent('sendNewPasswordEmail', { newPassword });
+
   await transporter.sendMail({
-    from: `"Your App Name" <${process.env.EMAIL_USER}>`,
+    from,
     to: email,
-    subject: "Your New Password",
-    html: `Your password has been reset.  It is recommended to change this password after logging in. Here is your new password: <strong>${newPassword}</strong>.`,
+    subject,
+    html,
   });
 }
 
-
-
 export async function sendSupportEmail(userEmail: string, message: string) {
+  const { from, subject, html } = await getTemplateContent('sendSupportEmail', { message });
+
   await transporter.sendMail({
-    from: `"User Support" <${process.env.EMAIL_USER}>`,
-    to: process.env.EMAIL_USER, // Send to support email
-    subject: `New support message from ${userEmail}`,
-    html: `<p>${message}</p>`,
+    from,
+    to: process.env.EMAIL_USER,
+    subject: subject.replace('${userEmail}', userEmail),
+    html,
   });
 }

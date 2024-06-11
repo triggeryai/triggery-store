@@ -11,7 +11,7 @@ const CartModal = () => {
 
   if (items.length === 0) {
     return (
-      <div className="absolute right-0 p-3 w-72 bg-white shadow-lg z-50">
+      <div className="absolute right-0 p-3 w-72 bg-white text-[#222] shadow-lg z-50">
         <p>Your cart is empty.</p>
       </div>
     );

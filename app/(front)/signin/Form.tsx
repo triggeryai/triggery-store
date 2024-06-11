@@ -1,3 +1,4 @@
+// app(front)/signin/Form.tsx
 'use client'
 import { signIn, useSession } from 'next-auth/react'
 import { SubmitHandler, useForm } from 'react-hook-form'
@@ -56,18 +57,18 @@ const Form = () => {
   }
 
   return (
-    <div className="max-w-sm  mx-auto card bg-base-300 my-4">
+    <div className="max-w-sm mx-auto card bg-base-300 my-5 p-5">
       <div className="card-body">
-        <h1 className="card-title">Sign in</h1>
+        <h1 className="card-title text-center mb-4">Sign in</h1>
         {params.get('error') && (
-          <div className="alert text-error">
+          <div className="alert text-error mb-4">
             {params.get('error') === 'CredentialsSignin'
               ? 'Invalid email or password'
               : params.get('error')}
           </div>
         )}
         {params.get('success') && (
-          <div className="alert text-success">{params.get('success')}</div>
+          <div className="alert text-success mb-4">{params.get('success')}</div>
         )}
         <form onSubmit={handleSubmit(formSubmit)}>
           <div className="my-2">
@@ -119,13 +120,13 @@ const Form = () => {
             </button>
           </div>
         </form>
-        <div>
+        <div className="my-2 text-center">
           Need an account?{' '}
           <Link className="link" href={`/register?callbackUrl=${callbackUrl}`}>
             Register
           </Link>
         </div>
-        <div>
+        <div className="my-2 text-center">
           Forgot password?{' '}
           <Link className="link" href={`/reset-password`}>
             Remind password

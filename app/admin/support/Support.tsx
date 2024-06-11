@@ -1,9 +1,8 @@
-// app/admin/support/Support.tsx
 "use client";
 import React, { useEffect, useState, useRef } from 'react';
 import useSWR from 'swr';
 import { useSession } from 'next-auth/react';
-import { FaSync } from 'react-icons/fa';
+import { FaSync, FaSun, FaMoon } from 'react-icons/fa';
 import toast, { Toaster } from 'react-hot-toast';
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
@@ -17,6 +16,7 @@ const AdminSupport = () => {
   const [replyMessage, setReplyMessage] = useState<string>('');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isBotOff, setIsBotOff] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const AdminSupport = () => {
       if (uniqueSenders.length > 0) {
         setSelectedSender(uniqueSenders[0]);
         const userMessages = data.data.filter((msg: any) => msg.sender === uniqueSenders[0] || msg.recipient === uniqueSenders[0]);
-        setMessages(userMessages.reverse());  // Reverse the order of messages
+        setMessages(userMessages.reverse());
       }
     }
   }, [data, error]);
@@ -39,7 +39,7 @@ const AdminSupport = () => {
   const handleSenderClick = (sender: string) => {
     setSelectedSender(sender);
     const userMessages = data.data.filter((msg: any) => msg.sender === sender || msg.recipient === sender);
-    setMessages(userMessages.reverse());  // Reverse the order of messages
+    setMessages(userMessages.reverse());
   };
 
   const handleReplyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -99,6 +99,10 @@ const AdminSupport = () => {
     }
   };
 
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -113,9 +117,9 @@ const AdminSupport = () => {
   const uniqueSenders = Array.from(new Set(data.data.map((msg: any) => msg.sender !== 'admin' ? msg.sender : msg.recipient)));
 
   return (
-    <div className="flex h-screen">
+    <div className={`flex h-screen ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-black'}`}>
       <Toaster />
-      <div className="w-1/4 bg-gray-100 p-4">
+      <div className={`w-1/4 ${isDarkMode ? 'bg-gray-800' : 'bg-gray-200'} p-4`}>
         <h2 className="text-xl font-semibold mb-4 flex justify-between items-center">
           Support Inbox
           <button 
@@ -128,14 +132,14 @@ const AdminSupport = () => {
         {uniqueSenders.map(sender => (
           <div
             key={sender}
-            className={`p-2 cursor-pointer ${selectedSender === sender ? 'bg-gray-300' : 'bg-gray-200'} mb-2`}
+            className={`p-2 cursor-pointer ${selectedSender === sender ? `${isDarkMode ? 'bg-gray-700' : 'bg-gray-300'}` : `${isDarkMode ? 'bg-gray-600' : 'bg-gray-200'}`} mb-2`}
             onClick={() => handleSenderClick(sender)}
           >
             {sender}
           </div>
         ))}
       </div>
-      <div className="w-3/4 bg-white p-4">
+      <div className={`w-3/4 ${isDarkMode ? 'bg-gray-800' : 'bg-white'} p-4`}>
         <h2 className="text-xl font-semibold mb-4 flex justify-between items-center">
           Messages
           <div className="flex items-center">
@@ -147,6 +151,9 @@ const AdminSupport = () => {
               onChange={handleBotToggle}
               className="cursor-pointer"
             />
+            <button onClick={toggleTheme} className="ml-4">
+              {isDarkMode ? <FaSun /> : <FaMoon />}
+            </button>
           </div>
         </h2>
         <div ref={messageContainerRef} className="overflow-y-auto" style={{ maxHeight: '70vh' }}>

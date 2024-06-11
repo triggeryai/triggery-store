@@ -3,6 +3,7 @@
 "use client"
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import useLayoutService from '@/lib/hooks/useLayout';
 
 const carouselSlides = [
   { id: 1, src: '/images/banner1.jpg', path: '/sample-path-1' },
@@ -12,6 +13,7 @@ const carouselSlides = [
 
 const BannerCarousel = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const { drawerOpen } = useLayoutService();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -26,7 +28,7 @@ const BannerCarousel = () => {
   };
 
   return (
-    <div className="relative w-full overflow-hidden rounded-box mt-4 cursor-pointer" onClick={() => handleSlideClick(carouselSlides[currentSlide].path)}>
+    <div className={`relative w-full overflow-hidden rounded-box mt-4 mb-4 cursor-pointer ${drawerOpen ? 'hidden' : 'block'}`} onClick={() => handleSlideClick(carouselSlides[currentSlide].path)}>
       <div className="flex transition-transform duration-1000" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
         {carouselSlides.map((slide) => (
           <div key={slide.id} className="min-w-full">
@@ -35,29 +37,33 @@ const BannerCarousel = () => {
         ))}
       </div>
 
-      <div className="absolute inset-y-0 left-0 flex items-center">
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setCurrentSlide(currentSlide === 0 ? carouselSlides.length - 1 : currentSlide - 1);
-          }}
-          className="btn btn-circle ml-4 z-20"
-        >
-          ❮
-        </button>
-      </div>
+      {!drawerOpen && (
+        <>
+          <div className="absolute inset-y-0 left-0 flex items-center" style={{ zIndex: 1 }}>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setCurrentSlide(currentSlide === 0 ? carouselSlides.length - 1 : currentSlide - 1);
+              }}
+              className="btn btn-circle ml-4"
+            >
+              ❮
+            </button>
+          </div>
 
-      <div className="absolute inset-y-0 right-0 flex items-center">
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setCurrentSlide((currentSlide + 1) % carouselSlides.length);
-          }}
-          className="btn btn-circle mr-4 z-20"
-        >
-          ❯
-        </button>
-      </div>
+          <div className="absolute inset-y-0 right-0 flex items-center" style={{ zIndex: 1 }}>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setCurrentSlide((currentSlide + 1) % carouselSlides.length);
+              }}
+              className="btn btn-circle mr-4"
+            >
+              ❯
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
