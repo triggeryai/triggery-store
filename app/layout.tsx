@@ -1,27 +1,28 @@
-// app\layout.tsx
-import './globals.css'
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import Providers from '@/components/Providers'
-import DrawerButton from '@/components/DrawerButton'
-import Sidebar from '@/components/Sidebar'
-import Header from '@/components/header/Header'
-import Footer from '@/components/footer/Footer'
-import Cookies from '@/components/cookies/Cookies'
-import GoogleCaptchaWrapper from './GoogleCaptchaWrapper'
-import HeaderMobile from '@/components/header/HeaderMobile'
+// app/layout.tsx
+import './globals.css';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import Providers from '@/components/Providers';
+import DrawerButton from '@/components/DrawerButton';
+import Sidebar from '@/components/Sidebar';
+import Header from '@/components/header/Header';
+import Footer from '@/components/footer/Footer';
+import Cookies from '@/components/cookies/Cookies';
+import GoogleCaptchaWrapper from './GoogleCaptchaWrapper';
+import HeaderMobile from '@/components/header/HeaderMobile';
+import DeveloperModeWrapper from '@/app/DeveloperModeWrapper';
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Next Amazona V2',
   description: 'Modern ECommerce Website',
-}
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en">
@@ -34,7 +35,9 @@ export default function RootLayout({
                 <div className="min-h-screen flex flex-col">
                   <Header />
                   <HeaderMobile />
-                  {children}
+                  <DeveloperModeWrapper>
+                    {children}
+                  </DeveloperModeWrapper>
                   <Cookies />
                   <Footer />
                 </div>
@@ -52,5 +55,5 @@ export default function RootLayout({
         </body>
       </GoogleCaptchaWrapper>
     </html>
-  )
+  );
 }

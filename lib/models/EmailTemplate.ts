@@ -1,5 +1,5 @@
 // lib/models/EmailTemplate.ts
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document, Model } from 'mongoose';
 
 interface IEmailTemplate extends Document {
   templateName: string;
@@ -15,7 +15,10 @@ const EmailTemplateSchema: Schema = new Schema({
   html: { type: String, required: true },
 });
 
-const EmailTemplate = mongoose.models.EmailTemplate || mongoose.model<IEmailTemplate>('EmailTemplate', EmailTemplateSchema);
+const EmailTemplate: Model<IEmailTemplate> = 
+  (mongoose.models && mongoose.models.EmailTemplate) 
+    ? mongoose.models.EmailTemplate 
+    : mongoose.model<IEmailTemplate>('EmailTemplate', EmailTemplateSchema);
 
 export default EmailTemplate;
 export type { IEmailTemplate };

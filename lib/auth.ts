@@ -53,6 +53,7 @@ export const config = {
           ...token.user,
           email: session.user.email,
           name: session.user.name,
+          isAdmin: session.user.isAdmin, // Dodaj to
         }
       }
       return token

@@ -1,3 +1,4 @@
+// components\CheckoutSteps.tsx
 const CheckoutSteps = ({ current = 0 }) => {
   return (
     <ul className="steps steps-vertical lg:steps-horizontal w-full mt-4">

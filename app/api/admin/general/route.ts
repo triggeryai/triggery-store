@@ -1,5 +1,4 @@
 // app/api/admin/developerMode/route.ts
-// app/api/admin/developerMode/route.ts
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import DeveloperMode from '@/lib/models/DeveloperMode';

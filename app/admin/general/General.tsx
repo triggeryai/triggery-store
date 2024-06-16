@@ -1,6 +1,5 @@
 // app/components/General.tsx
 "use client"
-// app/components/General.tsx
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { useSession } from 'next-auth/react';

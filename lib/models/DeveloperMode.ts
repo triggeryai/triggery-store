@@ -1,12 +1,16 @@
 // lib/models/DeveloperMode.ts
-import mongoose from 'mongoose';
+import mongoose, { Schema, Document, Model } from 'mongoose';
 
-const DeveloperModeSchema = new mongoose.Schema({
-  isDeveloperMode: {
-    type: Boolean,
-    required: true,
-    default: true, // Default value set to true
-  },
+interface IDeveloperMode extends Document {
+  isDeveloperMode: boolean;
+}
+
+const DeveloperModeSchema: Schema = new Schema({
+  isDeveloperMode: { type: Boolean, required: true, default: true }
 });
 
-export default mongoose.models.DeveloperMode || mongoose.model('DeveloperMode', DeveloperModeSchema);
+const DeveloperMode: Model<IDeveloperMode> = mongoose.models?.DeveloperMode
+  ? mongoose.models.DeveloperMode
+  : mongoose.model<IDeveloperMode>('DeveloperMode', DeveloperModeSchema);
+
+export default DeveloperMode;

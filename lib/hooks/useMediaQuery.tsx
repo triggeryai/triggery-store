@@ -1,6 +1,5 @@
-// useMediaQuery.tsx
+// lib\hooks\useMediaQuery.tsx
 "use client"
-// useMediaQuery.tsx
 import { useState, useEffect } from 'react';
 
 const useMediaQuery = (query: string) => {

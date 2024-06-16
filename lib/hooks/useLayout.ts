@@ -1,4 +1,4 @@
-// lib/hooks/useLayout.ts
+// lib\hooks\useLayout.ts
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 

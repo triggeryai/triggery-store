@@ -1,3 +1,4 @@
+// components\products\Rating.tsx
 export const Rating = ({
   value,
   caption,

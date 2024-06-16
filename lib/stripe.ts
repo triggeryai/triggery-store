@@ -1,7 +1,6 @@
 // lib/stripe.ts
 
 import Stripe from 'stripe';
-
 // Utwórz instancję Stripe z kluczem sekretnym z twojego pliku .env
 // Pamiętaj, aby zmienić 'SECRET_KEY' na 'STRIPE_SECRET_KEY', aby było to bardziej zgodne z twoją konfiguracją
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
