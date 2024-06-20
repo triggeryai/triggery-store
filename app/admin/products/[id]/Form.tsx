@@ -28,7 +28,7 @@ export default function ProductEditForm({ productId }: { productId: string }) {
       const data = await res.json()
       if (!res.ok) return toast.error(data.message)
 
-      toast.success('Produkt pomyślnie zaktualizowany')
+      toast.success('Product updated successfully')
       router.push('/admin/products')
     }
   )
@@ -80,7 +80,7 @@ export default function ProductEditForm({ productId }: { productId: string }) {
   }
 
   if (error) return error.message
-  if (!product) return 'Ładowanie...'
+  if (!product) return 'Loading...'
 
   const FormInput = ({
     id,
@@ -102,7 +102,7 @@ export default function ProductEditForm({ productId }: { productId: string }) {
           type="text"
           id={id}
           {...register(id, {
-            required: required && `${name} jest wymagane`,
+            required: required && `${name} is required`,
             pattern,
           })}
           className="input input-bordered w-full max-w-md"
@@ -115,7 +115,7 @@ export default function ProductEditForm({ productId }: { productId: string }) {
   )
 
   const uploadHandler = async (e: any) => {
-    const toastId = toast.loading('Wysyłanie obrazu...')
+    const toastId = toast.loading('Uploading image...')
     try {
       const resSign = await fetch('/api/cloudinary-sign', {
         method: 'POST',
@@ -136,7 +136,7 @@ export default function ProductEditForm({ productId }: { productId: string }) {
       )
       const data = await res.json()
       setValue('image', data.secure_url)
-      toast.success('Plik pomyślnie przesłany', {
+      toast.success('File uploaded successfully', {
         id: toastId,
       })
     } catch (err: any) {
@@ -147,26 +147,26 @@ export default function ProductEditForm({ productId }: { productId: string }) {
   }
 
   const CategorySelect = ({ register, error, currentCategory }) => {
-    if (!categories) return 'Ładowanie kategorii...';
-    if (categoriesError) return `Błąd: ${categoriesError.message}`;
+    if (!categories) return 'Loading categories...';
+    if (categoriesError) return `Error: ${categoriesError.message}`;
     
     console.log("Current Category ID: ", currentCategory);
   
     return (
       <div className="md:flex mb-6">
-        <label className="label md:w-1/5" htmlFor="category">Kategoria</label>
+        <label className="label md:w-1/5" htmlFor="category">Category</label>
         <div className="md:w-4/5">
-          <select
-            id="category"
-            {...register("category", { required: "Kategoria jest wymagana" })}
-            className="select select-bordered w-full max-w-md"
-          >
-            {categories.map((cat) => (
-              <option value={cat._id} key={cat._id}>
-                {cat.name}
-              </option>
-            ))}
-          </select>
+        <select
+  id="category"
+  {...register("category", { required: "Category is required" })}
+  className="select select-bordered w-full max-w-md"
+>
+  {categories.map((cat) => (
+    <option value={cat._id} key={cat._id}>
+      {cat.name}
+    </option>
+  ))}
+</select>
 
           {errors.category && (
             <div className="text-error">{errors.category.message}</div>
@@ -175,18 +175,19 @@ export default function ProductEditForm({ productId }: { productId: string }) {
       </div>
     );
   };
-
+  
+  
   return (
     <div>
-      <h1 className="text-2xl py-4">Edytuj Produkt {formatId(productId)}</h1>
+      <h1 className="text-2xl py-4">Edit Product {formatId(productId)}</h1>
       <div>
         <form onSubmit={handleSubmit(formSubmit)}>
-          <FormInput name="Nazwa" id="name" required />
+          <FormInput name="Name" id="name" required />
           <FormInput name="Slug" id="slug" required />
-          <FormInput name="Obraz" id="image" required />
+          <FormInput name="Image" id="image" required />
           <div className="md:flex mb-6">
             <label className="label md:w-1/5" htmlFor="imageFile">
-              Prześlij obraz
+              Upload Image
             </label>
             <div className="md:w-4/5">
               <input
@@ -197,11 +198,12 @@ export default function ProductEditForm({ productId }: { productId: string }) {
               />
             </div>
           </div>
-          <FormInput name="Cena" id="price" required />
+          <FormInput name="Price" id="price" required />
           <CategorySelect register={register} error={errors.category} currentCategory={product.category._id} />
-          <FormInput name="Marka" id="brand" required />
-          <FormInput name="Opis" id="description" required />
-          <FormInput name="Ilość w magazynie" id="countInStock" required />
+
+          <FormInput name="Brand" id="brand" required />
+          <FormInput name="Description" id="description" required />
+          <FormInput name="Count In Stock" id="countInStock" required />
 
           <button
             type="submit"
@@ -209,13 +211,14 @@ export default function ProductEditForm({ productId }: { productId: string }) {
             className="btn btn-primary"
           >
             {isUpdating && <span className="loading loading-spinner"></span>}
-            Aktualizuj
+            Update
           </button>
           <Link className="btn ml-4 " href="/admin/products">
-            Anuluj
+            Cancel
           </Link>
         </form>
       </div>
     </div>
   )
 }
+
