@@ -36,25 +36,25 @@ const Cookies: React.FC = () => {
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center">
             <Image src="https://www.svgrepo.com/show/401340/cookie.svg" alt="Cookie" width={24} height={24} className="mr-2" />
-            <span className="text-gray-700 font-bold text-sm">Cookie Policy</span>
+            <span className="text-gray-700 font-bold text-sm">Polityka cookies</span>
           </div>
           <button onClick={handleClose} className="text-gray-500 hover:text-gray-700 focus:outline-none">
             <FaTimes className="h-4 w-4" />
           </button>
         </div>
         <p className="text-gray-600 text-sm">
-          We use cookies to enhance your experience. By continuing to visit this site, you agree to our use of cookies.
+          Używamy plików cookie, aby poprawić Twoje doświadczenia. Kontynuując wizytę na tej stronie, zgadzasz się na naszą politykę dotyczącą plików cookie.
           {/* Dodajemy link do polityki prywatności */}
           <Link href="/privacy">
-            <button className="text-blue-600 hover:underline">Learn more about our Privacy Policy.</button>
+            <button className="text-blue-600 hover:underline">Dowiedz się więcej o naszej Polityce Prywatności.</button>
           </Link>
         </p>
         <div className="flex justify-between">
           <button onClick={handleAccept} className="mt-4 bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded">
-            Accept
+            Akceptuj
           </button>
           <button onClick={handleDecline} className="mt-4 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
-            Decline
+            Odrzuć
           </button>
         </div>
       </div>

@@ -1,90 +1,146 @@
+// plik: components/TermsOfService.tsx
+
 import React from 'react';
 
-const PrivacyPolicy: React.FC = () => {
+const TermsOfService: React.FC = () => {
   return (
     <div className="container mx-auto p-5">
-      <h1 className="text-4xl font-bold text-center my-5">Privacy policy</h1>
-      <p className="text-right text-sm mb-10">Last updated on November 2, 2021</p>
-      <article className="prose lg:prose-xl dark:prose-dark">
-        <p>
-          Privacy policy
+      <div className="bg-white shadow-lg rounded-lg p-8 md:p-12 dark:bg-gray-800 dark:text-gray-50 max-w-4xl mx-auto">
+        <h1 className="text-4xl font-bold text-center mb-5 text-blue-900">Regulamin sklepu Domestico.pl</h1>
+        <p className="text-right text-sm mb-10 text-gray-600 dark:text-gray-400">Ostatnia aktualizacja: 20 czerwca 2024</p>
+        <article className="prose lg:prose-xl dark:prose-dark mx-auto">
+          <h2 className="text-2xl font-semibold mt-6">1. Postanowienia ogólne</h2>
+          <p>
+            1.1. Sklep internetowy Domestico.pl, dostępny pod adresem internetowym <a href="https://www.domestico.pl" className="text-blue-600 hover:underline">www.domestico.pl</a>, prowadzony jest przez [Nazwa firmy] z siedzibą w [Adres firmy], NIP: [Numer NIP], REGON: [Numer REGON].
+          </p>
+          <p>
+            1.2. Niniejszy Regulamin skierowany jest zarówno do konsumentów, jak i do przedsiębiorców korzystających ze Sklepu i określa zasady korzystania ze Sklepu oraz zasady i tryb zawierania Umów Sprzedaży z Klientem na odległość za pośrednictwem Sklepu.
+          </p>
 
-          Last updated on November 2, 2021
+          <h2 className="text-2xl font-semibold mt-6">2. Definicje</h2>
+          <p>
+            2.1. Konsument – osoba fizyczna zawierająca ze Sprzedawcą umowę w ramach Sklepu, której przedmiot nie jest związany bezpośrednio z jej działalnością gospodarczą lub zawodową.
+          </p>
+          <p>
+            2.2. Sprzedawca – [Nazwa firmy] z siedzibą w [Adres firmy], NIP: [Numer NIP], REGON: [Numer REGON].
+          </p>
+          <p>
+            2.3. Klient – każdy podmiot dokonujący zakupów za pośrednictwem Sklepu.
+          </p>
+          <p>
+            2.4. Umowa zawarta na odległość – umowa zawarta z Klientem w ramach zorganizowanego systemu zawierania umów na odległość (w ramach Sklepu), bez jednoczesnej fizycznej obecności stron, z wyłącznym wykorzystaniem jednego lub większej liczby środków porozumiewania się na odległość do chwili zawarcia umowy włącznie.
+          </p>
 
-          This privacy policy (&quot;Policy&quot;) describes how Tailwind Labs Inc. (&quot;Tailwind&quot;, &quot;we&quot;, &quot;us&quot; or &quot;our&quot;) collects, protects and uses the personally identifiable information (&quot;Personal Information&quot;) you (&quot;User&quot;, &quot;you&quot; or &quot;your&quot;) may provide through the Tailwind UI website (tailwindui.com) or in the course of purchasing any Tailwind UI products (collectively, &quot;Website&quot;). The Policy also describes the choices available to you regarding our use of your Personal Information and how you can access and update this information. This Policy does not apply to the practices of companies that we do not own or control, or to individuals that we do not employ or manage.
-          Collection of personal information
+          <h2 className="text-2xl font-semibold mt-6">3. Informacje ogólne</h2>
+          <p>
+            3.1. Sprzedawca w najszerszym dopuszczalnym przez prawo zakresie nie ponosi odpowiedzialności za zakłócenia, w tym przerwy w funkcjonowaniu Sklepu spowodowane siłą wyższą, niedozwolonym działaniem osób trzecich lub niekompatybilnością Sklepu z infrastrukturą techniczną Klienta.
+          </p>
+          <p>
+            3.2. Przeglądanie asortymentu Sklepu nie wymaga zakładania Konta. Składanie zamówień przez Klienta na Produkty znajdujące się w asortymencie Sklepu możliwe jest albo po założeniu Konta zgodnie z postanowieniami § 4 Regulaminu, albo przez podanie niezbędnych danych osobowych i adresowych umożliwiających realizację Zamówienia bez zakładania Konta.
+          </p>
 
-          We receive and store any information you knowingly provide to us when you make a purchase through the Website. Currently this is limited to your email address, which is required for you to be able to login to the Website and access any purchased Tailwind UI products.
-          Collection of non-personal information
+          <h2 className="text-2xl font-semibold mt-6">4. Zakładanie Konta w Sklepie</h2>
+          <p>
+            4.1. Aby założyć Konto w Sklepie, należy wypełnić Formularz rejestracji. Niezbędne jest podanie następujących danych: imię, nazwisko, adres e-mail, hasło.
+          </p>
+          <p>
+            4.2. Założenie Konta w Sklepie jest darmowe.
+          </p>
+          <p>
+            4.3. Logowanie się na Konto odbywa się poprzez podanie adresu e-mail i hasła ustanowionego w Formularzu rejestracji.
+          </p>
+          <p>
+            4.4. Klient ma możliwość w każdej chwili, bez podania przyczyny i bez ponoszenia jakichkolwiek opłat, usunięcia Konta poprzez wysłanie stosownego żądania do Sprzedawcy, w szczególności za pośrednictwem poczty elektronicznej lub pisemnie na adresy podane w § 3.
+          </p>
 
-          When you visit the Website our servers automatically record information that your browser sends. This data may include information such as your device&apos;s IP address, browser type and version, operating system type and version, language preferences or the webpage you were visiting before you came to our Website, pages of our Website that you visit, the time spent on those pages, information you search for on our Website, access times and dates, and other statistics.
-          Purchases
+          <h2 className="text-2xl font-semibold mt-6">5. Zasady składania Zamówienia</h2>
+          <p>
+            5.1. W celu złożenia Zamówienia należy:
+            <ul className="list-decimal pl-6">
+              <li>wybrać Produkt będący przedmiotem Zamówienia, a następnie kliknąć przycisk „Dodaj do koszyka” (lub równoznaczny);</li>
+              <li>zalogować się lub skorzystać z możliwości złożenia Zamówienia bez rejestracji;</li>
+              <li>jeżeli wybrano możliwość złożenia Zamówienia bez rejestracji – wypełnić Formularz zamówienia poprzez wpisanie danych odbiorcy Zamówienia oraz adresu, na który ma nastąpić dostawa Produktu, wybrać rodzaj przesyłki (sposób dostarczenia Produktu), wpisać dane do faktury, jeśli są inne niż dane odbiorcy Zamówienia;</li>
+              <li>kliknąć przycisk „Zamawiam i płacę” / „Zamówienie z obowiązkiem zapłaty” i potwierdzić zamówienie;</li>
+              <li>wybrać jeden z dostępnych sposobów płatności i w zależności od sposobu płatności, opłacić zamówienie w określonym terminie.</li>
+            </ul>
+          </p>
 
-          All purchases made through the Website are processed by a third party payment processor, Paddle (paddle.com). Paddle may ask you for personal and/or non-personal information, such as your name, address, email address, credit card information, or other Personal Information. Paddle has a privacy policy (paddle.com/legal-buyers/) that describes their collection and use of personal information. Tailwind does not control Paddle or its collection or use of information. Any questions or concerns about Paddle’s practices should be directed to Paddle.
+          <h2 className="text-2xl font-semibold mt-6">6. Oferowane metody dostawy oraz płatności</h2>
+          <p>
+            6.1. Klient może skorzystać z następujących metod dostawy lub odbioru zamówionego Produktu:
+            <ul className="list-disc pl-6">
+              <li>Przesyłka kurierska</li>
+              <li>Odbiór osobisty dostępny pod adresem: [Adres sklepu]</li>
+            </ul>
+          </p>
+          <p>
+            6.2. Klient może skorzystać z następujących metod płatności:
+            <ul className="list-disc pl-6">
+              <li>Płatność przelewem na konto Sprzedawcy</li>
+              <li>Płatności elektroniczne</li>
+              <li>Karty płatnicze</li>
+            </ul>
+          </p>
 
-          Paddle provides us with certain non-personal information relating to purchases made by visitors to the Website. The non-personal information may include details of the purchase such as the date, amount paid, and product purchased. The non-personal purchase information may be linked to the Personal Information you provide to us (typically limited to your email address, as stated above). Paddle does not supply us with any of your other Personal Information such as your name, street address, or credit card information.
-          Managing personal information
+          <h2 className="text-2xl font-semibold mt-6">7. Wykonanie umowy sprzedaży</h2>
+          <p>
+            7.1. Zawarcie Umowy Sprzedaży między Klientem a Sprzedawcą następuje po uprzednim złożeniu przez Klienta Zamówienia za pomocą Formularza zamówienia w Sklepie internetowym zgodnie z § 5 Regulaminu.
+          </p>
+          <p>
+            7.2. Po złożeniu Zamówienia Sprzedawca potwierdza jego otrzymanie oraz jednocześnie przyjmuje Zamówienie do realizacji. Potwierdzenie otrzymania Zamówienia i jego przyjęcie do realizacji następuje poprzez przesłanie Klientowi stosownej wiadomości e-mail na podany w trakcie składania Zamówienia adres poczty elektronicznej Klienta.
+          </p>
+          <p>
+            7.3. W przypadku wyboru przez Klienta:
+            <ul className="list-decimal pl-6">
+              <li>płatności przelewem, płatności elektronicznych lub płatności kartą płatniczą, Klient obowiązany jest do dokonania płatności w terminie 7 dni kalendarzowych od dnia zawarcia Umowy Sprzedaży – w przeciwnym razie zamówienie zostanie anulowane.</li>
+              <li>płatności gotówką przy odbiorze osobistym przesyłki, Klient obowiązany jest do dokonania płatności przy odbiorze przesyłki.</li>
+            </ul>
+          </p>
 
-          You are able to update your Personal Information in your &quot;Account Settings&quot; on the Website. Currently this is limited to just your email address, as described above. You may also request that we delete your email address, but this will prevent you from accessing the products you have purchased from Tailwind.
+          <h2 className="text-2xl font-semibold mt-6">8. Prawo odstąpienia od umowy</h2>
+          <p>
+            8.1. Konsument może w terminie 14 dni odstąpić od Umowy Sprzedaży bez podania jakiejkolwiek przyczyny.
+          </p>
+          <p>
+            8.2. Bieg terminu określonego w ust. 1 rozpoczyna się od dostarczenia Produktu Konsumentowi lub wskazanej przez niego osobie trzeciej innej niż przewoźnik.
+          </p>
+          <p>
+            8.3. Konsument może odstąpić od Umowy, składając Sprzedawcy oświadczenie o odstąpieniu od Umowy. Do zachowania terminu odstąpienia od Umowy wystarczy wysłanie przez Konsumenta oświadczenia przed upływem tego terminu.
+          </p>
 
-          When you update information, we may maintain a copy of the unrevised information in our records. Some information may remain in our private records after deletion of such information from your account for a retention period. Once the retention period expires, Personal Information shall be deleted. Therefore, the right to access, the right to erasure, your rights to access, add to, and update your information cannot be enforced after the expiration of the retention period.
+          <h2 className="text-2xl font-semibold mt-6">9. Reklamacja i gwarancja</h2>
+          <p>
+            9.1. Umową Sprzedaży objęte są nowe Produkty.
+          </p>
+          <p>
+            9.2. W przypadku wystąpienia wady zakupionego u Sprzedawcy towaru Klient ma prawo do reklamacji w oparciu o przepisy dotyczące rękojmi w kodeksie cywilnym.
+          </p>
+          <p>
+            9.3. Reklamację należy zgłosić pisemnie lub drogą elektroniczną na podane w niniejszym Regulaminie adresy Sprzedawcy.
+          </p>
+          <p>
+            9.4. Zaleca się, aby w reklamacji zawrzeć m.in. zwięzły opis wady, okoliczności (w tym datę) jej wystąpienia, dane Klienta składającego reklamację oraz żądanie Klienta w związku z wadą towaru.
+          </p>
 
-          We will retain and use your information as necessary to comply with our legal obligations, resolve disputes, and enforce our agreements. We may use any aggregated data derived from or incorporating your Personal Information after you update or delete it, but not in a manner that would identify you personally.
-          Use and processing of collected information
-
-          Any of the information we collect from you may be used to personalize your experience; improve our Website; improve customer service; process transactions; send notification emails such as password reminders, updates, etc; and operate our Website. Non-Personal Information collected is used only to identify potential cases of abuse and establish statistical information regarding Website usage. This statistical information is not otherwise aggregated in such a way that would identify any particular user of the system.
-
-          We may process Personal Information related to you if one of the following applies: (i) You have given their consent for one or more specific purposes. Note that under some legislations we may be allowed to process information until you object to such processing (by opting out), without having to rely on consent or any other of the following legal bases below. This, however, does not apply, whenever the processing of Personal Information is subject to European data protection law; (ii) Provision of information is necessary for the performance of an agreement with you and/or for any pre-contractual obligations thereof; (ii) Processing is necessary for compliance with a legal obligation to which you are subject; (iv) Processing is related to a task that is carried out in the public interest or in the exercise of official authority vested in us; (v) Processing is necessary for the purposes of the legitimate interests pursued by us or by a third party. In any case, we will be happy to clarify the specific legal basis that applies to the processing, and in particular whether the provision of Personal Data is a statutory or contractual requirement, or a requirement necessary to enter into a contract.
-          Information transfer and storage
-
-          Depending on your location, data transfers may involve transferring and storing your information in a country other than your own. You are entitled to learn about the legal basis of information transfers to a country outside the European Union or to any international organization governed by public international law or set up by two or more countries, such as the UN, and about the security measures taken by us to safeguard your information. If any such transfer takes place, you can find out more by checking the relevant sections of this document or inquire with us using the information provided in the Contact section.
-          The rights of users
-
-          You may exercise certain rights regarding your information processed by us. In particular, you have the right to do the following: (i) you have the right to withdraw consent where you have previously given your consent to the processing of your information; (ii) you have the right to object to the processing of your information if the processing is carried out on a legal basis other than consent; (iii) you have the right to learn if information is being processed by us, obtain disclosure regarding certain aspects of the processing and obtain a copy of the information undergoing processing; (iv) you have the right to verify the accuracy of your information and ask for it to be updated or corrected; (v) you have the right, under certain circumstances, to restrict the processing of your information, in which case, we will not process your information for any purpose other than storing it; (vi) you have the right, under certain circumstances, to obtain the erasure of your Personal Information from us; (vii) you have the right to receive your information in a structured, commonly used and machine readable format and, if technically feasible, to have it transmitted to another controller without any hindrance. This provision is applicable provided that your information is processed by automated means and that the processing is based on your consent, on a contract which you are part of or on pre-contractual obligations thereof.
-          The right to object to processing
-
-          Where Personal Information is processed for a public interest, in the exercise of an official authority vested in us or for the purposes of the legitimate interests pursued by us, you may object to such processing by providing a ground related to your particular situation to justify the objection. You must know that, however, should your Personal Information be processed for direct marketing purposes, you can object to that processing at any time without providing any justification. To learn whether we are processing Personal Information for direct marketing purposes, you may refer to the relevant sections of this document.
-          How to exercise these rights
-
-          Any requests to exercise User rights can be directed to the Owner by email at support@tailwindui.com. These requests can be exercised free of charge and will be addressed by the Owner as early as possible and always within one month.
-          Privacy of children
-
-          We do not knowingly collect any Personal Information from children under the age of 13. If you are under the age of 13, please do not submit any Personal Information through our Website. We encourage parents and legal guardians to monitor their children&apos;s Internet usage and to help enforce this Policy by instructing their children never to provide Personal Information through our Website without their permission. If you have reason to believe that a child under the age of 13 has provided Personal Information to us through our Website, please contact us.
-          Newsletters
-
-          We offer electronic newsletters which you may voluntarily subscribe to. You may choose to stop receiving our newsletter or marketing emails by following the unsubscribe instructions included in these emails or by contacting us. However, you will continue to receive essential transactional emails.
-          Cookies
-
-          The Website uses &quot;cookies&quot; to help personalize your online experience. A cookie is a text file that is placed on your hard disk by a web page server. Cookies cannot be used to run programs or deliver viruses to your computer. Cookies are uniquely assigned to you, and can only be read by a web server in the domain that issued the cookie to you. We may use cookies to collect, store, and track information for statistical purposes to operate our Website. You have the ability to accept or decline cookies. Most web browsers automatically accept cookies, but you can usually modify your browser setting to decline cookies if you prefer.
-
-          In addition to using cookies and related technologies as described above, we also may permit certain third-party companies to help us tailor advertising that we think may be of interest to users and to collect and use other data about user activities on the Website. These companies may deliver ads that might also place cookies and otherwise track user behavior.
-          Links to other websites
-
-          Our Website contains links to other websites that are not owned or controlled by us. Please be aware that we are not responsible for the privacy practices of such other websites or third parties. We encourage you to be aware when you leave our Website and to read the privacy statements of each and every website that may collect Personal Information.
-
-          In particular, as noted above, purchases made through the Website are handled by Paddle and all such transactions, including any Personal Information or non-personal information collected by Paddle, are under the control of Paddle. We encourage purchasers to read Paddle’s Privacy Policy (paddle.com/legal-buyers/).
-          Information security
-
-          We secure information you provide on computer servers in a controlled, secure environment, protected from unauthorized access, use, or disclosure. We maintain reasonable administrative, technical, and physical safeguards in an effort to protect against unauthorized access, use, modification, and disclosure of Personal Information in its control and custody. However, no data transmission over the Internet or wireless network can be guaranteed. Therefore, while we strive to protect your Personal Information, you acknowledge that (i) there are security and privacy limitations of the Internet which are beyond our control; (ii) the security, integrity, and privacy of any and all information and data exchanged between you and our Website cannot be guaranteed; and (iii) any such information and data may be viewed or tampered with in transit by a third-party, despite best efforts.
-          Data breach
-
-          In the event we become aware that the security of the Website has been compromised or users&apos; Personal Information has been disclosed to unrelated third-parties as a result of external activity, including, but not limited to, security attacks or fraud, we reserve the right to take reasonably appropriate measures, including, but not limited to, investigation and reporting, as well as notification to and cooperation with law enforcement authorities. In the event of a data breach, we will make reasonable efforts to notify affected individuals if we believe that there is a reasonable risk of harm to the user as a result of the breach or if notice is otherwise required by law. When we do we will send you an email.
-          Legal disclosure
-
-          We will disclose any information we collect, use or receive if required or permitted by law, such as to comply with a subpoena, or similar legal process, and when we believe in good faith that disclosure is necessary to protect our rights, protect your safety or the safety of others, investigate fraud, or respond to a government request. In the event we go through a business transition, such as a merger or acquisition by another company, or sale of all or a portion of its assets, your user account and personal data will likely be among the assets transferred.
-          Changes and amendments
-
-          We reserve the right to modify this privacy policy relating to the Website at any time, effective upon posting of an updated version of this Policy on the Website. When we do we will revise the updated date at the bottom of this page. Continued use of the Website after any such changes shall constitute your consent to such changes.
-          Acceptance of this policy
-
-          You acknowledge that you have read this Policy and agree to all its terms and conditions. By using the Website you agree to be bound by this Policy. If you do not agree to abide by the terms of this Policy, you are not authorized to use or access the Website.
-          Contacting us
-
-          If you have any questions about this Policy, please contact us by email at support@tailwindui.com.
-        </p>
-      </article>
+          <h2 className="text-2xl font-semibold mt-6">10. Postanowienia końcowe</h2>
+          <p>
+            10.1. Umowy zawierane poprzez Sklep internetowy zawierane są w języku polskim.
+          </p>
+          <p>
+            10.2. Zmiana Regulaminu:
+            <ul className="list-decimal pl-6">
+              <li>Sprzedawca zastrzega sobie prawo do dokonywania zmian Regulaminu z ważnych przyczyn to jest: zmiany przepisów prawa, zmiany sposobów płatności i dostaw - w zakresie, w jakim te zmiany wpływają na realizację postanowień niniejszego Regulaminu.</li>
+              <li>W przypadku zawarcia na podstawie niniejszego Regulaminu umów o charakterze ciągłym (np. świadczenie usług drogą elektroniczną - Konto) zmieniony regulamin wiąże Klienta, jeżeli zostały zachowane wymagania określone w art. 384 oraz 384 [1] kodeksu cywilnego, to jest Klient został prawidłowo powiadomiony o zmianach i nie wypowiedział umowy w terminie 14 dni kalendarzowych od dnia powiadomienia.</li>
+              <li>W przypadku zawarcia umów innych niż umowy o charakterze ciągłym (np. Umowa Sprzedaży) zmiany Regulaminu nie będą w żaden sposób naruszać praw nabytych Klientów będących Konsumentami przed dniem wejścia w życie zmian Regulaminu, w szczególności zmiany Regulaminu nie będą miały wpływu na złożone lub realizowane zamówienia.</li>
+            </ul>
+          </p>
+          <p>
+            10.3. W sprawach nieuregulowanych niniejszym Regulaminem mają zastosowanie powszechnie obowiązujące przepisy prawa polskiego, w szczególności: kodeksu cywilnego; ustawy o świadczeniu usług drogą elektroniczną; ustawy o prawach konsumenta, ustawy o ochronie danych osobowych.
+          </p>
+        </article>
+      </div>
     </div>
   );
 };
 
-export default PrivacyPolicy;
+export default TermsOfService;

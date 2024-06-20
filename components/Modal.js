@@ -14,8 +14,8 @@ const Modal = ({ onClose, onAddCategory }) => {
     <div className="modal">
       <form onSubmit={handleSubmit}>
         <input type="text" value={categoryName} onChange={(e) => setCategoryName(e.target.value)} />
-        <button type="submit">Add Category</button>
-        <button type="button" onClick={onClose}>Close</button>
+        <button type="submit">Dodaj kategorie</button>
+        <button type="button" onClick={onClose}>Zamknnij</button>
       </form>
     </div>
   );

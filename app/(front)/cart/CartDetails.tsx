@@ -25,33 +25,33 @@ export default function CartDetails() {
   const handleClearCart = () => {
     clear();
     setShowModal(false);
-    toast.success('Cart has been cleared!');
+    toast.success('Koszyk został wyczyszczony!');
   };
 
   const handleIncrease = (item) => {
     if (item.countInStock > 0) {
       increase(item);
-      toast.success('Product added to the cart!');
+      toast.success('Produkt dodany do koszyka!');
     } else {
-      toast.error('This product is out of stock and cannot be added to the cart.');
+      toast.error('Ten produkt jest niedostępny i nie można go dodać do koszyka.');
     }
   };
 
   const handleDecrease = (item) => {
     decrease(item);
-    toast.success('Product removed from the cart!');
+    toast.success('Produkt usunięty z koszyka!');
   };
 
   return (
     <>
       <h1 className="py-4 text-2xl">
-        Shopping Cart
+        Koszyk
         {items.length > 0 && (
           <button
             className="btn btn-error btn-sm ml-4"
             onClick={handleClearCartConfirmation}
           >
-            Clear Cart
+            Wyczyść koszyk
           </button>
         )}
       </h1>
@@ -59,10 +59,10 @@ export default function CartDetails() {
       {showModal && (
         <div className="modal modal-open">
           <div className="modal-box">
-            <h3 className="font-bold text-lg">Are you sure you want to clear the cart?</h3>
+            <h3 className="font-bold text-lg">Czy na pewno chcesz wyczyścić koszyk?</h3>
             <div className="modal-action">
-              <button className="btn btn-outline btn-error" onClick={handleClearCart}>Yes</button>
-              <button className="btn btn-outline" onClick={() => setShowModal(false)}>No</button>
+              <button className="btn btn-outline btn-error" onClick={handleClearCart}>Tak</button>
+              <button className="btn btn-outline" onClick={() => setShowModal(false)}>Nie</button>
             </div>
           </div>
         </div>
@@ -70,10 +70,10 @@ export default function CartDetails() {
 
       {items.length === 0 ? (
         <div>
-          Cart is empty.         
+          Koszyk jest pusty.        
           <Link href="/search?q=">
           <div className="inline-block px-6 py-3 text-sm font-medium leading-6 text-center text-white transition duration-300 ease-in-out bg-blue-500 rounded-md shadow-lg hover:bg-blue-600 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-            Go shopping
+            Kontynuuj zakupy
           </div>
         </Link>
         </div>
@@ -83,9 +83,9 @@ export default function CartDetails() {
             <table className="table">
               <thead>
                 <tr>
-                  <th>Item</th>
-                  <th>Quantity</th>
-                  <th>Price</th>
+                  <th>Produkt</th>
+                  <th>Ilość</th>
+                  <th>Cena</th>
                 </tr>
               </thead>
               <tbody>
@@ -123,7 +123,7 @@ export default function CartDetails() {
                         +
                       </button>
                     </td>
-                    <td>${item.price}</td>
+                    <td>{item.price} PLN</td>
                   </tr>
                 ))}
               </tbody>
@@ -135,8 +135,8 @@ export default function CartDetails() {
                 <ul>
                   <li>
                     <div className="pb-3 text-xl">
-                      Subtotal ({items.reduce((a, c) => a + c.qty, 0)}) : $
-                      {itemsPrice}
+                    Do zapłaty ({items.reduce((a, c) => a + c.qty, 0)}) 
+                     {' '} <span className="font-bold"> {itemsPrice} PLN</span>
                     </div>
                   </li>
                   <li>
@@ -144,13 +144,13 @@ export default function CartDetails() {
                       onClick={() => router.push('/shipping')}
                       className="btn btn-primary w-full"
                     >
-                      Proceed to Checkout
+                      Przejdź do płatności
                     </button>
                   </li>
                   <li>
                     <div className="mt-4 text-center">
                       <Link href="/search?category=all">
-                        <button className="btn btn-accent w-full">Back to Shopping</button>
+                        <button className="btn btn-accent w-full">Wróć do zakupów</button>
                       </Link>
                     </div>
                   </li>

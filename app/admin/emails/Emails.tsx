@@ -1,8 +1,7 @@
-// app\admin\emails\Emails.tsx
-"use client";
 "use client";
 import { useEffect, useState } from 'react';
 import { getSession } from 'next-auth/react';
+import { Toaster, toast } from 'react-hot-toast';
 
 export default function EmailTemplates() {
   const [templates, setTemplates] = useState([]);
@@ -70,50 +69,63 @@ export default function EmailTemplates() {
       );
       setSelectedTemplate(null);
       setForm({ from: '', subject: '', html: '' });
+      toast.success('Szablon został zapisany');
     } catch (error) {
       setError(error.message);
+      toast.error('Błąd podczas zapisywania szablonu');
     }
   };
 
   return (
-    <div>
-      <h1>Email Templates</h1>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <select onChange={(e) => {
-        const template = templates.find(t => t.templateName === e.target.value);
-        setSelectedTemplate(template || null);
-      }}>
-        <option value="">Select Template</option>
-        {templates.map((template) => (
-          <option key={template._id} value={template.templateName}>{template.templateName}</option>
-        ))}
-      </select>
+    <div className="container mx-auto p-4">
+      <Toaster />
+      <h1 className="text-2xl font-bold mb-4">Szablony Email</h1>
+      {error && <p className="text-red-500">{error}</p>}
+      <div className="mb-4">
+        <label className="block text-gray-700">Wybierz szablon</label>
+        <select 
+          className="select select-bordered w-full max-w-xs"
+          onChange={(e) => {
+            const template = templates.find(t => t.templateName === e.target.value);
+            setSelectedTemplate(template || null);
+          }}
+        >
+          <option value="">Wybierz szablon</option>
+          {templates.map((template) => (
+            <option key={template._id} value={template.templateName}>{template.templateName}</option>
+          ))}
+        </select>
+      </div>
       {selectedTemplate && (
         <>
-          <div>
-            <label>From</label>
+          <div className="mb-4">
+            <label className="block text-gray-700">Od</label>
             <input
               type="text"
               value={form.from}
               onChange={(e) => setForm({ ...form, from: e.target.value })}
+              className="input input-bordered w-full"
             />
           </div>
-          <div>
-            <label>Subject</label>
+          <div className="mb-4">
+            <label className="block text-gray-700">Temat</label>
             <input
               type="text"
               value={form.subject}
               onChange={(e) => setForm({ ...form, subject: e.target.value })}
+              className="input input-bordered w-full"
             />
           </div>
-          <div>
-            <label>HTML</label>
+          <div className="mb-4">
+            <label className="block text-gray-700">HTML</label>
             <textarea
               value={form.html}
               onChange={(e) => setForm({ ...form, html: e.target.value })}
+              className="textarea textarea-bordered w-full"
+              rows="10"
             />
           </div>
-          <button onClick={handleSave}>Save</button>
+          <button onClick={handleSave} className="btn btn-primary">Zapisz</button>
         </>
       )}
     </div>

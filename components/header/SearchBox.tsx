@@ -10,11 +10,11 @@ export const SearchBox = () => {
       <div className="join">
         <input
           className="join-item input input-bordered  w-48"
-          placeholder="Search"
+          placeholder="Szukaj"
           defaultValue={q}
           name="q"
         />
-        <button className="join-item btn">Search</button>
+        <button className="join-item btn">Szukaj</button>
       </div>
     </form>
   )

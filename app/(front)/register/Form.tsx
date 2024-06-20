@@ -55,7 +55,7 @@ const Form = () => {
       })
       if (res.ok) {
         return router.push(
-          `/signin?callbackUrl=${callbackUrl}&success=Account has been created`
+          `/signin?callbackUrl=${callbackUrl}&success=Konto zostało utworzone`
         )
       } else {
         const data = await res.json()
@@ -64,25 +64,25 @@ const Form = () => {
     } catch (err: any) {
       const error =
         err.message && err.message.indexOf('E11000') === 0
-          ? 'Email is duplicate'
+          ? 'Email jest już używany'
           : err.message
       toast.error(error || 'error')
     }
   }
   return (
-    <div className="max-w-sm  mx-auto card bg-base-300 my-4">
+    <div className="max-w-sm mx-auto card bg-base-300 my-4">
       <div className="card-body">
-        <h1 className="card-title">Register</h1>
+        <h1 className="card-title">Rejestracja</h1>
         <form onSubmit={handleSubmit(formSubmit)}>
           <div className="my-2">
             <label className="label" htmlFor="name">
-              Name
+              Imię
             </label>
             <input
               type="text"
               id="name"
               {...register('name', {
-                required: 'Name is required',
+                required: 'Imię jest wymagane',
               })}
               className="input input-bordered w-full max-w-sm"
             />
@@ -98,27 +98,27 @@ const Form = () => {
               type="text"
               id="email"
               {...register('email', {
-                required: 'Email is required',
+                required: 'Email jest wymagany',
                 pattern: {
                   value: /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/,
-                  message: 'Email is invalid',
+                  message: 'Nieprawidłowy email',
                 },
               })}
               className="input input-bordered w-full max-w-sm"
             />
             {errors.email?.message && (
-              <div className="text-error"> {errors.email.message}</div>
+              <div className="text-error">{errors.email.message}</div>
             )}
           </div>
           <div className="my-2">
             <label className="label" htmlFor="password">
-              Password
+              Hasło
             </label>
             <input
               type="password"
               id="password"
               {...register('password', {
-                required: 'Password is required',
+                required: 'Hasło jest wymagane',
               })}
               className="input input-bordered w-full max-w-sm"
             />
@@ -128,16 +128,16 @@ const Form = () => {
           </div>
           <div className="my-2">
             <label className="label" htmlFor="confirmPassword">
-              Confirm Password
+              Potwierdź Hasło
             </label>
             <input
               type="password"
               id="confirmPassword"
               {...register('confirmPassword', {
-                required: 'Confirm Password is required',
+                required: 'Potwierdzenie hasła jest wymagane',
                 validate: (value) => {
                   const { password } = getValues()
-                  return password === value || 'Passwords should match!'
+                  return password === value || 'Hasła muszą być takie same!'
                 },
               })}
               className="input input-bordered w-full max-w-sm"
@@ -155,16 +155,16 @@ const Form = () => {
               {isSubmitting && (
                 <span className="loading loading-spinner"></span>
               )}
-              Register
+              Zarejestruj się
             </button>
           </div>
         </form>
 
         <div className="divider"> </div>
         <div>
-          Already have an account?{' '}
+          Masz już konto?{' '}
           <Link className="link" href={`/signin?callbackUrl=${callbackUrl}`}>
-            Login
+            Zaloguj się
           </Link>
         </div>
       </div>

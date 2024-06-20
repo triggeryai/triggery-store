@@ -12,7 +12,7 @@ const CartModal = () => {
   if (items.length === 0) {
     return (
       <div className="absolute right-0 p-3 w-72 bg-white text-[#222] shadow-lg z-50">
-        <p>Your cart is empty.</p>
+        <p>Twój koszyk jest pusty.</p>
       </div>
     );
   }
@@ -40,16 +40,16 @@ const CartModal = () => {
                 +
               </button>
             </div>
-            <span>${item.price}</span>
+            <span>{item.price} PLN</span>
           </li>
         ))}
       </ul>
       <div className="flex justify-between items-center mt-2">
         <div>
-          <span className="font-bold">Subtotal:</span> ${itemsPrice}
+          <span className="font-bold">Suma:</span> {itemsPrice} PLN
         </div>
         <Link href="/cart">
-          <button className="btn btn-primary">View Cart</button>
+          <button className="btn btn-primary">Zobacz Koszyk</button>
         </Link>
       </div>
     </div>

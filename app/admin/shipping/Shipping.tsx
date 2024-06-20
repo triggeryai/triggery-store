@@ -1,16 +1,6 @@
-// app\admin\shipping\Shipping.tsx
-'use client'
+// app/admin/shipping/Shipping.tsx
+'use client';
 import { useState, useEffect } from 'react';
-
-const defaultShippingOptions = [
-  { value: "Inpost Paczkomat", label: "Inpost Paczkomat - $5", price: 5, isActive: true },
-  { value: "Pocztex Poczta Polska Kurier", label: "Pocztex Poczta Kurier - $7", price: 7, isActive: true },
-  { value: "Pocztex Poczta Odbior Punkt", label: "Pocztex Poczta Odbior Punkt - $7", price: 7, isActive: true },
-  { value: "Inpost Kurier", label: "Inpost Kurier - $10", price: 10, isActive: true },
-  { value: "DPD Kurier", label: "DPD Kurier - $12", price: 12, isActive: true },
-  { value: "DHL Kurier", label: "DHL Kurier - $15", price: 15, isActive: true },
-  { value: "Odbior osobisty", label: "Odbior osobisty - $0", price: 0, isActive: true },
-];
 
 const Shipping = () => {
   const [shippingOptions, setShippingOptions] = useState([]);
@@ -28,10 +18,10 @@ const Shipping = () => {
         const data = await response.json();
         setShippingOptions(data);
       } else {
-        console.error('Error fetching shipping options:', response.statusText);
+        console.error('Błąd podczas pobierania opcji wysyłki:', response.statusText);
       }
     } catch (error) {
-      console.error('Error fetching shipping options:', error);
+      console.error('Błąd podczas pobierania opcji wysyłki:', error);
     }
   };
 
@@ -49,10 +39,10 @@ const Shipping = () => {
         setShippingOptions([...shippingOptions, data]);
         setNewOption({ value: '', label: '', price: '', isActive: true });
       } else {
-        console.error('Error adding shipping option:', response.statusText);
+        console.error('Błąd podczas dodawania opcji wysyłki:', response.statusText);
       }
     } catch (error) {
-      console.error('Error adding shipping option:', error);
+      console.error('Błąd podczas dodawania opcji wysyłki:', error);
     }
   };
 
@@ -68,10 +58,10 @@ const Shipping = () => {
       if (response.ok) {
         setShippingOptions(shippingOptions.filter(option => option._id !== id));
       } else {
-        console.error('Error deleting shipping option:', response.statusText);
+        console.error('Błąd podczas usuwania opcji wysyłki:', response.statusText);
       }
     } catch (error) {
-      console.error('Error deleting shipping option:', error);
+      console.error('Błąd podczas usuwania opcji wysyłki:', error);
     }
   };
 
@@ -91,10 +81,10 @@ const Shipping = () => {
         ));
         setEditOption({ id: '', value: '', label: '', price: '', isActive: true });
       } else {
-        console.error('Error editing shipping option:', response.statusText);
+        console.error('Błąd podczas edytowania opcji wysyłki:', response.statusText);
       }
     } catch (error) {
-      console.error('Error editing shipping option:', error);
+      console.error('Błąd podczas edytowania opcji wysyłki:', error);
     }
   };
 
@@ -109,88 +99,126 @@ const Shipping = () => {
   };
 
   return (
-    <div>
-      <h1>Shipping Options</h1>
-      <ul>
-        {shippingOptions.map(option => (
-          <li key={option._id}>
-            {option.label} - ${option.price}
-            <button onClick={() => handleDeleteOption(option._id)}>Delete</button>
-            <button onClick={() => setEditOption({ id: option._id, value: option.value, label: option.label, price: option.price, isActive: option.isActive })}>Edit</button>
-            <label>
-              <input
-                type="checkbox"
-                checked={option.isActive}
-                onChange={(e) => {
-                  setEditOption({ id: option._id, value: option.value, label: option.label, price: option.price, isActive: e.target.checked });
-                  handleEditOption();
-                }}
-              />
-              Active
-            </label>
-          </li>
-        ))}
-      </ul>
-      {editOption.id && (
-        <div>
-          <h2>Edit Option</h2>
+    <div className="container mx-auto p-4">
+      <h1 className="text-3xl font-bold mb-6">Opcje Wysyłki</h1>
+      <div className="bg-white shadow-md rounded p-6 mb-6">
+        <h2 className="text-2xl font-semibold mb-4">Dodaj Nową Opcję</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <input
             type="text"
             name="value"
-            placeholder="Value"
-            value={editOption.value}
-            onChange={handleEditChange}
+            placeholder="Wartość"
+            value={newOption.value}
+            onChange={handleChange}
+            className="input input-bordered w-full"
           />
           <input
             type="text"
             name="label"
-            placeholder="Label"
-            value={editOption.label}
-            onChange={handleEditChange}
+            placeholder="Etykieta"
+            value={newOption.label}
+            onChange={handleChange}
+            className="input input-bordered w-full"
           />
           <input
             type="number"
             name="price"
-            placeholder="Price"
-            value={editOption.price}
-            onChange={handleEditChange}
+            placeholder="Cena"
+            value={newOption.price}
+            onChange={handleChange}
+            className="input input-bordered w-full"
           />
-          <button onClick={handleEditOption}>Save</button>
-          <button onClick={() => setEditOption({ id: '', value: '', label: '', price: '', isActive: true })}>Cancel</button>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              name="isActive"
+              checked={newOption.isActive}
+              onChange={handleChange}
+              className="checkbox"
+            />
+            <span>Aktywne</span>
+          </label>
+        </div>
+        <button onClick={handleAddOption} className="btn btn-primary mt-4">Dodaj</button>
+      </div>
+
+      {editOption.id && (
+        <div className="bg-white shadow-md rounded p-6 mb-6">
+          <h2 className="text-2xl font-semibold mb-4">Edytuj Opcję</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              type="text"
+              name="value"
+              placeholder="Wartość"
+              value={editOption.value}
+              onChange={handleEditChange}
+              className="input input-bordered w-full"
+            />
+            <input
+              type="text"
+              name="label"
+              placeholder="Etykieta"
+              value={editOption.label}
+              onChange={handleEditChange}
+              className="input input-bordered w-full"
+            />
+            <input
+              type="number"
+              name="price"
+              placeholder="Cena"
+              value={editOption.price}
+              onChange={handleEditChange}
+              className="input input-bordered w-full"
+            />
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                name="isActive"
+                checked={editOption.isActive}
+                onChange={(e) => {
+                  setEditOption({ ...editOption, isActive: e.target.checked });
+                  handleEditOption();
+                }}
+                className="checkbox"
+              />
+              <span>Aktywne</span>
+            </label>
+          </div>
+          <div className="flex space-x-2 mt-4">
+            <button onClick={handleEditOption} className="btn btn-primary">Zapisz</button>
+            <button onClick={() => setEditOption({ id: '', value: '', label: '', price: '', isActive: true })} className="btn btn-secondary">Anuluj</button>
+          </div>
         </div>
       )}
-      <h2>Add New Option</h2>
-      <input
-        type="text"
-        name="value"
-        placeholder="Value"
-        value={newOption.value}
-        onChange={handleChange}
-      />
-      <input
-        type="text"
-        name="label"
-        placeholder="Label"
-        value={newOption.label}
-        onChange={handleChange}
-      />
-      <input
-        type="number"
-        name="price"
-        placeholder="Price"
-        value={newOption.price}
-        onChange={handleChange}
-      />
-      <label>
-        <input
-          type="checkbox"
-          name="isActive"
-          checked={newOption.isActive}
-          onChange={handleChange}
-        />
-        Active
-      </label>
-      <button onClick={handleAddOption}>Add</button>
+
+      <div className="bg-white shadow-md rounded p-6">
+        <h2 className="text-2xl font-semibold mb-4">Aktualne Opcje Wysyłki</h2>
+        <ul className="space-y-4">
+          {shippingOptions.map(option => (
+            <li key={option._id} className="flex justify-between items-center bg-gray-100 p-4 rounded">
+              <div>
+                <span className="font-semibold">{option.label}</span> - ${option.price}
+              </div>
+              <div className="flex space-x-2">
+                <button onClick={() => setEditOption({ id: option._id, value: option.value, label: option.label, price: option.price, isActive: option.isActive })} className="btn btn-info btn-sm">Edytuj</button>
+                <button onClick={() => handleDeleteOption(option._id)} className="btn btn-error btn-sm">Usuń</button>
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={option.isActive}
+                    onChange={(e) => {
+                      setEditOption({ ...option, isActive: e.target.checked });
+                      handleEditOption();
+                    }}
+                    className="checkbox"
+                  />
+                  <span>Aktywne</span>
+                </label>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };

@@ -63,12 +63,12 @@ const PocztexBox = ({ closeModal }) => {
     return (
         <div className="modal-background">
             <div className="modal-content">
-                <button onClick={closeModal} className="close-modal">X</button>
+                <button onClick={closeModal} className="close-modal">Zamknij X</button>
                 <div ref={mapContainerRef} id="mapContainer" style={{ width: '100%', height: '400px' }}>
                     {mapLoaded ? (
                         <div id="pocztaMap" style={{ width: '100%', height: '100%' }}></div>
                     ) : (
-                        <p>Loading map...</p> // Wyświetlanie informacji o ładowaniu, gdy mapa nie jest jeszcze gotowa
+                        <p>Wczytuje mape....</p> // Wyświetlanie informacji o ładowaniu, gdy mapa nie jest jeszcze gotowa
                     )}
                 </div>
             </div>

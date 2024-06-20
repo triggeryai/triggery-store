@@ -1,4 +1,5 @@
-"use client";
+// app/admin/support/Support.tsx
+'use client';
 import React, { useEffect, useState, useRef } from 'react';
 import useSWR from 'swr';
 import { useSession } from 'next-auth/react';
@@ -63,7 +64,7 @@ const AdminSupport = () => {
       setReplyMessage('');
       scrollToBottom();
     } else {
-      console.error('Failed to send reply');
+      console.error('Nie udało się wysłać odpowiedzi');
     }
   };
 
@@ -86,10 +87,10 @@ const AdminSupport = () => {
     if (response.ok) {
       setIsBotOff(!isBotOff);
       await mutateStatus();
-      toast.success(`Chat bot ${isBotOff ? 'enabled' : 'disabled'}`);
+      toast.success(`Chat bot ${isBotOff ? 'włączony' : 'wyłączony'}`);
     } else {
-      console.error('Failed to toggle bot status');
-      toast.error('Failed to toggle bot status');
+      console.error('Nie udało się zmienić statusu bota');
+      toast.error('Nie udało się zmienić statusu bota');
     }
   };
 
@@ -108,11 +109,11 @@ const AdminSupport = () => {
   }, [messages]);
 
   if (!session?.user.isAdmin) {
-    return <p className="text-center text-gray-600">You do not have access to this page.</p>;
+    return <p className="text-center text-gray-600">Nie masz dostępu do tej strony.</p>;
   }
 
-  if (error || statusError) return <div>Failed to load</div>;
-  if (!data || !statusData) return <div>Loading...</div>;
+  if (error || statusError) return <div>Nie udało się załadować</div>;
+  if (!data || !statusData) return <div>Ładowanie...</div>;
 
   const uniqueSenders = Array.from(new Set(data.data.map((msg: any) => msg.sender !== 'admin' ? msg.sender : msg.recipient)));
 
@@ -121,7 +122,7 @@ const AdminSupport = () => {
       <Toaster />
       <div className={`w-1/4 ${isDarkMode ? 'bg-gray-800' : 'bg-gray-200'} p-4`}>
         <h2 className="text-xl font-semibold mb-4 flex justify-between items-center">
-          Support Inbox
+          Skrzynka odbiorcza wsparcia
           <button 
             onClick={handleRefresh} 
             className={`text-blue-500 hover:text-blue-700 ${isRefreshing ? 'animate-spin' : ''}`}
@@ -141,9 +142,9 @@ const AdminSupport = () => {
       </div>
       <div className={`w-3/4 ${isDarkMode ? 'bg-gray-800' : 'bg-white'} p-4`}>
         <h2 className="text-xl font-semibold mb-4 flex justify-between items-center">
-          Messages
+          Wiadomości
           <div className="flex items-center">
-            <label htmlFor="bot-toggle" className="mr-2">Support Bot:</label>
+            <label htmlFor="bot-toggle" className="mr-2">Bot wsparcia:</label>
             <input
               type="checkbox"
               id="bot-toggle"
@@ -170,9 +171,9 @@ const AdminSupport = () => {
             value={replyMessage}
             onChange={handleReplyChange}
             className="border border-gray-300 rounded-lg p-2 mr-2 w-full"
-            placeholder="Type your reply..."
+            placeholder="Napisz swoją odpowiedź..."
           />
-          <button onClick={handleSendReply} className="bg-blue-500 text-white px-4 py-2 rounded-lg mt-2">Send Reply</button>
+          <button onClick={handleSendReply} className="bg-blue-500 text-white px-4 py-2 rounded-lg mt-2">Wyślij odpowiedź</button>
         </div>
       </div>
     </div>

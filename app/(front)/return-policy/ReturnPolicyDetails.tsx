@@ -1,92 +1,81 @@
-// plik: components/PrivacyPolicy.tsx
+// plik: components/ReturnPolicy.tsx
 
 import React from 'react';
 
-const PrivacyPolicy: React.FC = () => {
+const ReturnPolicy: React.FC = () => {
   return (
     <div className="container mx-auto p-5">
-      <h1 className="text-4xl font-bold text-center my-5">Privacy policy</h1>
-      <p className="text-right text-sm mb-10">Last updated on November 2, 2021</p>
-      <article className="prose lg:prose-xl dark:prose-dark">
-        <p>
-          Privacy policy
+      <div className="bg-white shadow-lg rounded-lg p-8 md:p-12 dark:bg-gray-800 dark:text-gray-50 max-w-4xl mx-auto">
+        <h1 className="text-4xl font-bold text-center mb-5 text-blue-900">Polityka zwrotów</h1>
+        <p className="text-right text-sm mb-10 text-gray-600 dark:text-gray-400">Ostatnia aktualizacja: 20 czerwca 2024</p>
+        <article className="prose lg:prose-xl dark:prose-dark mx-auto">
+          <h2 className="text-2xl font-semibold mt-6">1. Postanowienia ogólne</h2>
+          <p>
+            1.1. Niniejsza Polityka zwrotów dotyczy zakupów dokonanych w sklepie internetowym Domestico.pl, prowadzonym przez [Nazwa firmy] z siedzibą w [Adres firmy], NIP: [Numer NIP], REGON: [Numer REGON].
+          </p>
+          <p>
+            1.2. Sklep internetowy Domestico.pl dokłada wszelkich starań, aby oferowane produkty były najwyższej jakości. Jeżeli jednak zakupiony towar nie spełnia Twoich oczekiwań, masz prawo do jego zwrotu zgodnie z warunkami opisanymi poniżej.
+          </p>
 
-          Last updated on November 2, 2021
+          <h2 className="text-2xl font-semibold mt-6">2. Prawo odstąpienia od umowy</h2>
+          <p>
+            2.1. Konsument, który zawarł umowę na odległość, może w terminie 14 dni kalendarzowych odstąpić od niej bez podawania przyczyny i bez ponoszenia kosztów, z wyjątkiem kosztów określonych w pkt 2.6 niniejszej Polityki.
+          </p>
+          <p>
+            2.2. Termin do odstąpienia od umowy wygasa po upływie 14 dni kalendarzowych od dnia, w którym Konsument wszedł w posiadanie rzeczy lub w którym osoba trzecia inna niż przewoźnik i wskazana przez Konsumenta weszła w posiadanie rzeczy.
+          </p>
+          <p>
+            2.3. Aby skorzystać z prawa odstąpienia od umowy, Konsument musi poinformować Sprzedawcę o swojej decyzji o odstąpieniu od umowy w drodze jednoznacznego oświadczenia (np. pismo wysłane pocztą, faksem lub pocztą elektroniczną).
+          </p>
+          <p>
+            2.4. Konsument może skorzystać z wzoru formularza odstąpienia od umowy, jednak nie jest to obowiązkowe.
+          </p>
+          <p>
+            2.5. Aby zachować termin do odstąpienia od umowy, wystarczy, aby Konsument wysłał informację dotyczącą wykonania przysługującego mu prawa odstąpienia od umowy przed upływem terminu do odstąpienia od umowy.
+          </p>
+          <p>
+            2.6. Konsument ponosi bezpośrednie koszty zwrotu rzeczy.
+          </p>
 
-          This privacy policy (&quot;Policy&quot;) describes how Tailwind Labs Inc. (&quot;Tailwind&quot;, &quot;we&quot;, &quot;us&quot; or &quot;our&quot;) collects, protects and uses the personally identifiable information (&quot;Personal Information&quot;) you (&quot;User&quot;, &quot;you&quot; or &quot;your&quot;) may provide through the Tailwind UI website (tailwindui.com) or in the course of purchasing any Tailwind UI products (collectively, &quot;Website&quot;). The Policy also describes the choices available to you regarding our use of your Personal Information and how you can access and update this information. This Policy does not apply to the practices of companies that we do not own or control, or to individuals that we do not employ or manage.
-          Collection of personal information
+          <h2 className="text-2xl font-semibold mt-6">3. Skutki odstąpienia od umowy</h2>
+          <p>3.1. W przypadku odstąpienia od umowy, Sprzedawca zwraca wszystkie otrzymane od Konsumenta płatności, w tym koszty dostarczenia rzeczy (z wyjątkiem dodatkowych kosztów wynikających z wybranego przez Konsumenta sposobu dostarczenia innego niż najtańszy zwykły sposób dostarczenia oferowany przez Sprzedawcę), niezwłocznie, a w każdym przypadku nie później niż 14 dni od dnia, w którym Sprzedawca został poinformowany o decyzji Konsumenta o wykonaniu prawa odstąpienia od umowy.</p>
+          <p>3.2. Zwrotu płatności Sprzedawca dokonuje przy użyciu takich samych metod płatności, jakie zostały przez Konsumenta użyte w pierwotnej transakcji, chyba że Konsument wyraźnie zgodził się na inne rozwiązanie; w każdym przypadku Konsument nie ponosi żadnych opłat w związku z tym zwrotem.</p>
+          <p>3.3. Sprzedawca może wstrzymać się ze zwrotem płatności do czasu otrzymania rzeczy lub do czasu dostarczenia dowodu jej odesłania, w zależności od tego, które zdarzenie nastąpi wcześniej.</p>
+          <p>3.4. Konsument powinien odesłać rzecz na adres Sprzedawcy niezwłocznie, a w każdym razie nie później niż 14 dni od dnia, w którym poinformował Sprzedawcę o odstąpieniu od umowy. Termin jest zachowany, jeżeli Konsument odeśle rzecz przed upływem terminu 14 dni.</p>
+          <p>3.5. Konsument odpowiada tylko za zmniejszenie wartości rzeczy wynikające z korzystania z niej w sposób inny niż było to konieczne do stwierdzenia charakteru, cech i funkcjonowania rzeczy.</p>
 
-          We receive and store any information you knowingly provide to us when you make a purchase through the Website. Currently this is limited to your email address, which is required for you to be able to login to the Website and access any purchased Tailwind UI products.
-          Collection of non-personal information
+          <h2 className="text-2xl font-semibold mt-6">4. Wyjątki od prawa odstąpienia od umowy</h2>
+          <p>4.1. Prawo odstąpienia od umowy nie przysługuje Konsumentowi w odniesieniu do umów:</p>
+          <ul className="list-disc pl-6">
+            <li>o świadczenie usług, jeżeli Sprzedawca wykonał w pełni usługę za wyraźną zgodą Konsumenta;</li>
+            <li>w której cena lub wynagrodzenie zależy od wahań na rynku finansowym, nad którymi Sprzedawca nie sprawuje kontroli, i które mogą wystąpić przed upływem terminu do odstąpienia od umowy;</li>
+            <li>w której przedmiotem świadczenia jest rzecz nieprefabrykowana, wyprodukowana według specyfikacji Konsumenta lub służąca zaspokojeniu jego zindywidualizowanych potrzeb;</li>
+            <li>w której przedmiotem świadczenia jest rzecz ulegająca szybkiemu zepsuciu lub mająca krótki termin przydatności do użycia;</li>
+            <li>w której przedmiotem świadczenia jest rzecz dostarczona w zapieczętowanym opakowaniu, której po otwarciu opakowania nie można zwrócić ze względu na ochronę zdrowia lub ze względów higienicznych, jeżeli opakowanie zostało otwarte po dostarczeniu;</li>
+            <li>w której przedmiotem świadczenia są rzeczy, które po dostarczeniu, ze względu na swój charakter, zostają nierozłącznie połączone z innymi rzeczami;</li>
+            <li>w której przedmiotem świadczenia są napoje alkoholowe, których cena została uzgodniona przy zawarciu umowy sprzedaży, a których dostarczenie może nastąpić dopiero po upływie 30 dni i których wartość zależy od wahań na rynku, nad którymi Sprzedawca nie ma kontroli;</li>
+            <li>w której Konsument wyraźnie żądał, aby Sprzedawca do niego przyjechał w celu dokonania pilnej naprawy lub konserwacji; jeżeli Sprzedawca świadczy dodatkowo inne usługi niż te, których wykonania Konsument żądał, lub dostarcza rzeczy inne niż części zamienne niezbędne do wykonania naprawy lub konserwacji, prawo odstąpienia od umowy przysługuje Konsumentowi w odniesieniu do dodatkowych usług lub rzeczy;</li>
+            <li>w której przedmiotem świadczenia są nagrania dźwiękowe lub wizualne albo programy komputerowe dostarczane w zapieczętowanym opakowaniu, jeżeli opakowanie zostało otwarte po dostarczeniu;</li>
+            <li>o dostarczanie dzienników, periodyków lub czasopism, z wyjątkiem umowy o prenumeratę;</li>
+            <li>zawartej w drodze aukcji publicznej;</li>
+            <li>o świadczenie usług w zakresie zakwaterowania, innych niż do celów mieszkalnych, przewozu rzeczy, najmu samochodów, gastronomii, usług związanych z wypoczynkiem, wydarzeniami rozrywkowymi, sportowymi lub kulturalnymi, jeżeli w umowie oznaczono dzień lub okres świadczenia usługi;</li>
+            <li>o dostarczanie treści cyfrowych, które nie są zapisane na nośniku materialnym, jeżeli spełnianie świadczenia rozpoczęło się za wyraźną zgodą Konsumenta przed upływem terminu do odstąpienia od umowy i po poinformowaniu go przez Sprzedawcę o utracie prawa odstąpienia od umowy.</li>
+          </ul>
 
-          When you visit the Website our servers automatically record information that your browser sends. This data may include information such as your device&apos;s IP address, browser type and version, operating system type and version, language preferences or the webpage you were visiting before you came to our Website, pages of our Website that you visit, the time spent on those pages, information you search for on our Website, access times and dates, and other statistics.
-          Purchases
+          <h2 className="text-2xl font-semibold mt-6">5. Reklamacje</h2>
+          <p>5.1. W przypadku wystąpienia wady zakupionego towaru, Konsument ma prawo do reklamacji na podstawie przepisów dotyczących rękojmi określonych w Kodeksie cywilnym.</p>
+          <p>5.2. Reklamacje można składać pisemnie na adres: [Adres sklepu] lub za pośrednictwem poczty elektronicznej na adres: biuro@domestico.pl.</p>
+          <p>5.3. Zaleca się, aby w reklamacji zawrzeć: zwięzły opis wady, okoliczności (w tym datę) jej wystąpienia, dane Klienta składającego reklamację oraz żądanie Klienta w związku z wadą towaru.</p>
+          <p>5.4. Sprzedawca ustosunkuje się do reklamacji Klienta w terminie 14 dni kalendarzowych od dnia jej otrzymania. Brak odpowiedzi w tym terminie oznacza, że reklamacja została uznana za uzasadnioną.</p>
 
-          All purchases made through the Website are processed by a third party payment processor, Paddle (paddle.com). Paddle may ask you for personal and/or non-personal information, such as your name, address, email address, credit card information, or other Personal Information. Paddle has a privacy policy (paddle.com/legal-buyers/) that describes their collection and use of personal information. Tailwind does not control Paddle or its collection or use of information. Any questions or concerns about Paddle’s practices should be directed to Paddle.
-
-          Paddle provides us with certain non-personal information relating to purchases made by visitors to the Website. The non-personal information may include details of the purchase such as the date, amount paid, and product purchased. The non-personal purchase information may be linked to the Personal Information you provide to us (typically limited to your email address, as stated above). Paddle does not supply us with any of your other Personal Information such as your name, street address, or credit card information.
-          Managing personal information
-
-          You are able to update your Personal Information in your &quot;Account Settings&quot; on the Website. Currently this is limited to just your email address, as described above. You may also request that we delete your email address, but this will prevent you from accessing the products you have purchased from Tailwind.
-
-          When you update information, we may maintain a copy of the unrevised information in our records. Some information may remain in our private records after deletion of such information from your account for a retention period. Once the retention period expires, Personal Information shall be deleted. Therefore, the right to access, the right to erasure, your rights to access, add to, and update your information cannot be enforced after the expiration of the retention period.
-
-          We will retain and use your information as necessary to comply with our legal obligations, resolve disputes, and enforce our agreements. We may use any aggregated data derived from or incorporating your Personal Information after you update or delete it, but not in a manner that would identify you personally.
-          Use and processing of collected information
-
-          Any of the information we collect from you may be used to personalize your experience; improve our Website; improve customer service; process transactions; send notification emails such as password reminders, updates, etc; and operate our Website. Non-Personal Information collected is used only to identify potential cases of abuse and establish statistical information regarding Website usage. This statistical information is not otherwise aggregated in such a way that would identify any particular user of the system.
-
-          We may process Personal Information related to you if one of the following applies: (i) You have given their consent for one or more specific purposes. Note that under some legislations we may be allowed to process information until you object to such processing (by opting out), without having to rely on consent or any other of the following legal bases below. This, however, does not apply, whenever the processing of Personal Information is subject to European data protection law; (ii) Provision of information is necessary for the performance of an agreement with you and/or for any pre-contractual obligations thereof; (ii) Processing is necessary for compliance with a legal obligation to which you are subject; (iv) Processing is related to a task that is carried out in the public interest or in the exercise of official authority vested in us; (v) Processing is necessary for the purposes of the legitimate interests pursued by us or by a third party. In any case, we will be happy to clarify the specific legal basis that applies to the processing, and in particular whether the provision of Personal Data is a statutory or contractual requirement, or a requirement necessary to enter into a contract.
-          Information transfer and storage
-
-          Depending on your location, data transfers may involve transferring and storing your information in a country other than your own. You are entitled to learn about the legal basis of information transfers to a country outside the European Union or to any international organization governed by public international law or set up by two or more countries, such as the UN, and about the security measures taken by us to safeguard your information. If any such transfer takes place, you can find out more by checking the relevant sections of this document or inquire with us using the information provided in the Contact section.
-          The rights of users
-
-          You may exercise certain rights regarding your information processed by us. In particular, you have the right to do the following: (i) you have the right to withdraw consent where you have previously given your consent to the processing of your information; (ii) you have the right to object to the processing of your information if the processing is carried out on a legal basis other than consent; (iii) you have the right to learn if information is being processed by us, obtain disclosure regarding certain aspects of the processing and obtain a copy of the information undergoing processing; (iv) you have the right to verify the accuracy of your information and ask for it to be updated or corrected; (v) you have the right, under certain circumstances, to restrict the processing of your information, in which case, we will not process your information for any purpose other than storing it; (vi) you have the right, under certain circumstances, to obtain the erasure of your Personal Information from us; (vii) you have the right to receive your information in a structured, commonly used and machine readable format and, if technically feasible, to have it transmitted to another controller without any hindrance. This provision is applicable provided that your information is processed by automated means and that the processing is based on your consent, on a contract which you are part of or on pre-contractual obligations thereof.
-          The right to object to processing
-
-          Where Personal Information is processed for a public interest, in the exercise of an official authority vested in us or for the purposes of the legitimate interests pursued by us, you may object to such processing by providing a ground related to your particular situation to justify the objection. You must know that, however, should your Personal Information be processed for direct marketing purposes, you can object to that processing at any time without providing any justification. To learn whether we are processing Personal Information for direct marketing purposes, you may refer to the relevant sections of this document.
-          How to exercise these rights
-
-          Any requests to exercise User rights can be directed to the Owner by email at support@tailwindui.com. These requests can be exercised free of charge and will be addressed by the Owner as early as possible and always within one month.
-          Privacy of children
-
-          We do not knowingly collect any Personal Information from children under the age of 13. If you are under the age of 13, please do not submit any Personal Information through our Website. We encourage parents and legal guardians to monitor their children&apos;s Internet usage and to help enforce this Policy by instructing their children never to provide Personal Information through our Website without their permission. If you have reason to believe that a child under the age of 13 has provided Personal Information to us through our Website, please contact us.
-          Newsletters
-
-          We offer electronic newsletters which you may voluntarily subscribe to. You may choose to stop receiving our newsletter or marketing emails by following the unsubscribe instructions included in these emails or by contacting us. However, you will continue to receive essential transactional emails.
-          Cookies
-
-          The Website uses &quot;cookies&quot; to help personalize your online experience. A cookie is a text file that is placed on your hard disk by a web page server. Cookies cannot be used to run programs or deliver viruses to your computer. Cookies are uniquely assigned to you, and can only be read by a web server in the domain that issued the cookie to you. We may use cookies to collect, store, and track information for statistical purposes to operate our Website. You have the ability to accept or decline cookies. Most web browsers automatically accept cookies, but you can usually modify your browser setting to decline cookies if you prefer.
-
-          In addition to using cookies and related technologies as described above, we also may permit certain third-party companies to help us tailor advertising that we think may be of interest to users and to collect and use other data about user activities on the Website. These companies may deliver ads that might also place cookies and otherwise track user behavior.
-          Links to other websites
-
-          Our Website contains links to other websites that are not owned or controlled by us. Please be aware that we are not responsible for the privacy practices of such other websites or third parties. We encourage you to be aware when you leave our Website and to read the privacy statements of each and every website that may collect Personal Information.
-
-          In particular, as noted above, purchases made through the Website are handled by Paddle and all such transactions, including any Personal Information or non-personal information collected by Paddle, are under the control of Paddle. We encourage purchasers to read Paddle’s Privacy Policy (paddle.com/legal-buyers/).
-          Information security
-
-          We secure information you provide on computer servers in a controlled, secure environment, protected from unauthorized access, use, or disclosure. We maintain reasonable administrative, technical, and physical safeguards in an effort to protect against unauthorized access, use, modification, and disclosure of Personal Information in its control and custody. However, no data transmission over the Internet or wireless network can be guaranteed. Therefore, while we strive to protect your Personal Information, you acknowledge that (i) there are security and privacy limitations of the Internet which are beyond our control; (ii) the security, integrity, and privacy of any and all information and data exchanged between you and our Website cannot be guaranteed; and (iii) any such information and data may be viewed or tampered with in transit by a third-party, despite best efforts.
-          Data breach
-
-          In the event we become aware that the security of the Website has been compromised or users’ Personal Information has been disclosed to unrelated third-parties as a result of external activity, including, but not limited to, security attacks or fraud, we reserve the right to take reasonably appropriate measures, including, but not limited to, investigation and reporting, as well as notification to and cooperation with law enforcement authorities. In the event of a data breach, we will make reasonable efforts to notify affected individuals if we believe that there is a reasonable risk of harm to the user as a result of the breach or if notice is otherwise required by law. When we do we will send you an email.
-          Legal disclosure
-
-          We will disclose any information we collect, use or receive if required or permitted by law, such as to comply with a subpoena, or similar legal process, and when we believe in good faith that disclosure is necessary to protect our rights, protect your safety or the safety of others, investigate fraud, or respond to a government request. In the event we go through a business transition, such as a merger or acquisition by another company, or sale of all or a portion of its assets, your user account and personal data will likely be among the assets transferred.
-          Changes and amendments
-
-          We reserve the right to modify this privacy policy relating to the Website at any time, effective upon posting of an updated version of this Policy on the Website. When we do we will revise the updated date at the bottom of this page. Continued use of the Website after any such changes shall constitute your consent to such changes.
-          Acceptance of this policy
-
-          You acknowledge that you have read this Policy and agree to all its terms and conditions. By using the Website you agree to be bound by this Policy. If you do not agree to abide by the terms of this Policy, you are not authorized to use or access the Website.
-          Contacting us
-
-          If you have any questions about this Policy, please contact us by email at support@tailwindui.com.
-        </p>
-      </article>
+          <h2 className="text-2xl font-semibold mt-6">6. Postanowienia końcowe</h2>
+          <p>6.1. Niniejsza Polityka zwrotów obowiązuje od dnia 20 czerwca 2024 roku.</p>
+          <p>6.2. Sklep internetowy Domestico.pl zastrzega sobie prawo do zmiany niniejszej Polityki zwrotów z ważnych przyczyn, takich jak zmiany przepisów prawa, zmiany sposobów płatności i dostaw - w zakresie, w jakim te zmiany wpływają na realizację postanowień niniejszej Polityki.</p>
+          <p>6.3. W sprawach nieuregulowanych niniejszą Polityką zwrotów mają zastosowanie powszechnie obowiązujące przepisy prawa polskiego, w szczególności przepisy Kodeksu cywilnego oraz ustawy o prawach konsumenta.</p>
+        </article>
+      </div>
     </div>
   );
 };
 
-export default PrivacyPolicy;
+export default ReturnPolicy;

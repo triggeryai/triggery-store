@@ -124,19 +124,19 @@ const Menu = () => {
                   >
                     {session.user.isAdmin && (
                       <li onClick={handleClick}>
-                        <Link href="/admin/dashboard">Admin Dashboard</Link>
+                        <Link href="/admin/dashboard">Panel administratora</Link>
                       </li>
                     )}
 
                     <li onClick={handleClick}>
-                      <Link href="/order-history">Order history </Link>
+                      <Link href="/order-history">Historia zamówień</Link>
                     </li>
                     <li onClick={handleClick}>
-                      <Link href="/profile">Profile</Link>
+                      <Link href="/profile">Profil</Link>
                     </li>
                     <li onClick={handleClick}>
                       <button type="button" onClick={signoutHandler}>
-                        Sign out
+                        Wyloguj się
                       </button>
                     </li>
                   </ul>
@@ -150,7 +150,7 @@ const Menu = () => {
                 type="button"
                 onClick={() => signIn()}
               >
-                Sign in
+                Zaloguj się
               </button>
             </li>
           )}

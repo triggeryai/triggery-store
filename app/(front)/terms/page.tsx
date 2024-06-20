@@ -1,10 +1,10 @@
 import { Metadata } from 'next'
-import PrivacyPolicy from './TermsDetails'
+import Terms from './TermsDetails'
 
 export const metadata: Metadata = {
   title: 'Place Order',
 }
 
 export default async function PlaceOrderPage() {
-  return <PrivacyPolicy />
+  return <Terms />
 }

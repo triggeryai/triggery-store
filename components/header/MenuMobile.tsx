@@ -52,17 +52,17 @@ const MobileMenu: React.FC = () => {
             <div className="flex flex-col items-center">
               <div className="badge badge-primary mb-4">{session.user.name}</div>
               {session.user.isAdmin && (
-                <Link href="/admin/dashboard"><div className="btn btn-ghost w-full mb-2">Admin Dashboard</div></Link>
+                <Link href="/admin/dashboard"><div className="btn btn-ghost w-full mb-2">Panel Administratora</div></Link>
               )}
-              <Link href="/order-history"><div className="btn btn-ghost w-full mb-2">Order History</div></Link>
-              <Link href="/profile"><div className="btn btn-ghost w-full mb-2">Profile</div></Link>
+              <Link href="/order-history"><div className="btn btn-ghost w-full mb-2">Historia Zamówień</div></Link>
+              <Link href="/profile"><div className="btn btn-ghost w-full mb-2">Profil</div></Link>
               <button type="button" onClick={signoutHandler} className="btn btn-ghost w-full mb-2">
-                Sign out
+                Wyloguj
               </button>
             </div>
           ) : (
             <button className="btn btn-ghost w-full" onClick={() => signIn()}>
-              Sign in
+              Zaloguj
             </button>
           )}
         </div>

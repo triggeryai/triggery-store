@@ -1,4 +1,3 @@
-// app/(front)/reset-password/Form.tsx
 'use client'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
@@ -29,21 +28,21 @@ const ForgotPasswordForm = () => {
       });
 
       if (!response.ok) {
-        throw new Error('There was an error sending the reset password email.');
+        throw new Error('Wystąpił błąd podczas wysyłania e-maila z resetowaniem hasła.');
       }
 
-      // Show success message and possibly redirect
-      toast.success('If the email is associated with an account, a password reset email will be sent.');
-      // Optionally, redirect to the login page or a page that says 'Check your email'
+      // Pokaż wiadomość o sukcesie i ewentualnie przekieruj
+      toast.success('Jeśli email jest powiązany z kontem, zostanie wysłany e-mail z resetowaniem hasła.');
+      // Opcjonalnie, przekieruj na stronę logowania lub stronę informującą o sprawdzeniu e-maila
     } catch (error: any) {
-      toast.error(error.message || 'Failed to send reset password email.');
+      toast.error(error.message || 'Nie udało się wysłać e-maila z resetowaniem hasła.');
     }
   }
 
   return (
     <div className="max-w-sm mx-auto card bg-base-300 my-4">
       <div className="card-body">
-        <h1 className="card-title">Forgot Password</h1>
+        <h1 className="card-title">Zapomniałeś Hasła</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="my-2">
             <label htmlFor="email" className="label">
@@ -53,10 +52,10 @@ const ForgotPasswordForm = () => {
               type="email"
               id="email"
               {...register('email', {
-                required: 'Email is required',
+                required: 'Email jest wymagany',
                 pattern: {
                   value: /\S+@\S+\.\S+/,
-                  message: 'Entered value does not match email format',
+                  message: 'Wprowadzona wartość nie jest w formacie email',
                 },
               })}
               className="input input-bordered w-full max-w-xs"
@@ -72,15 +71,15 @@ const ForgotPasswordForm = () => {
               {isSubmitting ? (
                 <span className="loading loading-spinner"></span>
               ) : (
-                'Submit'
+                'Wyślij'
               )}
             </button>
           </div>
         </form>
         <div>
-          Remembered your password?{' '}
+          Pamiętasz hasło?{' '}
           <Link href="/signin">
-            <button className="link">Sign in</button>
+            <button className="link">Zaloguj się</button>
           </Link>
         </div>
       </div>

@@ -5,11 +5,11 @@ import OrderModel from '@/lib/models/OrderModel';
 export const PUT = auth(async (...request: any) => {
     const [req, { params }] = request;
     if (!req.auth) {
-        return Response.json({ message: 'Unauthorized' }, { status: 401 });
+        return Response.json({ message: 'Nieautoryzowany' }, { status: 401 });
     }
 
     if (req.bodyUsed) {
-        return Response.json({ message: 'Request body already read' }, { status: 400 });
+        return Response.json({ message: 'Treść żądania została już odczytana' }, { status: 400 });
     }
 
     const body = await req.json();
@@ -18,7 +18,7 @@ export const PUT = auth(async (...request: any) => {
     await dbConnect();
     const order = await OrderModel.findById(params.id);
     if (!order) {
-        return Response.json({ message: 'Order not found' }, { status: 404 });
+        return Response.json({ message: 'Zamówienie nie zostało znalezione' }, { status: 404 });
     }
 
     // Sprawdzamy, czy użytkownik jest właścicielem zamówienia
@@ -30,7 +30,7 @@ export const PUT = auth(async (...request: any) => {
             order.shippingAddress.shippingCost = 0; // lub inna domyślna wartość
         }
         if (!order.shippingAddress.shippingMethod) {
-            order.shippingAddress.shippingMethod = 'DefaultMethod'; // lub inna domyślna wartość
+            order.shippingAddress.shippingMethod = 'DomyślnaMetoda'; // lub inna domyślna wartość
         }
 
         try {
@@ -40,6 +40,6 @@ export const PUT = auth(async (...request: any) => {
             return Response.json({ message: error.message }, { status: 400 });
         }
     } else {
-        return Response.json({ message: 'User does not have permission to update this order' }, { status: 403 });
+        return Response.json({ message: 'Użytkownik nie ma uprawnień do aktualizacji tego zamówienia' }, { status: 403 });
     }
 });

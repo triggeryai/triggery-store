@@ -14,8 +14,8 @@ const AdminLayout = async ({
     return (
       <div className="relative flex flex-grow p-4">
         <div>
-          <h1 className="text-2xl">Unauthorized</h1>
-          <p>Admin permission required</p>
+          <h1 className="text-2xl">Nieautoryzowany</h1>
+          <p>Wymagane uprawnienia administratora</p>
         </div>
       </div>
     )
@@ -31,7 +31,7 @@ const AdminLayout = async ({
                 className={'dashboard' === activeItem ? 'active' : ''}
                 href="/admin/dashboard"
               >
-                Dashboard
+                Panel
               </Link>
             </li>
             <li>
@@ -39,7 +39,7 @@ const AdminLayout = async ({
                 className={'orders' === activeItem ? 'active' : ''}
                 href="/admin/orders"
               >
-                Orders
+                Zamówienia
               </Link>
             </li>
             <li>
@@ -47,7 +47,7 @@ const AdminLayout = async ({
                 className={'products' === activeItem ? 'active' : ''}
                 href="/admin/products"
               >
-                Products
+                Produkty
               </Link>
             </li>
             <li>
@@ -55,7 +55,7 @@ const AdminLayout = async ({
                 className={'categories' === activeItem ? 'active' : ''}
                 href="/admin/categories"
               >
-                Categories
+                Kategorie
               </Link>
             </li>
             <li>
@@ -63,7 +63,7 @@ const AdminLayout = async ({
                 className={'users' === activeItem ? 'active' : ''}
                 href="/admin/users"
               >
-                Users
+                Użytkownicy
               </Link>
             </li>
             <li>
@@ -71,7 +71,7 @@ const AdminLayout = async ({
                 className={'payments' === activeItem ? 'active' : ''}
                 href="/admin/payments"
               >
-                Payments
+                Płatności
               </Link>
             </li>
             <li>
@@ -79,7 +79,7 @@ const AdminLayout = async ({
                 className={'shipping' === activeItem ? 'active' : ''}
                 href="/admin/shipping"
               >
-                Shipping
+                Wysyłka
               </Link>
             </li>
             <li>
@@ -87,7 +87,7 @@ const AdminLayout = async ({
                 className={'support' === activeItem ? 'active' : ''}
                 href="/admin/support"
               >
-                Support
+                Wsparcie
               </Link>
             </li>
             <li>
@@ -95,7 +95,7 @@ const AdminLayout = async ({
                 className={'emails' === activeItem ? 'active' : ''}
                 href="/admin/emails"
               >
-                Emails
+                E-maile
               </Link>
             </li>
             <li>
@@ -103,7 +103,7 @@ const AdminLayout = async ({
                 className={'general' === activeItem ? 'active' : ''}
                 href="/admin/general"
               >
-                General
+                Ogólne
               </Link>
             </li>
           </ul>

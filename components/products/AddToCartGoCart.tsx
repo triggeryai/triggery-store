@@ -18,15 +18,15 @@ export default function AddToCartGoCart({ item }: { item: OrderItem }) {
   const addToCartHandler = () => {
     if (item.countInStock > 0) {
       increase(item)
-      toast.success('Product added to the cart!') // Display success toast
+      toast.success('Produkt dodany do koszyka!') // Display success toast
     } else {
-      toast.error('This product is out of stock and cannot be added to the cart.')
+      toast.error('Ten produkt jest niedostępny i nie może zostać dodany do koszyka.')
     }
   }
 
   const decreaseHandler = (item: OrderItem) => {
     decrease(item)
-    toast.success('Product removed from the cart!') // Display success toast
+    toast.success('Produkt usunięty z koszyka!') // Display success toast
   }
 
   const goToCartHandler = () => {
@@ -44,15 +44,15 @@ export default function AddToCartGoCart({ item }: { item: OrderItem }) {
       <button className="btn" type="button" onClick={() => {
         if (existItem.countInStock > existItem.qty) {
           increase(existItem)
-          toast.success('Product added to the cart!') // Display success toast
+          toast.success('Produkt dodany do koszyka!') // Display success toast
         } else {
-          toast.error('No more stock available.')
+          toast.error('Brak dostępnego zapasu.')
         }
       }}>
         +
       </button>
       <button className="btn btn-secondary ml-2" type="button" onClick={goToCartHandler}>
-        Go to cart
+        Idź do koszyka
       </button>
     </div>
   ) : (
@@ -62,7 +62,7 @@ export default function AddToCartGoCart({ item }: { item: OrderItem }) {
       onClick={addToCartHandler}
       disabled={isDisabled}  // Disable the button if the item is out of stock
     >
-      {isDisabled ? 'Lack of Products' : 'Add to cart'}
+      {isDisabled ? 'Brak produktu' : 'Dodaj do koszyka'}
     </button>
   )
 }

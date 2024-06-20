@@ -12,7 +12,7 @@ export async function generateMetadata({
 }) {
   const product = await productService.getBySlug(params.slug)
   if (!product) {
-    return { title: 'Product not found' }
+    return { title: 'Produkt nie znaleziony' }
   }
   return {
     title: product.name,
@@ -27,7 +27,7 @@ export default async function ProductDetails({
 }) {
   const product = await productService.getBySlug(params.slug)
   if (!product) {
-    return <div>Product not found</div>
+    return <div>Produkt nie znaleziony</div>
   }
   return (
     <>
@@ -37,7 +37,7 @@ export default async function ProductDetails({
           <svg className="h-4 w-4 mr-2 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
             <path d="M10 15l-5.5-5.5L10 4m-5 5.5h16" />
           </svg>
-          back to products
+          powrót do produktów
         </button>
       </Link>
 
@@ -72,7 +72,7 @@ export default async function ProductDetails({
               <div className="divider"></div>
             </li>
             <li>
-              Description: <p>{product.description}</p>
+              Opis: <p>{product.description}</p>
             </li>
           </ul>
         </div>
@@ -80,13 +80,13 @@ export default async function ProductDetails({
           <div className="card bg-base-300 shadow-xl mt-3 md:mt-0">
             <div className="card-body">
               <div className="mb-2 flex justify-between">
-                <div>Price</div>
-                <div>${product.price}</div>
+                <div>Cena</div>
+                <div>{product.price} PLN</div>
               </div>
               <div className="mb-2 flex justify-between">
                 <div>Status</div>
                 <div>
-                  {product.countInStock > 0 ? 'In stock' : 'Unavailable'}
+                  {product.countInStock > 0 ? 'W magazynie' : 'Niedostępny'}
                 </div>
               </div>
               {product.countInStock !== 0 && (
@@ -103,7 +103,7 @@ export default async function ProductDetails({
                   </div>
                   <div className="mt-4 text-center">
                     <Link href="/cart">
-                      <div className="btn btn-accent w-full">Go to Cart</div>
+                      <div className="btn btn-accent w-full">Idź do koszyka</div>
                     </Link>
                   </div>
                 </>
@@ -115,4 +115,3 @@ export default async function ProductDetails({
     </>
   )
 }
-

@@ -20,7 +20,7 @@ export default async function Home() {
   return (
     <>
       <BannerCarousel /> {/* Use the BannerCarousel component */}
-      <h2 className="text-2xl py-2">Latest Products</h2>
+      <h2 className="text-2xl py-2 text-center">Najnowsze produkty</h2>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
         {latestProducts.map((product) => (
           <ProductItem key={product.slug} product={convertDocToObj(product)} />

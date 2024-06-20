@@ -43,14 +43,14 @@ const Dashboard = () => {
   const { data: summary, error } = useSWR(`/api/admin/orders/summary`)
 
   if (error) return error.message
-  if (!summary) return 'Loading...'
+  if (!summary) return 'Ładowanie...'
 
   const salesData = {
     labels: summary.salesData.map((x: { _id: string }) => x._id),
     datasets: [
       {
         fill: true,
-        label: 'Sales',
+        label: 'Sprzedaż',
         data: summary.salesData.map(
           (x: { totalSales: number }) => x.totalSales
         ),
@@ -64,7 +64,7 @@ const Dashboard = () => {
     datasets: [
       {
         fill: true,
-        label: 'Orders',
+        label: 'Zamówienia',
         data: summary.salesData.map(
           (x: { totalOrders: number }) => x.totalOrders
         ),
@@ -74,10 +74,10 @@ const Dashboard = () => {
     ],
   }
   const productsData = {
-    labels: summary.productsData.map((x: { _id: string }) => x._id), // 2022/01 2022/03
+    labels: summary.productsData.map((x: { _id: string }) => x._id),
     datasets: [
       {
-        label: 'Category',
+        label: 'Kategoria',
         data: summary.productsData.map(
           (x: { totalProducts: number }) => x.totalProducts
         ),
@@ -101,10 +101,10 @@ const Dashboard = () => {
     ],
   }
   const usersData = {
-    labels: summary.usersData.map((x: { _id: string }) => x._id), // 2022/01 2022/03
+    labels: summary.usersData.map((x: { _id: string }) => x._id),
     datasets: [
       {
-        label: 'Users',
+        label: 'Użytkownicy',
         borderColor: 'rgb(53, 162, 235)',
         backgroundColor: 'rgba(53, 162, 235, 0.5)',
         data: summary.usersData.map(
@@ -116,57 +116,57 @@ const Dashboard = () => {
 
   return (
     <div>
-      <div className="my-4 stats inline-grid md:flex  shadow stats-vertical   md:stats-horizontal">
+      <div className="my-4 stats inline-grid md:flex shadow stats-vertical md:stats-horizontal">
         <div className="stat">
-          <div className="stat-title">Sales</div>
+          <div className="stat-title">Sprzedaż</div>
           <div className="stat-value text-primary">
-            ${formatNumber(summary.ordersPrice)}
+            PLN {formatNumber(summary.ordersPrice)}
           </div>
           <div className="stat-desc">
-            <Link href="/admin/orders">View sales</Link>
+            <Link href="/admin/orders">Zobacz sprzedaż</Link>
           </div>
         </div>
         <div className="stat">
-          <div className="stat-title"> Orders</div>
+          <div className="stat-title">Zamówienia</div>
           <div className="stat-value text-primary">{summary.ordersCount}</div>
           <div className="stat-desc">
-            <Link href="/admin/orders">View orders</Link>
+            <Link href="/admin/orders">Zobacz zamówienia</Link>
           </div>
         </div>
         <div className="stat">
-          <div className="stat-title">Products</div>
+          <div className="stat-title">Produkty</div>
           <div className="stat-value text-primary">{summary.productsCount}</div>
           <div className="stat-desc">
-            <Link href="/admin/products">View products</Link>
+            <Link href="/admin/products">Zobacz produkty</Link>
           </div>
         </div>
         <div className="stat">
-          <div className="stat-title">Users</div>
+          <div className="stat-title">Użytkownicy</div>
           <div className="stat-value text-primary">{summary.usersCount}</div>
           <div className="stat-desc">
-            <Link href="/admin/users">View users</Link>
+            <Link href="/admin/users">Zobacz użytkowników</Link>
           </div>
         </div>
       </div>
       <div className="grid md:grid-cols-2 gap-4">
         <div>
-          <h2 className="text-xl py-2">Sales Report</h2>
+          <h2 className="text-xl py-2">Raport sprzedaży</h2>
           <Line data={salesData} />
         </div>
         <div>
-          <h2 className="text-xl py-2">Orders Report</h2>
+          <h2 className="text-xl py-2">Raport zamówień</h2>
           <Line data={ordersData} />
         </div>
       </div>
       <div className="grid md:grid-cols-2 gap-4">
         <div>
-          <h2 className="text-xl py-2">Products Report</h2>
-          <div className="flex items-center justify-center h-80 w-96 ">
+          <h2 className="text-xl py-2">Raport produktów</h2>
+          <div className="flex items-center justify-center h-80 w-96">
             <Doughnut data={productsData} />
           </div>
         </div>
         <div>
-          <h2 className="text-xl py-2">Users Report</h2>
+          <h2 className="text-xl py-2">Raport użytkowników</h2>
           <Bar data={usersData} />
         </div>
       </div>

@@ -63,7 +63,7 @@ const LackProductButton = () => {
 
   return (
     <label>
-      Show Lack Products
+      Pokaż brakujące produkty {' '}
       <input
         type="checkbox"
         checked={isOn}

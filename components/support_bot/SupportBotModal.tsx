@@ -1,11 +1,10 @@
-// components\support_bot\SupportBotModal.tsx
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import { useSession } from 'next-auth/react';
 import Fuse from 'fuse.js';
-import './SupportBotModal.css';
 import { FaTimes, FaSync } from 'react-icons/fa';
+import './SupportBotModal.css';
 
 const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
   const { data: session } = useSession();
@@ -20,16 +19,16 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
   const questions = [
-    { question: 'How to buy?', answer: 'To buy a product, click on the "Buy" button and follow the instructions.' },
-    { question: 'How to track my order?', answer: 'You can track your order by logging into your account and checking the "Orders" section.' },
-    { question: 'What are the payment options?', answer: 'We accept credit cards, PayPal, and bank transfers.' },
-    { question: 'How to return a product?', answer: 'To return a product, go to the "Returns" section and follow the instructions.' },
-    { question: 'How to contact support?', answer: 'You can contact support by clicking on the "Contact Support" button and filling out the form.' },
-    { question: 'What is the delivery time?', answer: 'Delivery time is typically between 3-5 business days.' },
-    { question: 'How to change my account details?', answer: 'You can change your account details in the "Account Settings" section.' },
-    { question: 'What are the shipping costs?', answer: 'Shipping costs depend on the weight and destination of the package.' },
-    { question: 'How to use a discount code?', answer: 'You can use a discount code at checkout by entering it in the "Discount Code" field.' },
-    { question: 'What is your privacy policy?', answer: 'You can read our privacy policy in the "Privacy Policy" section of our website.' }
+    { question: 'Jak kupić?', answer: 'Aby kupić produkt, kliknij przycisk "Kup" i postępuj zgodnie z instrukcjami.' },
+    { question: 'Jak śledzić moje zamówienie?', answer: 'Możesz śledzić swoje zamówienie, logując się na swoje konto i sprawdzając sekcję "Zamówienia".' },
+    { question: 'Jakie są opcje płatności?', answer: 'Akceptujemy karty kredytowe, PayPal i przelewy bankowe.' },
+    { question: 'Jak zwrócić produkt?', answer: 'Aby zwrócić produkt, przejdź do sekcji "Zwroty" i postępuj zgodnie z instrukcjami.' },
+    { question: 'Jak skontaktować się z pomocą techniczną?', answer: 'Możesz skontaktować się z pomocą techniczną, klikając przycisk "Kontakt z pomocą" i wypełniając formularz.' },
+    { question: 'Jaki jest czas dostawy?', answer: 'Czas dostawy wynosi zazwyczaj od 3 do 5 dni roboczych.' },
+    { question: 'Jak zmienić dane mojego konta?', answer: 'Możesz zmienić dane swojego konta w sekcji "Ustawienia konta".' },
+    { question: 'Jakie są koszty wysyłki?', answer: 'Koszty wysyłki zależą od wagi i miejsca docelowego paczki.' },
+    { question: 'Jak użyć kodu rabatowego?', answer: 'Możesz użyć kodu rabatowego podczas realizacji zamówienia, wpisując go w pole "Kod rabatowy".' },
+    { question: 'Jaka jest wasza polityka prywatności?', answer: 'Naszą politykę prywatności możesz przeczytać w sekcji "Polityka prywatności" na naszej stronie internetowej.' }
   ];
 
   const fuse = new Fuse(questions, { keys: ['question'] });
@@ -107,7 +106,7 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
       await fetchChatHistory(); // Fetch updated chat history including admin replies
       scrollToBottom();
     } else {
-      setChatHistory([...newChatHistory, { sender: 'bot', message: 'Failed to send your message. Please try again later.' }]);
+      setChatHistory([...newChatHistory, { sender: 'bot', message: 'Nie udało się wysłać wiadomości. Spróbuj ponownie później.' }]);
       scrollToBottom();
     }
     setIsTyping(false);
@@ -138,13 +137,13 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
           <div className="fixed inset-0 bg-black opacity-50" onClick={onClose}></div>
           <div className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-auto z-10 flex flex-col" style={{ maxHeight: '80vh' }}>
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-gray-800">Support Bot</h2>
+              <h2 className="text-xl font-semibold text-gray-800">Bot Wsparcia</h2>
               <button onClick={onClose} className="text-gray-500 hover:text-gray-800">
                 <FaTimes size={20} />
               </button>
             </div>
-            <p className="text-center text-gray-600">Support bot is currently turned off. Please try again later.</p>
-            <button onClick={onClose} className="mt-4 w-full text-center py-2 bg-red-500 text-white rounded-lg">Close</button>
+            <p className="text-center text-gray-600">Bot wsparcia jest obecnie wyłączony. Spróbuj ponownie później.</p>
+            <button onClick={onClose} className="mt-4 w-full text-center py-2 bg-red-500 text-white rounded-lg">Zamknij</button>
           </div>
         </div>
       </CSSTransition>
@@ -157,7 +156,7 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
         <div className="fixed inset-0 bg-black opacity-50" onClick={onClose}></div>
         <div className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-auto z-10 flex flex-col" style={{ maxHeight: '80vh' }}>
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-gray-800">Support Bot</h2>
+            <h2 className="text-xl font-semibold text-gray-800">Bot Wsparcia</h2>
             <button onClick={onClose} className="text-gray-500 hover:text-gray-800">
               <FaTimes size={20} />
             </button>
@@ -196,14 +195,14 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
                       value={userMessage}
                       onChange={handleUserMessageChange}
                       className="flex-1 border border-gray-300 rounded-lg p-2 mr-2"
-                      placeholder="Type your message..."
+                      placeholder="Wpisz swoją wiadomość..."
                       onKeyPress={(e) => {
                         if (e.key === 'Enter') handleSendMessage();
                       }}
                     />
-                    <button onClick={handleSendMessage} className="bg-blue-500 text-white px-4 py-2 rounded-lg">Send</button>
+                    <button onClick={handleSendMessage} className="bg-blue-500 text-white px-4 py-2 rounded-lg">Wyślij</button>
                   </div>
-                  <button onClick={() => setShowLiveSupport(false)} className="mt-4 w-full text-center py-2 bg-gray-500 text-white rounded-lg">Back to Questions</button>
+                  <button onClick={() => setShowLiveSupport(false)} className="mt-4 w-full text-center py-2 bg-gray-500 text-white rounded-lg">Powrót do pytań</button>
                 </>
               ) : (
                 <>
@@ -223,14 +222,14 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
                       <p>{selectedQuestion}</p>
                     </div>
                   )}
-                  <button onClick={() => setShowLiveSupport(true)} className="mt-4 w-full text-center py-2 bg-blue-500 text-white rounded-lg">Contact with live support</button>
+                  <button onClick={() => setShowLiveSupport(true)} className="mt-4 w-full text-center py-2 bg-blue-500 text-white rounded-lg">Kontakt z pomocą na żywo</button>
                 </>
               )}
             </>
           ) : (
-            <p className="text-center text-gray-600">Please log in to chat with the support bot.</p>
+            <p className="text-center text-gray-600">Zaloguj się, aby rozmawiać z botem wsparcia.</p>
           )}
-          <button onClick={onClose} className="mt-4 w-full text-center py-2 bg-red-500 text-white rounded-lg">Close</button>
+          <button onClick={onClose} className="mt-4 w-full text-center py-2 bg-red-500 text-white rounded-lg">Zamknij</button>
         </div>
       </div>
     </CSSTransition>

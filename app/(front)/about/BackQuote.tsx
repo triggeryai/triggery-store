@@ -8,28 +8,28 @@ const BackQuote: React.FC = () => {
         <div className="flex flex-wrap items-center">
           <div className="w-full lg:w-1/2 px-4 mb-10 lg:mb-0">
             <Image
-              src="/shop.jpg" // The path to your image file in the public directory
-              alt="Shop"
-              width={1341} // The width of the image - adjust as necessary
-              height={768} // The height of the image - adjust as necessary
-              layout="responsive" // Makes the image scale based on the parent element
+              src="/shop.jpg" // Ścieżka do pliku obrazu w katalogu public
+              alt="Sklep"
+              width={1341} // Szerokość obrazu - dostosuj w razie potrzeby
+              height={768} // Wysokość obrazu - dostosuj w razie potrzeby
+              layout="responsive" // Powoduje skalowanie obrazu w zależności od elementu nadrzędnego
               className="rounded-lg shadow-lg"
             />
           </div>
           <div className="w-full lg:w-1/2 px-4">
             <div className="border-l-4 border-blue-500 pl-4 mb-6">
-              <span className="text-sm text-gray-600 uppercase dark:text-gray-400">Who we are?</span>
+              <span className="text-sm text-gray-600 uppercase dark:text-gray-400">Kim jesteśmy?</span>
               <h1 className="mt-2 text-3xl font-black text-gray-700 dark:text-gray-300">
-                About Us
+                O Nas
               </h1>
             </div>
             <p className="mb-10 text-gray-500 dark:text-gray-400">
-              At Domestico, we provide top-notch cleaning products to ensure your spaces are spotless and hygienic. Our extensive range of products is tailored to meet all your cleaning needs.
+              W Domestico dostarczamy najwyższej jakości produkty do sprzątania, aby zapewnić czystość i higienę Twoich przestrzeni. Nasza szeroka gama produktów jest dostosowana do wszelkich potrzeb związanych ze sprzątaniem.
             </p>
             <blockquote className="p-4 italic border-l-4 bg-neutral-100 text-neutral-600 border-neutral-500 quote rounded-md shadow-md">
-              <p className="mb-2">&quot;Successfully providing business solutions for 25 years&quot;</p>
+              <p className="mb-2">&quot;Dla mnie najwazniejszy jest klient&quot;</p>
               <cite className="flex items-center">
-                <span className="mr-3 font-bold text-neutral-800">- John Doe, CEO</span>
+                <span className="mr-3 font-bold text-neutral-800">- Marta Byczek</span>
               </cite>
             </blockquote>
           </div>

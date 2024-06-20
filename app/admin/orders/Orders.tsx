@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Order } from '@/lib/models/OrderModel'
 import Link from 'next/link'
 import useSWR from 'swr'
@@ -16,7 +16,7 @@ export default function Orders() {
   const { trigger: deleteOrder } = useSWRMutation(
     `/api/admin/orders`,
     async (url, { arg }: { arg: { orderId: string } }) => {
-      const toastId = toast.loading('Deleting order...')
+      const toastId = toast.loading('Usuwanie zamówienia...')
       const res = await fetch(`${url}/${arg.orderId}`, {
         method: 'DELETE',
         headers: {
@@ -26,7 +26,7 @@ export default function Orders() {
       const data = await res.json()
       setShowModal(false) // Hide modal after operation
       if (res.ok) {
-        toast.success('Order deleted successfully', {
+        toast.success('Zamówienie pomyślnie usunięte', {
           id: toastId,
         })
         mutate() // Revalidate the orders data
@@ -38,8 +38,12 @@ export default function Orders() {
     }
   )
 
-  if (error) return <p>An error has occurred.</p>
-  if (!ordersData) return <p>Loading...</p>
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (error) return <p>Wystąpił błąd.</p>
+  if (!ordersData) return <p>Ładowanie...</p>
 
   const { orders, totalPages } = ordersData
 
@@ -64,41 +68,41 @@ export default function Orders() {
 
   return (
     <div>
-      <h1 className="py-4 text-2xl">Orders</h1>
+      <h1 className="py-4 text-2xl">Zamówienia</h1>
       <div className="overflow-x-auto">
         <table className="table-auto w-full border-collapse">
           <thead>
             <tr className="bg-gray-200">
               <th className="border px-4 py-2"><div className="badge">ID</div></th>
-              <th className="border px-4 py-2"><div className="badge">USER</div></th>
-              <th className="border px-4 py-2"><div className="badge">DATE</div></th>
-              <th className="border px-4 py-2"><div className="badge">TOTAL</div></th>
-              <th className="border px-4 py-2"><div className="badge">PAID</div></th>
-              <th className="border px-4 py-2"><div className="badge">DELIVERED</div></th>
-              <th className="border px-4 py-2"><div className="badge">ACTION</div></th>
+              <th className="border px-4 py-2"><div className="badge">UŻYTKOWNIK</div></th>
+              <th className="border px-4 py-2"><div className="badge">DATA</div></th>
+              <th className="border px-4 py-2"><div className="badge">ŁĄCZNIE</div></th>
+              <th className="border px-4 py-2"><div className="badge">OPŁACONE</div></th>
+              <th className="border px-4 py-2"><div className="badge">DOSTARCZONE</div></th>
+              <th className="border px-4 py-2"><div className="badge">AKCJA</div></th>
             </tr>
           </thead>
           <tbody>
             {orders.map((order: Order) => (
               <tr key={order._id}>
                 <td className="border px-4 py-2">..{order._id.substring(20, 24)}</td>
-                <td className="border px-4 py-2">{order.user?.name || 'Deleted user'}</td>
+                <td className="border px-4 py-2">{order.user?.name || 'Usunięty użytkownik'}</td>
                 <td className="border px-4 py-2">{order.createdAt.substring(0, 10)}</td>
                 <td className="border px-4 py-2">${order.totalPrice}</td>
                 <td className="border px-4 py-2">
                   {order.isPaid && order.paidAt
                     ? `${order.paidAt.substring(0, 10)}`
-                    : 'not paid'}
+                    : 'nieopłacone'}
                 </td>
                 <td className="border px-4 py-2">
                   {order.isDelivered && order.deliveredAt
                     ? `${order.deliveredAt.substring(0, 10)}`
-                    : 'not delivered'}
+                    : 'niedostarczone'}
                 </td>
                 <td className="border px-4 py-2">
                   <Link href={`/order/${order._id}`} passHref>
                     <button className="btn btn-primary">
-                      Details
+                      Szczegóły
                     </button>
                   </Link>
                   &nbsp;
@@ -107,7 +111,7 @@ export default function Orders() {
                     type="button"
                     className="btn btn-error"
                   >
-                    Delete
+                    Usuń
                   </button>
                 </td>
               </tr>
@@ -122,15 +126,15 @@ export default function Orders() {
           disabled={page === 1}
           className="bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50"
         >
-          Previous
+          Poprzednia
         </button>
-        <span className="text-gray-700">Page {page} of {totalPages}</span>
+        <span className="text-gray-700">Strona {page} z {totalPages}</span>
         <button
           onClick={handleNextPage}
           disabled={page === totalPages}
           className="bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50"
         >
-          Next
+          Następna
         </button>
       </div>
 
@@ -139,14 +143,14 @@ export default function Orders() {
         <div className="modal modal-open">
           <div className="modal-box">
             <h3 className="font-bold text-lg">
-              Are you sure you want to delete this order?
+              Czy na pewno chcesz usunąć to zamówienie?
             </h3>
             <div className="modal-action">
               <button onClick={confirmDelete} className="btn btn-error">
-                Delete
+                Usuń
               </button>
               <button onClick={() => setShowModal(false)} className="btn">
-                Cancel
+                Anuluj
               </button>
             </div>
           </div>

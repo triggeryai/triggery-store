@@ -14,13 +14,13 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-30 z-50 flex justify-center items-center">
       <div className="bg-white p-4 rounded-md shadow-xl">
-        <h4 className="text-lg mb-4">Are you sure you want to delete this user?</h4>
+        <h4 className="text-lg mb-4">Czy na pewno chcesz usunąć tego użytkownika?</h4>
         <div className="flex justify-end">
           <button onClick={onClose} className="btn btn-secondary mr-2">
-            No
+            Nie
           </button>
           <button onClick={onConfirm} className="btn btn-error">
-            Yes
+            Tak
           </button>
         </div>
       </div>
@@ -57,10 +57,10 @@ const AddUserModal = ({ isOpen, onClose, onAdd }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-30 z-50 flex justify-center items-center">
       <div className="bg-white p-4 rounded-md shadow-xl">
-        <h4 className="text-lg mb-4">Add New User</h4>
+        <h4 className="text-lg mb-4">Dodaj nowego użytkownika</h4>
         <form onSubmit={handleSubmit}>
           <div className="my-3">
-            <label className="block">Name</label>
+            <label className="block">Nazwa</label>
             <input
               type="text"
               name="name"
@@ -82,7 +82,7 @@ const AddUserModal = ({ isOpen, onClose, onAdd }) => {
             />
           </div>
           <div className="my-3">
-            <label className="block">Password</label>
+            <label className="block">Hasło</label>
             <input
               type="password"
               name="password"
@@ -93,7 +93,7 @@ const AddUserModal = ({ isOpen, onClose, onAdd }) => {
             />
           </div>
           <div className="my-3">
-            <label className="block">Admin</label>
+            <label className="block">Administrator</label>
             <input
               type="checkbox"
               name="isAdmin"
@@ -103,7 +103,7 @@ const AddUserModal = ({ isOpen, onClose, onAdd }) => {
             />
           </div>
           <div className="my-3">
-            <label className="block">Active</label>
+            <label className="block">Aktywny</label>
             <input
               type="checkbox"
               name="isActive"
@@ -114,10 +114,10 @@ const AddUserModal = ({ isOpen, onClose, onAdd }) => {
           </div>
           <div className="flex justify-end">
             <button type="submit" className="btn btn-primary mr-2">
-              Add
+              Dodaj
             </button>
             <button onClick={onClose} className="btn btn-secondary">
-              Cancel
+              Anuluj
             </button>
           </div>
         </form>
@@ -132,7 +132,7 @@ export default function Users() {
   const { trigger: deleteUser } = useSWRMutation(
     `/api/admin/users`,
     async (url, { arg }: { arg: { userId: string } }) => {
-      const toastId = toast.loading('Deleting user...');
+      const toastId = toast.loading('Usuwanie użytkownika...');
       const res = await fetch(`${url}/${arg.userId}`, {
         method: 'DELETE',
         headers: {
@@ -141,7 +141,7 @@ export default function Users() {
       });
       const data = await res.json();
       if (res.ok) {
-        toast.success('User deleted successfully', {
+        toast.success('Użytkownik pomyślnie usunięty', {
           id: toastId,
         });
         mutate(); // Revalidate the SWR cache to update the list
@@ -165,7 +165,7 @@ export default function Users() {
       });
       const data = await res.json();
       if (res.ok) {
-        toast.success('User added successfully');
+        toast.success('Użytkownik pomyślnie dodany');
         mutate(); // Revalidate the SWR cache to update the list
       } else {
         toast.error(data.message);
@@ -181,7 +181,7 @@ export default function Users() {
   const [isAddUserModalOpen, setAddUserModalOpen] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const usersPerPage = 15; // Number of users per page, change as needed
+  const usersPerPage = 15;
 
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
@@ -212,8 +212,8 @@ export default function Users() {
     setAddUserModalOpen(false);
   };
 
-  if (error) return <div>An error has occurred.</div>;
-  if (!users) return <div>Loading...</div>;
+  if (error) return <div>Wystąpił błąd.</div>;
+  if (!users) return <div>Ładowanie...</div>;
 
   return (
     <div>
@@ -228,12 +228,12 @@ export default function Users() {
         onAdd={handleAddUser}
       />
       <div className="flex justify-between items-center py-4">
-        <h1 className="text-2xl">Users</h1>
+        <h1 className="text-2xl">Użytkownicy</h1>
         <button
           className="btn btn-warning"
           onClick={handleAddUserClick}
         >
-          Add User
+          Dodaj użytkownika
         </button>
       </div>
       <div className="overflow-x-auto">
@@ -241,11 +241,11 @@ export default function Users() {
           <thead>
             <tr>
               <th><div className="badge">id</div></th>
-              <th><div className="badge">name</div></th>
+              <th><div className="badge">nazwa</div></th>
               <th><div className="badge">email</div></th>
-              <th><div className="badge">admin</div></th>
-              <th><div className="badge">active</div></th> {/* New isActive header */}
-              <th><div className="badge">actions</div></th>
+              <th><div className="badge">administrator</div></th>
+              <th><div className="badge">aktywny</div></th>
+              <th><div className="badge">akcje</div></th>
             </tr>
           </thead>
           <tbody>
@@ -254,12 +254,12 @@ export default function Users() {
                 <td>{user._id}</td>
                 <td>{user.name}</td>
                 <td>{user.email}</td>
-                <td>{user.isAdmin ? 'YES' : 'NO'}</td>
-                <td>{user.isActive ? 'YES' : 'NO'}</td> {/* Display isActive status */}
+                <td>{user.isAdmin ? 'TAK' : 'NIE'}</td>
+                <td>{user.isActive ? 'TAK' : 'NIE'}</td>
                 <td>
                   <Link href={`/admin/users/${user._id}`}>
                     <button type="button" className="btn btn-info btn-sm">
-                      Edit
+                      Edytuj
                     </button>
                   </Link>
                   &nbsp;
@@ -268,7 +268,7 @@ export default function Users() {
                     type="button"
                     className="btn btn-error btn-sm"
                   >
-                    Delete
+                    Usuń
                   </button>
                 </td>
               </tr>

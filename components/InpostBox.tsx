@@ -32,7 +32,7 @@ export default function InpostBox({ closeModal }) {
         window.easyPack.mapWidget('easypack-map', function(point) {
           setSelectedPoint(point);
           localStorage.setItem('selectedPaczkomat', JSON.stringify(point));
-          toast.success(`You have selected Paczkomat: ${point.name}`);
+          toast.success(`Wybrales paczkomat: ${point.name}`);
           setTimeout(() => {
             closeModal();
             window.location.reload();  // Refresh the page after modal closes
@@ -69,9 +69,9 @@ export default function InpostBox({ closeModal }) {
       <div id="easypack-map" style={{ height: '100%', width: '100%' }}></div>
       {selectedPoint && (
         <div style={{ paddingTop: '20px' }}>
-          <p><strong>Selected Paczkomat:</strong></p>
+          <p><strong>Wybrany Paczkomat:</strong></p>
           <p>ID: {selectedPoint.name}</p>
-          <p>Address: {selectedPoint.address.line1}, {selectedPoint.address.line2}</p>
+          <p>Adres: {selectedPoint.address.line1}, {selectedPoint.address.line2}</p>
         </div>
       )}
       <button onClick={closeModal} style={{
@@ -85,7 +85,7 @@ export default function InpostBox({ closeModal }) {
         border: 'none',
         borderRadius: '5px',
         cursor: 'pointer'
-      }}>Close</button>
+      }}>Zamkij X</button>
     </div>
   );
 }

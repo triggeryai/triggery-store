@@ -1,4 +1,3 @@
-// components\products\AddToCart.tsx
 'use client'
 import useCartService from '@/lib/hooks/useCartStore'
 import { OrderItem } from '@/lib/models/OrderModel'
@@ -18,14 +17,16 @@ export default function AddToCart({ item }: { item: OrderItem }) {
   const addToCartHandler = () => {
     if (item.countInStock > 0) {
       increase(item)
+      toast.success('Produkt został dodany do koszyka.')
     } else {
-      toast.error('This product is out of stock and cannot be added to the cart.')
+      toast.error('Ten produkt jest niedostępny.')
     }
   }
 
   const clearCartHandler = () => {
     if (existItem) {
       remove(existItem)
+      toast.success('Produkt został usunięty z koszyka.')
     }
   }
 
@@ -40,14 +41,15 @@ export default function AddToCart({ item }: { item: OrderItem }) {
       <button className="btn btn-secondary" type="button" onClick={() => {
         if (existItem.countInStock > existItem.qty) {
           increase(existItem)
+          toast.success('Produkt został dodany do koszyka.')
         } else {
-          toast.error('No more stock available.')
+          toast.error('Brak dodatkowego stanu magazynowego.')
         }
       }}>
         +
       </button>
       <button className="btn btn-danger ml-2" type="button" onClick={clearCartHandler}>
-        Clear All
+        Usuń wszystkie
       </button>
     </div>
   ) : (
@@ -57,7 +59,7 @@ export default function AddToCart({ item }: { item: OrderItem }) {
       onClick={addToCartHandler}
       disabled={isDisabled}  // Disable the button if the item is out of stock
     >
-      {isDisabled ? 'Lack of Products' : 'Add to cart'}
+      {isDisabled ? 'Brak produktów' : 'Dodaj do koszyka'}
     </button>
   )
 }

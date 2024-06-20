@@ -2,17 +2,15 @@
 "use client";
 import useSWR from 'swr';
 import { useState, useEffect } from 'react';
-import toast from 'react-hot-toast'; // Importing toast from react-hot-toast
-// Modal Component using Tailwind CSS and DaisyUI
+import toast from 'react-hot-toast';
+
 const Modal = ({ onClose, onSubmit, initialCategory, isEditing }) => {
-  // Ustawianie stanu początkowego na podstawie tego, czy edytujemy istniejącą kategorię
   const [category, setCategory] = useState({
     id: isEditing && initialCategory ? initialCategory._id : '',
     name: isEditing && initialCategory ? initialCategory.name : '',
     slug: isEditing && initialCategory ? initialCategory.slug : '',
   });
 
-  // Funkcja do aktualizacji sluga na podstawie nazwy kategorii
   useEffect(() => {
     if (isEditing) {
       function createSlug(name) {
@@ -51,13 +49,13 @@ const Modal = ({ onClose, onSubmit, initialCategory, isEditing }) => {
             </div>
           )}
           <div>
-            <label htmlFor="category-name" className="block text-sm font-medium text-gray-700">Name</label>
+            <label htmlFor="category-name" className="block text-sm font-medium text-gray-700">Nazwa</label>
             <input
               type="text"
               id="category-name"
               value={category.name}
               onChange={(e) => setCategory({...category, name: e.target.value})}
-              placeholder="Category Name"
+              placeholder="Nazwa kategorii"
               className="input input-bordered w-full"
               required
             />
@@ -70,15 +68,15 @@ const Modal = ({ onClose, onSubmit, initialCategory, isEditing }) => {
                 id="category-slug"
                 value={category.slug}
                 onChange={(e) => setCategory({...category, slug: e.target.value})}
-                placeholder="Category Slug"
+                placeholder="Slug kategorii"
                 className="input input-bordered w-full"
                 required
               />
             </div>
           )}
           <div className="flex justify-between">
-            <button type="submit" className="btn btn-primary">{isEditing ? 'Update Category' : 'Create Category'}</button>
-            <button type="button" className="btn" onClick={onClose}>Close</button>
+            <button type="submit" className="btn btn-primary">{isEditing ? 'Zaktualizuj kategorię' : 'Utwórz kategorię'}</button>
+            <button type="button" className="btn" onClick={onClose}>Zamknij</button>
           </div>
         </form>
       </div>
@@ -86,8 +84,19 @@ const Modal = ({ onClose, onSubmit, initialCategory, isEditing }) => {
   );
 };
 
+const ConfirmDeleteModal = ({ onClose, onConfirm }) => (
+  <div className="fixed inset-0 bg-black bg-opacity-50 z-50" onClick={onClose}>
+    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-5 rounded-lg shadow-lg"
+         onClick={(e) => e.stopPropagation()}>
+      <h3 className="font-bold text-lg">Czy na pewno chcesz usunąć tę kategorię?</h3>
+      <div className="modal-action">
+        <button onClick={onConfirm} className="btn btn-error">Tak</button>
+        <button onClick={onClose} className="btn">Nie</button>
+      </div>
+    </div>
+  </div>
+);
 
-// CategoriesPage Component using Tailwind CSS and DaisyUI
 const CategoriesPage = () => {
   const { data: categories, error, mutate } = useSWR('/api/admin/categories');
   const [isModalOpen, setModalOpen] = useState(false);
@@ -96,7 +105,7 @@ const CategoriesPage = () => {
   const [categoryToDelete, setCategoryToDelete] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const categoriesPerPage = 15; // Liczba kategorii na stronę, zmień według potrzeb
+  const categoriesPerPage = 15;
 
   const indexOfLastCategory = currentPage * categoriesPerPage;
   const indexOfFirstCategory = indexOfLastCategory - categoriesPerPage;
@@ -134,18 +143,18 @@ const CategoriesPage = () => {
       });
 
       if (response.ok) {
-        toast.success('Category updated successfully');
+        toast.success('Kategoria pomyślnie zaktualizowana');
         mutate();
         handleCloseModal();
       } else if (response.status === 409) {
-        toast.error('Slug already exists. Please choose a different slug.');
+        toast.error('Slug już istnieje. Proszę wybrać inny slug.');
       } else {
         const result = await response.json();
-        toast.error(result.message || 'An error occurred during update');
+        toast.error(result.message || 'Wystąpił błąd podczas aktualizacji');
       }
     } catch (error) {
       console.error('Request failed:', error);
-      toast.error('An error occurred while sending the request.');
+      toast.error('Wystąpił błąd podczas wysyłania żądania.');
     }
   };
 
@@ -153,17 +162,17 @@ const CategoriesPage = () => {
     try {
       const response = await fetch(`/api/admin/categories/${categoryId}`, { method: 'DELETE' });
       if (response.ok) {
-        toast.success('Category deleted successfully');
-        mutate(); // Revalidate the SWR cache to update the list
-        setShowDeleteConfirm(false); // Zamykaj modal potwierdzenia
-        handleCloseModal(); // Zamknij modal edycji/dodawania
+        toast.success('Kategoria pomyślnie usunięta');
+        mutate();
+        setShowDeleteConfirm(false);
+        handleCloseModal();
       } else {
         const result = await response.json();
-        toast.error(result.message || 'Failed to delete category');
+        toast.error(result.message || 'Nie udało się usunąć kategorii');
       }
     } catch (error) {
       console.error('Request failed:', error);
-      toast.error('An error occurred while sending the request.');
+      toast.error('Wystąpił błąd podczas wysyłania żądania.');
     }
   };
 
@@ -178,18 +187,18 @@ const CategoriesPage = () => {
       });
 
       if (response.ok) {
-        toast.success('Category added successfully');
+        toast.success('Kategoria pomyślnie dodana');
         mutate();
         handleCloseModal();
       } else if (response.status === 409) {
-        toast.error('Slug already exists. Please choose a different slug.');
+        toast.error('Slug już istnieje. Proszę wybrać inny slug.');
       } else {
         const result = await response.json();
-        toast.error(result.message || 'An error occurred while adding the category');
+        toast.error(result.message || 'Wystąpił błąd podczas dodawania kategorii');
       }
     } catch (error) {
       console.error('Request failed:', error);
-      toast.error('An error occurred while sending the request.');
+      toast.error('Wystąpił błąd podczas wysyłania żądania.');
     }
   };
 
@@ -197,9 +206,12 @@ const CategoriesPage = () => {
     setCurrentPage(pageNumber);
   };
 
+  if (error) return <p>Wystąpił błąd.</p>;
+  if (!categories) return <p>Ładowanie...</p>;
+
   return (
     <div className="container mx-auto p-4">
-      <button className="btn btn-primary mb-4" onClick={() => handleOpenModal()}>Add Category</button>
+      <button className="btn btn-primary mb-4" onClick={() => handleOpenModal()}>Dodaj kategorię</button>
       {isModalOpen && (
         <Modal
           onClose={handleCloseModal}
@@ -221,8 +233,8 @@ const CategoriesPage = () => {
               <span className="font-bold">ID: </span>{category._id} - <span className="font-semibold">{category.name}</span>
             </div>
             <div>
-              <button className="btn btn-xs btn-warning mr-2" onClick={() => handleOpenModal(category)}>Edit</button>
-              <button className="btn btn-xs btn-error" onClick={() => handleOpenDeleteConfirm(category)}>Delete</button>
+              <button className="btn btn-xs btn-warning mr-2" onClick={() => handleOpenModal(category)}>Edytuj</button>
+              <button className="btn btn-xs btn-error" onClick={() => handleOpenDeleteConfirm(category)}>Usuń</button>
             </div>
           </li>
         ))}

@@ -7,10 +7,10 @@ const GoogleMap: React.FC = () => {
     <div className="flex flex-wrap items-center justify-center w-full my-20 bg-gray-100 py-10">
       <div className="w-full lg:w-1/2 p-4 text-center">
         <h2 className="text-3xl font-bold text-gray-800 mb-4">
-          Our Headquarters
+          Nasz sklep stacjonarny
         </h2>
         <p className="text-gray-600">
-          Visit us at Wrocławska 29, Dzierzoniow, Poland.
+          Odwiedź nas przy ul. Wrocławska 29, Dzierżoniów, Polska.
         </p>
       </div>
       <div className="w-full lg:w-1/2 p-4">

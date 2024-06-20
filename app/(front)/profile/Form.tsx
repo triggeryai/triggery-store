@@ -1,4 +1,3 @@
-// app\(front)\profile\Form.tsx
 'use client'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
@@ -53,7 +52,7 @@ const Form = () => {
         }),
       })
       if (res.status === 200) {
-        toast.success('Profile updated successfully')
+        toast.success('Profil został pomyślnie zaktualizowany')
         const newSession = {
           ...session,
           user: {
@@ -76,63 +75,63 @@ const Form = () => {
     }
   }
   return (
-    <div className="max-w-sm  mx-auto card bg-base-300 my-4">
+    <div className="max-w-lg mx-auto mt-10 bg-white p-8 rounded-lg shadow-lg">
       <div className="card-body">
-        <h1 className="card-title">Profile</h1>
+        <h1 className="text-3xl font-bold mb-6 text-center">Profil</h1>
         <form onSubmit={handleSubmit(formSubmit)}>
-          <div className="my-2">
-            <label className="label" htmlFor="name">
-              Name
+          <div className="mb-4">
+            <label className="block text-gray-700" htmlFor="name">
+              Imię
             </label>
             <input
               type="text"
               id="name"
               {...register('name', {
-                required: 'Name is required',
+                required: 'Imię jest wymagane',
               })}
-              className="input input-bordered w-full max-w-sm"
+              className="input input-bordered w-full mt-2 p-2 border rounded-lg"
             />
             {errors.name?.message && (
-              <div className="text-error">{errors.name.message}</div>
+              <div className="text-red-600 mt-2">{errors.name.message}</div>
             )}
           </div>
-          <div className="my-2">
-            <label className="label" htmlFor="email">
+          <div className="mb-4">
+            <label className="block text-gray-700" htmlFor="email">
               Email
             </label>
             <input
-              type="text"
+              type="email"
               id="email"
               {...register('email', {
-                required: 'Email is required',
+                required: 'Email jest wymagany',
                 pattern: {
                   value: /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/,
-                  message: 'Email is invalid',
+                  message: 'Email jest nieprawidłowy',
                 },
               })}
-              className="input input-bordered w-full max-w-sm"
+              className="input input-bordered w-full mt-2 p-2 border rounded-lg"
             />
             {errors.email?.message && (
-              <div className="text-error">{errors.email.message}</div>
+              <div className="text-red-600 mt-2">{errors.email.message}</div>
             )}
           </div>
-          <div className="my-2">
-            <label className="label" htmlFor="password">
-              New Password
+          <div className="mb-4">
+            <label className="block text-gray-700" htmlFor="password">
+              Nowe hasło
             </label>
             <input
               type="password"
               id="password"
               {...register('password', {})}
-              className="input input-bordered w-full max-w-sm"
+              className="input input-bordered w-full mt-2 p-2 border rounded-lg"
             />
             {errors.password?.message && (
-              <div className="text-error">{errors.password.message}</div>
+              <div className="text-red-600 mt-2">{errors.password.message}</div>
             )}
           </div>
-          <div className="my-2">
-            <label className="label" htmlFor="confirmPassword">
-              Confirm New Password
+          <div className="mb-4">
+            <label className="block text-gray-700" htmlFor="confirmPassword">
+              Potwierdź nowe hasło
             </label>
             <input
               type="password"
@@ -140,26 +139,26 @@ const Form = () => {
               {...register('confirmPassword', {
                 validate: (value) => {
                   const { password } = getValues()
-                  return password === value || 'Passwords should match!'
+                  return password === value || 'Hasła muszą się zgadzać'
                 },
               })}
-              className="input input-bordered w-full max-w-sm"
+              className="input input-bordered w-full mt-2 p-2 border rounded-lg"
             />
             {errors.confirmPassword?.message && (
-              <div className="text-error">{errors.confirmPassword.message}</div>
+              <div className="text-red-600 mt-2">{errors.confirmPassword.message}</div>
             )}
           </div>
 
-          <div className="my-2">
+          <div className="mt-6">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="btn btn-primary w-full"
+              className="btn btn-primary w-full py-2 rounded-lg"
             >
               {isSubmitting && (
-                <span className="loading loading-spinner"></span>
+                <span className="loading loading-spinner mr-2"></span>
               )}
-              Update
+              Aktualizuj
             </button>
           </div>
         </form>

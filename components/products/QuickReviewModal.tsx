@@ -1,4 +1,3 @@
-// components\products\QuickReviewModal.tsx
 import React from 'react';
 import Image from 'next/image';
 import AddToCart from '@/components/products/AddToCart';
@@ -15,29 +14,29 @@ const QuickReviewModal = ({ product, onClose }: { product: Product; onClose: () 
     <>
       <div className="fixed inset-0 bg-black bg-opacity-50 z-40" onClick={onClose}></div>
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div className="relative bg-white w-full max-w-4xl p-6 md:p-10 rounded-lg shadow-lg overflow-auto">
-          <div className="flex flex-col md:flex-row gap-10">
-            <figure className="md:flex-1">
+        <div className="relative bg-white w-full max-w-lg md:max-w-4xl p-4 md:p-6 lg:p-10 rounded-lg shadow-lg overflow-y-auto max-h-full">
+          <div className="flex flex-col md:flex-row gap-4 md:gap-10">
+            <figure className="flex-1">
               <Image
                 src={product.image}
                 alt={product.name}
-                width={400}
-                height={400}
+                width={300}
+                height={300}
                 layout="responsive"
                 className="rounded-md"
               />
             </figure>
-            <div className="md:flex-1 space-y-4">
-              <h2 className="text-3xl font-bold text-gray-800">{product.name}</h2>
+            <div className="flex-1 space-y-4">
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-800">{product.name}</h2>
               <p className="text-gray-500">{product.brand}</p>
-              <div className="text-lg font-semibold text-gray-800">${product.price}</div>
-              <p className="text-gray-600">{product.description}</p>
+              <div className="text-lg font-semibold text-gray-800">{product.price} PLN</div>
+              <p className="text-gray-600 overflow-y-auto max-h-40">{product.description}</p>
               <div className="flex items-center space-x-4">
                 <AddToCart item={item} />
               </div>
               <Link href="/cart">
                 <div className="block w-full text-center py-3 px-4 mt-4 bg-yellow-500 text-white rounded-lg shadow-md hover:bg-yellow-600 transition duration-300">
-                  Go to cart
+                  Przejdź do koszyka
                 </div>
               </Link>
             </div>

@@ -11,7 +11,7 @@ const Sidebar = () => {
   const { data: categories, error } = useSWR('/api/products/categories');
 
   if (error) return error.message;
-  if (!categories) return 'Loading...';
+  if (!categories) return 'Ładowanie...';
 
   return (
     <div className="absolute menu p-4 w-80 min-h-full bg-base-200 text-base-content relative z-10"> {/* Increased z-index */}
@@ -23,9 +23,9 @@ const Sidebar = () => {
             </svg>
           </button>
         </li>
-        {/* Crucial Links */}
+        {/* Categories */}
         <li className="mt-4">
-          <h2 className="text-xl font-bold">Categories</h2>
+          <h2 className="text-xl font-bold">Kategorie</h2>
         </li>
         {categories.map((categoryName: string) => (
           <li key={categoryName}>
@@ -40,58 +40,58 @@ const Sidebar = () => {
           </li>
         ))}
         <li className="mt-4">
-          <h2 className="text-xl font-bold">Crucial Links</h2>
+          <h2 className="text-xl font-bold">Ważne linki</h2>
         </li>
         <li>
-          <Link href="/about"><span className="block link link-hover">About</span></Link>
+          <Link href="/about"><span className="block link link-hover">O nas</span></Link>
         </li>
         <li>
-          <Link href="/contact"><span className="block link link-hover">Contact</span></Link>
+          <Link href="/contact"><span className="block link link-hover">Kontakt</span></Link>
         </li>
         <li>
-          <Link href="/support"><span className="block link link-hover">Support</span></Link>
+          <Link href="/support"><span className="block link link-hover">Wsparcie</span></Link>
         </li>
         <li>
           <Link href="/faq"><span className="block link link-hover">FAQ</span></Link>
         </li>
         <li>
-          <Link href="/search?q=&category=all&price=all&rating=all&sort=newest&page=1"><span className="block link link-hover">Buy something</span></Link>
+          <Link href="/search?q=&category=all&price=all&rating=all&sort=newest&page=1"><span className="block link link-hover">Kup coś</span></Link>
         </li>
         {/* Legal */}
         <li className="mt-4">
-          <h2 className="text-xl font-bold">Legal</h2>
+          <h2 className="text-xl font-bold">Prawne</h2>
         </li>
         <li>
-          <Link href="/privacy"><span className="block link link-hover">Privacy Policy</span></Link>
+          <Link href="/privacy"><span className="block link link-hover">Polityka Prywatności</span></Link>
         </li>
         <li>
-          <Link href="/terms"><span className="block link link-hover">Terms of Service</span></Link>
+          <Link href="/terms"><span className="block link link-hover">Regulamin</span></Link>
         </li>
         <li>
-          <Link href="/return-policy"><span className="block link link-hover">Return Policy</span></Link>
+          <Link href="/return-policy"><span className="block link link-hover">Polityka Zwrotów</span></Link>
         </li>
         <li>
-          <Link href="/warranty"><span className="block link link-hover">Warranty</span></Link>
+          <Link href="/warranty"><span className="block link link-hover">Gwarancja</span></Link>
         </li>
-        {/* My Account */}
+        {/* Moje Konto */}
         <li className="mt-4">
-          <h2 className="text-xl font-bold">My Account</h2>
+          <h2 className="text-xl font-bold">Moje Konto</h2>
         </li>
         <li>
-          <Link href="/profile"><span className="block link link-hover">My Account</span></Link>
+          <Link href="/profile"><span className="block link link-hover">Moje Konto</span></Link>
         </li>
         <li>
-          <Link href="/order-history"><span className="block link link-hover">My Orders</span></Link>
+          <Link href="/order-history"><span className="block link link-hover">Moje Zamówienia</span></Link>
         </li>
         <li>
-          <Link href="/cart"><span className="block link link-hover">Cart</span></Link>
+          <Link href="/cart"><span className="block link link-hover">Koszyk</span></Link>
         </li>
         <li>
-          <Link href="/"><span className="block link link-hover">Home</span></Link>
+          <Link href="/"><span className="block link link-hover">Strona Główna</span></Link>
         </li>
         {/* Follow Us */}
         <li className="mt-4">
-          <h2 className="text-xl font-bold">Follow Us</h2>
+          <h2 className="text-xl font-bold">Śledź Nas</h2>
         </li>
         <li>
           <Link href="https://www.facebook.com"><span className="block link link-hover"><FaFacebook className="inline mr-2" /> Facebook</span></Link>

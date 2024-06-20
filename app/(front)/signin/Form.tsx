@@ -1,4 +1,3 @@
-// app(front)/signin/Form.tsx
 'use client'
 import { signIn, useSession } from 'next-auth/react'
 import { SubmitHandler, useForm } from 'react-hook-form'
@@ -41,7 +40,7 @@ const Form = () => {
       })
 
       // Wyświetl powiadomienie toast
-      toast.success('Logged in successfully!')
+      toast.success('Zalogowano pomyślnie!')
 
       // Przekierowanie
       router.push(callbackUrl)
@@ -59,11 +58,11 @@ const Form = () => {
   return (
     <div className="max-w-sm mx-auto card bg-base-300 my-5 p-5">
       <div className="card-body">
-        <h1 className="card-title text-center mb-4">Sign in</h1>
+        <h1 className="card-title text-center mb-4">Zaloguj się</h1>
         {params.get('error') && (
           <div className="alert text-error mb-4">
             {params.get('error') === 'CredentialsSignin'
-              ? 'Invalid email or password'
+              ? 'Nieprawidłowy email lub hasło'
               : params.get('error')}
           </div>
         )}
@@ -79,10 +78,10 @@ const Form = () => {
               type="text"
               id="email"
               {...register('email', {
-                required: 'Email is required',
+                required: 'Email jest wymagany',
                 pattern: {
                   value: /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/,
-                  message: 'Email is invalid',
+                  message: 'Nieprawidłowy email',
                 },
               })}
               className="input input-bordered w-full max-w-sm"
@@ -93,13 +92,13 @@ const Form = () => {
           </div>
           <div className="my-2">
             <label className="label" htmlFor="password">
-              Password
+              Hasło
             </label>
             <input
               type="password"
               id="password"
               {...register('password', {
-                required: 'Password is required',
+                required: 'Hasło jest wymagane',
               })}
               className="input input-bordered w-full max-w-sm"
             />
@@ -116,20 +115,20 @@ const Form = () => {
               {isSubmitting && (
                 <span className="loading loading-spinner"></span>
               )}
-              Sign in
+              Zaloguj się
             </button>
           </div>
         </form>
         <div className="my-2 text-center">
-          Need an account?{' '}
+         Nie masz konta?{' '}
           <Link className="link" href={`/register?callbackUrl=${callbackUrl}`}>
-            Register
+            Zarejestruj się
           </Link>
         </div>
         <div className="my-2 text-center">
-          Forgot password?{' '}
+          Zapomniałeś hasła?{' '}
           <Link className="link" href={`/reset-password`}>
-            Remind password
+            Przypomnij hasło
           </Link>
         </div>
       </div>
