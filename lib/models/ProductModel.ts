@@ -5,8 +5,7 @@ const productSchema = new Schema(
   {
     name: { type: String, required: true },
     slug: { type: String, required: true, unique: true },
-    // Reference the Category model
-    category: { type: Schema.Types.ObjectId, ref: 'Category' },
+    categories: [{ type: Schema.Types.ObjectId, ref: 'Category' }],
     image: { type: String, required: true },
     price: { type: Number, required: true },
     brand: { type: String, required: true },
@@ -33,7 +32,7 @@ export type Product = {
   price: number;
   brand: string;
   description: string;
-  category: mongoose.Schema.Types.ObjectId;
+  categories: mongoose.Schema.Types.ObjectId[];
   countInStock: number;
   colors?: string[];
   sizes?: string[];

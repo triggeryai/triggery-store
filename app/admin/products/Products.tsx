@@ -1,4 +1,4 @@
-// app\admin\products\Products.tsx
+// app/admin/products/Products.tsx
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
@@ -31,7 +31,7 @@ export default function Products() {
     const response = await fetch('/api/admin/categories', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ name: 'Przykładowa Kategoria' })
+      body: JSON.stringify({ name: 'Sample Category' })
     });
     const newCategory = await response.json();
     mutateCategories([...categories, newCategory], false); // Update SWR cache without re-fetching
@@ -44,21 +44,21 @@ export default function Products() {
       categoryId = await createDefaultCategory(); // Create a default category if none exist
     }
     return {
-      name: 'Przykładowa Nazwa Produktu',
-      slug: generateSlug('Przykładowa Nazwa Produktu'),
+      name: 'Sample Product Name',
+      slug: generateSlug('Sample Product Name'),
       price: 100.00,
-      categoryId,
+      categoryIds: [categoryId],
       image: '/images/default-product.jpg',
-      brand: 'Przykładowa Marka',
+      brand: 'Sample Brand',
       countInStock: 0,
-      description: 'Przykładowy opis produktu'
+      description: 'Sample product description'
     };
   };
 
   const { trigger: deleteProduct } = useSWRMutation(
     `/api/admin/products`,
     async (url, { arg }: { arg: { productId: string } }) => {
-      const toastId = toast.loading('Usuwanie produktu...')
+      const toastId = toast.loading('Deleting product...')
       const res = await fetch(`${url}/${arg.productId}`, {
         method: 'DELETE',
         headers: {
@@ -69,7 +69,7 @@ export default function Products() {
       setShowModal(false) // Hide modal after operation
       if (res.ok) {
         setTimeout(() => {
-          toast.success('Produkt pomyślnie usunięty', {
+          toast.success('Product deleted successfully', {
             id: toastId,
           })
           router.refresh()
@@ -85,7 +85,7 @@ export default function Products() {
   const { trigger: createProduct, isMutating: isCreating } = useSWRMutation(
     `/api/admin/products`,
     async (url) => {
-      const toastId = toast.loading('Tworzenie produktu...');
+      const toastId = toast.loading('Creating product...');
       try {
         const productData = await newProductData();  // Dodaj await tutaj
         const res = await fetch(url, {
@@ -105,22 +105,23 @@ export default function Products() {
           return;
         }
   
-        toast.success('Produkt pomyślnie utworzony', {
+        toast.success('Product created successfully', {
           id: toastId,
         });
   
         router.push(`/admin/products/${data.product._id}`);
       } catch (error) {
-        toast.error('Nie udało się utworzyć produktu.', {
+        toast.error('Failed to create the product.', {
           id: toastId,
         });
-        console.error('Nie udało się utworzyć produktu:', error);
+        console.error('Failed to create product:', error);
       }
     }
   );
+  
 
-  if (productsError || categoriesError) return <p>Wystąpił błąd.</p>
-  if (!productsData || !categories) return <p>Ładowanie...</p>
+  if (productsError || categoriesError) return <p>An error has occurred.</p>
+  if (!productsData || !categories) return <p>Loading...</p>
 
   const { products, totalPages } = productsData
 
@@ -146,7 +147,7 @@ export default function Products() {
   return (
     <div>
       <div className="flex justify-between items-center">
-        <h1 className="py-4 text-2xl">Produkty</h1>
+        <h1 className="py-4 text-2xl">Products</h1>
         <LackProductButton /> {/* Dodanie komponentu */}
         <button
           disabled={isCreating}
@@ -156,7 +157,7 @@ export default function Products() {
           {isCreating ? (
             <span className="loading loading-spinner"></span>
           ) : (
-            "Utwórz"
+            "Create"
           )}
         </button>
       </div>
@@ -166,11 +167,11 @@ export default function Products() {
           <thead>
             <tr>
               <th><div className="badge">id</div></th>
-              <th><div className="badge">nazwa</div></th>
-              <th><div className="badge">cena</div></th>
-              <th><div className="badge">kategoria</div></th>
-              <th><div className="badge">ilość w magazynie</div></th>
-              <th><div className="badge">akcje</div></th>
+              <th><div className="badge">name</div></th>
+              <th><div className="badge">price</div></th>
+              <th><div className="badge">categories</div></th>
+              <th><div className="badge">count in stock</div></th>
+              <th><div className="badge">actions</div></th>
             </tr>
           </thead>
           <tbody>
@@ -179,12 +180,12 @@ export default function Products() {
                 <td>{product._id}</td>
                 <td>{product.name}</td>
                 <td>${product.price}</td>
-                <td>{product.category}</td>
+                <td>{product.categories}</td>
                 <td>{product.countInStock}</td>
                 <td>
                   <Link href={`/admin/products/${product._id}`}>
                     <button type="button" className="btn btn-info btn-sm">
-                      Edytuj
+                      Edit
                     </button>
                   </Link>
                   &nbsp;
@@ -193,7 +194,7 @@ export default function Products() {
                     type="button"
                     className="btn btn-error btn-sm"
                   >
-                    Usuń
+                    Delete
                   </button>
                 </td>
               </tr>
@@ -208,15 +209,15 @@ export default function Products() {
           disabled={page === 1}
           className="bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50"
         >
-          Poprzednia
+          Previous
         </button>
-        <span className="text-gray-700">Strona {page} z {totalPages}</span>
+        <span className="text-gray-700">Page {page} of {totalPages}</span>
         <button
           onClick={handleNextPage}
           disabled={page === totalPages}
           className="bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50"
         >
-          Następna
+          Next
         </button>
       </div>
 
@@ -224,13 +225,13 @@ export default function Products() {
       {showModal && (
         <div className="modal modal-open">
           <div className="modal-box">
-            <h3 className="font-bold text-lg">Czy na pewno chcesz usunąć ten produkt?</h3>
+            <h3 className="font-bold text-lg">Are you sure you want to delete this product?</h3>
             <div className="modal-action">
               <button onClick={confirmDelete} className="btn btn-error">
-                Tak
+                Yes
               </button>
               <button onClick={() => setShowModal(false)} className="btn">
-                Nie
+                No
               </button>
             </div>
           </div>

@@ -22,15 +22,14 @@ export const GET = auth(async (req: any) => {
 
   const totalProducts = await ProductModel.countDocuments()
   const products = await ProductModel.find()
-    .populate('category', 'name')
+    .populate('categories', 'name')
     .skip(skip)
     .limit(limit)
     .lean()
 
-  // Transform products to replace category object with just the name
   const transformedProducts = products.map((product) => ({
     ...product,
-    category: product.category.name,
+    categories: product.categories.map(cat => cat.name).join(', '),
   }))
 
   const totalPages = Math.ceil(totalProducts / limit)
@@ -49,14 +48,14 @@ export const POST = auth(async (req: any) => {
 
   try {
     await dbConnect()
-    const { name, slug, price, image, brand, countInStock, description, categoryId } = body
-    console.log('Creating product with data:', { name, slug, price, image, brand, countInStock, description, categoryId })
+    const { name, slug, price, image, brand, countInStock, description, categoryIds } = body
+    console.log('Creating product with data:', { name, slug, price, image, brand, countInStock, description, categoryIds })
 
-    const category = await CategoryModel.findById(categoryId)
-    if (!category) {
-      console.log(`Category not found: ${categoryId}`)
+    const categories = await CategoryModel.find({ _id: { $in: categoryIds } })
+    if (!categories.length) {
+      console.log(`Categories not found: ${categoryIds}`)
       return Response.json({
-        message: 'Category not found. Please create a category.',
+        message: 'Categories not found. Please create categories.',
         redirect: '/admin/categories'
       }, { status: 400 })
     }
@@ -66,7 +65,7 @@ export const POST = auth(async (req: any) => {
       slug,
       image,
       price,
-      category: categoryId,
+      categories: categoryIds,
       brand,
       countInStock,
       description,
@@ -74,7 +73,7 @@ export const POST = auth(async (req: any) => {
 
     await product.save()
     const productObject = product.toObject()
-    productObject.category = category.name
+    productObject.categories = categories.map(cat => cat.name).join(', ')
     console.log('Product created successfully:', productObject)
 
     return Response.json({ message: 'Product created successfully', product: productObject }, { status: 201 })

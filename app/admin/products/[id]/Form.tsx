@@ -1,4 +1,3 @@
-// app\admin\products\[id]\Form.tsx
 'use client'
 import useSWRMutation from 'swr/mutation'
 import useSWR from 'swr'
@@ -45,7 +44,7 @@ export default function ProductEditForm({ productId }: { productId: string }) {
       slug: '',
       price: '',
       image: '',
-      category: '', // You'll set this once you have the data
+      categories: [], // You'll set this once you have the data
       brand: '',
       countInStock: '',
       description: '',
@@ -58,7 +57,7 @@ export default function ProductEditForm({ productId }: { productId: string }) {
     setValue('slug', product.slug);
     setValue('price', product.price);
     setValue('image', product.image);
-    setValue('category', product.category._id); // Ustawia _id, a nie cały obiekt kategorii
+    setValue('categories', product.categories.map(category => category._id)); // Ustawia _id, a nie cały obiekt kategorii
     setValue('brand', product.brand);
     setValue('countInStock', product.countInStock);
     setValue('description', product.description);
@@ -70,7 +69,7 @@ export default function ProductEditForm({ productId }: { productId: string }) {
     if (product && categories) {
       reset({
         ...product,
-        category: product.category._id, // Ensure this is the correct category ID
+        categories: product.categories.map(category => category._id), // Ensure this is the correct category IDs
       });
     }
   }, [product, categories, reset]);
@@ -146,37 +145,35 @@ export default function ProductEditForm({ productId }: { productId: string }) {
     }
   }
 
-  const CategorySelect = ({ register, error, currentCategory }) => {
+  const CategorySelect = ({ register, error, currentCategories }) => {
     if (!categories) return 'Loading categories...';
     if (categoriesError) return `Error: ${categoriesError.message}`;
-    
-    console.log("Current Category ID: ", currentCategory);
-  
+
     return (
       <div className="md:flex mb-6">
-        <label className="label md:w-1/5" htmlFor="category">Category</label>
+        <label className="label md:w-1/5" htmlFor="categories">Categories</label>
         <div className="md:w-4/5">
-        <select
-  id="category"
-  {...register("category", { required: "Category is required" })}
-  className="select select-bordered w-full max-w-md"
->
-  {categories.map((cat) => (
-    <option value={cat._id} key={cat._id}>
-      {cat.name}
-    </option>
-  ))}
-</select>
-
-          {errors.category && (
-            <div className="text-error">{errors.category.message}</div>
-          )}
+          <select
+            id="categories"
+            multiple
+            {...register("categories", { required: "Categories are required" })}
+            className="select select-bordered w-full max-w-md"
+          >
+            {categories.map((cat) => (
+              <option 
+                key={cat._id} 
+                value={cat._id} 
+                selected={currentCategories.includes(cat._id)}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+          {error && <div className="text-error">{error.message}</div>}
         </div>
       </div>
     );
   };
-  
-  
+
   return (
     <div>
       <h1 className="text-2xl py-4">Edit Product {formatId(productId)}</h1>
@@ -199,8 +196,7 @@ export default function ProductEditForm({ productId }: { productId: string }) {
             </div>
           </div>
           <FormInput name="Price" id="price" required />
-          <CategorySelect register={register} error={errors.category} currentCategory={product.category._id} />
-
+          <CategorySelect register={register} error={errors.categories} currentCategories={product.categories.map(category => category._id)} />
           <FormInput name="Brand" id="brand" required />
           <FormInput name="Description" id="description" required />
           <FormInput name="Count In Stock" id="countInStock" required />
@@ -221,4 +217,3 @@ export default function ProductEditForm({ productId }: { productId: string }) {
     </div>
   )
 }
-
