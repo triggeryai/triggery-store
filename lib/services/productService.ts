@@ -1,10 +1,9 @@
-// lib\services\productService.ts
 import { cache } from 'react';
 import mongoose from 'mongoose';
 import dbConnect from '@/lib/dbConnect';
 import ProductModel, { Product } from '@/lib/models/ProductModel';
 import CategoryModel from '@/lib/models/CategoryModel';
-import ProductLackShowOnOff from '@/lib/models/ProductLackShowOnOff'; // Import the ProductLackShowOnOff model
+import ProductLackShowOnOff from '@/lib/models/ProductLackShowOnOff';
 
 export const revalidate = 3600;
 
@@ -45,6 +44,12 @@ const getByQuery = async ({
   sort,
   price,
   page = '1',
+}: {
+  q?: string;
+  category?: string;
+  sort?: string;
+  price?: string;
+  page?: string;
 }) => {
   await dbConnect();
 
@@ -59,7 +64,7 @@ const getByQuery = async ({
   if (category && category !== 'all') {
     const categoryDoc = await CategoryModel.findOne({ name: category });
     if (categoryDoc) {
-      categoryFilter = { category: categoryDoc._id };
+      categoryFilter = { categories: categoryDoc._id };
     } else {
       return { products: [], countProducts: 0, page, pages: 0, categories: [] };
     }
@@ -87,12 +92,12 @@ const getByQuery = async ({
   .sort(order)
   .skip(PAGE_SIZE * (Number(page) - 1))
   .limit(PAGE_SIZE)
-  .populate('category', 'name')
+  .populate('categories', 'name')
   .lean();
 
   products = products.map(product => ({
     ...product,
-    category: product.category?.name || 'Uncategorized',
+    categories: product.categories.map((category: any) => category.name),
   }));
 
   const countProducts = await ProductModel.countDocuments({

@@ -1,3 +1,4 @@
+// components/header/MobileMenu.tsx
 'use client';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -5,7 +6,7 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 import useCartService from '@/lib/hooks/useCartStore';
 import useLayoutService from '@/lib/hooks/useLayout';
 import { SearchBox } from './SearchBox';
-import CartModal from './CartModal';
+import CartModalMobile from './CartModalMobile';
 import DropDownMenuToggle from './DropDownMenuToggle';
 import LeftCategorySideBar from './LeftCategorySideBar';
 import Logo from './Logo';
@@ -41,8 +42,20 @@ const MobileMenu: React.FC = () => {
       {/* Search and toggle */}
       <div className="flex items-center justify-between w-full p-4">
         <SearchBox />
+        <button className="relative" onClick={() => setShowCartModal(!showCartModal)}>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="darkslategray" aria-hidden="true" className="h-6 w-6 transition-all ease-in-out hover:scale-110 ml-2 swap-on fill-current">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"></path>
+          </svg>
+          {items.length > 0 && (
+            <span className="absolute top-0 right-0 inline-block w-3 h-3 bg-red-600 text-white text-xs font-bold rounded-full text-center">
+              {items.length}
+            </span>
+          )}
+        </button>
         <MenuToggleButton setMenuOpen={setMenuOpen} menuOpen={menuOpen} />
       </div>
+
+      {showCartModal && <CartModalMobile onClose={() => setShowCartModal(false)} />}
 
       {/* Dropdown Menu */}
       <MenuModal isOpen={menuOpen} onClose={() => setMenuOpen(false)}>

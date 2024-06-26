@@ -33,7 +33,7 @@ export const PUT = auth(async (req, { params }) => {
     return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 });
   }
 
-  const { name, slug, price, categories, image, brand, countInStock, description } = await req.json();
+  const { name, slug, price, categories, images, mainImage, brand, countInStock, description } = await req.json();
 
   try {
     await dbConnect();
@@ -44,7 +44,8 @@ export const PUT = auth(async (req, { params }) => {
       product.slug = slug;
       product.price = price;
       product.categories = categories; // Aktualizujemy tablicę kategorii
-      product.image = image;
+      product.images = images.slice(0, 10); // Aktualizujemy tablicę obrazów, ograniczamy do 10
+      product.mainImage = mainImage || images[0]; // Aktualizujemy główne zdjęcie
       product.brand = brand;
       product.countInStock = countInStock;
       product.description = description;
@@ -77,6 +78,6 @@ export const DELETE = auth(async (...args: any) => {
       return new Response(JSON.stringify({ message: 'Product not found' }), { status: 404 });
     }
   } catch (err: any) {
-    return new Response(JSON.stringify({ message: err.message }), { status: 500 });
+    return new Response.JSON(JSON.stringify({ message: err.message }), { status: 500 });
   }
 }) as any;

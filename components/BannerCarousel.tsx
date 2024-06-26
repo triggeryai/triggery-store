@@ -6,9 +6,9 @@ import Link from 'next/link';
 import useLayoutService from '@/lib/hooks/useLayout';
 
 const carouselSlides = [
-  { id: 1, src: '/images/banners/german.jpg', path: '/sample-path-1' },
-  { id: 2, src: '/images/banners/england.jpg', path: '/sample-path-2' },
-  { id: 3, src: '/images/banners/italy.jpg', path: '/sample-path-3' },
+  { id: 1, src: '/images/banners/german.jpg', path: '/search?q=all&category=Chemia+Niemiecka&price=all&sort=newest&page=1' },
+  { id: 2, src: '/images/banners/england.jpg', path: '/search?q=all&category=Chemia+Angielska&price=all&sort=newest&page=1' },
+  { id: 3, src: '/images/banners/italy.jpg', path: '/search?q=all&category=Chemia+Włoska&price=all&sort=newest&page=1' },
 ];
 
 const BannerCarousel = () => {

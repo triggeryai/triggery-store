@@ -6,7 +6,8 @@ const productSchema = new Schema(
     name: { type: String, required: true },
     slug: { type: String, required: true, unique: true },
     categories: [{ type: Schema.Types.ObjectId, ref: 'Category' }],
-    image: { type: String, required: true },
+    images: [{ type: String, required: true }], // Tablica do przechowywania maksymalnie 10 obrazów
+    mainImage: { type: String }, // Pole do przechowywania głównego zdjęcia
     price: { type: Number, required: true },
     brand: { type: String, required: true },
     countInStock: { type: Number, required: true, default: 0 },
@@ -27,7 +28,8 @@ export type Product = {
   _id?: string;
   name: string;
   slug: string;
-  image: string;
+  images: string[]; // Tablica do przechowywania obrazów
+  mainImage?: string; // Główne zdjęcie
   banner?: string;
   price: number;
   brand: string;

@@ -1,9 +1,8 @@
 import AddToCart from '@/components/products/AddToCart'
+import ProductGallery from '@/components/products/ProductGallery'
 import { convertDocToObj } from '@/lib/utils'
 import productService from '@/lib/services/productService'
-import Image from 'next/image'
 import Link from 'next/link'
-// import { Rating } from '@/components/products/Rating'
 
 export async function generateMetadata({
   params,
@@ -12,7 +11,7 @@ export async function generateMetadata({
 }) {
   const product = await productService.getBySlug(params.slug)
   if (!product) {
-    return { title: 'Produkt nie znaleziony' }
+    return { title: 'Product not found' }
   }
   return {
     title: product.name,
@@ -27,34 +26,23 @@ export default async function ProductDetails({
 }) {
   const product = await productService.getBySlug(params.slug)
   if (!product) {
-    return <div>Produkt nie znaleziony</div>
+    return <div>Product not found</div>
   }
   return (
     <>
       <div className="my-2">
-      <Link href="/search?category=all&q=">
-        <button className="flex items-center px-4 py-2 bg-black hover:bg-blue-800 text-white font-bold rounded">
-          <svg className="h-4 w-4 mr-2 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-            <path d="M10 15l-5.5-5.5L10 4m-5 5.5h16" />
-          </svg>
-          powrót do produktów
-        </button>
-      </Link>
-
+        <Link href="/search?category=all&q=">
+          <button className="flex items-center px-4 py-2 bg-black hover:bg-blue-800 text-white font-bold rounded">
+            <svg className="h-4 w-4 mr-2 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <path d="M10 15l-5.5-5.5L10 4m-5 5.5h16" />
+            </svg>
+            back to products
+          </button>
+        </Link>
       </div>
       <div className="grid md:grid-cols-4 md:gap-3">
         <div className="md:col-span-2">
-          <Image
-            src={product.image}
-            alt={product.name}
-            width={640}
-            height={640}
-            sizes="100vw"
-            style={{
-              width: '100%',
-              height: 'auto',
-            }}
-          ></Image>
+          <ProductGallery images={product.images} mainImage={product.mainImage} />
         </div>
         <div>
           <ul className="space-y-4">
@@ -66,13 +54,13 @@ export default async function ProductDetails({
                 value={product.rating}
                 caption={`${product.numReviews} ratings`}
               />
-          </li> */}
-            <li> {product.brand}</li>
+            </li> */}
+            <li>{product.brand}</li>
             <li>
               <div className="divider"></div>
             </li>
             <li>
-              Opis: <p>{product.description}</p>
+              Description: <p>{product.description}</p>
             </li>
           </ul>
         </div>
@@ -80,13 +68,13 @@ export default async function ProductDetails({
           <div className="card bg-base-300 shadow-xl mt-3 md:mt-0">
             <div className="card-body">
               <div className="mb-2 flex justify-between">
-                <div>Cena</div>
-                <div>{product.price} PLN</div>
+                <div>Price</div>
+                <div>${product.price}</div>
               </div>
               <div className="mb-2 flex justify-between">
                 <div>Status</div>
                 <div>
-                  {product.countInStock > 0 ? 'W magazynie' : 'Niedostępny'}
+                  {product.countInStock > 0 ? 'In stock' : 'Unavailable'}
                 </div>
               </div>
               {product.countInStock !== 0 && (
@@ -103,7 +91,7 @@ export default async function ProductDetails({
                   </div>
                   <div className="mt-4 text-center">
                     <Link href="/cart">
-                      <div className="btn btn-accent w-full">Idź do koszyka</div>
+                      <div className="btn btn-accent w-full">Go to Cart</div>
                     </Link>
                   </div>
                 </>
