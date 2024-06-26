@@ -40,7 +40,7 @@ export default function ProductItem({ product }: { product: Product }) {
               </div>
             )}
             <Image
-              src={product.image}
+              src={product.mainImage || product.images[0]} // Używamy mainImage, a jeśli nie ma, to pierwsze zdjęcie z tablicy images
               alt={product.name}
               width={300}
               height={300}
