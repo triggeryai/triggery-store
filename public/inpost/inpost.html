@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pl" style="height: 100%;">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta http-equiv="x-ua-compatible" content="IE=11"/>
+    <title>Geowidget v4 - Example - Basic</title>
+    <script src="https://geowidget.easypack24.net/js/sdk-for-javascript.js"></script>
+    <link rel="stylesheet" href="https://geowidget.easypack24.net/css/easypack.css"/>
+    <style>
+        #detailsPopup {
+            display: none;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 20px;
+            z-index: 1000;
+            width: 300px;
+            border-radius: 8px;
+        }
+        #detailsPopup p {
+            margin: 10px 0;
+            line-height: 1.4;
+            font-size: 16px;
+        }
+        #detailsPopup button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #detailsPopup button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div id="easypack-map"></div>
+    <div id="detailsPopup">Placeholder for Paczkomat details</div>
+    <script type="text/javascript">
+        window.easyPackAsyncInit = function () {
+            easyPack.init({
+                mapType: 'osm',
+                searchType: 'osm',
+            });
+            var selectedPoint = null;
+            var map = easyPack.mapWidget('easypack-map', function(point) {
+                selectedPoint = point;
+                console.log(point);
+            });
+
+            document.getElementById('easypack-map').addEventListener('click', function() {
+                if (selectedPoint) {
+                    showDetails(selectedPoint);
+                }
+            });
+
+            function showDetails(point) {
+                var popup = document.getElementById('detailsPopup');
+                popup.innerHTML = '<p><strong>Wybrany Paczkomat:</strong></p>' +
+                                  '<p>ID: ' + point.name + '</p>' +
+                                  '<p>Adres: ' + point.address.line1 + ', ' + point.address.line2 + '</p>' +
+                                  '<p><strong>Informacja została zapisana.</strong></p>' +
+                                  '<button onclick="hidePopup()">Zamknij</button>';
+                popup.style.display = 'block';
+                // Save to localStorage
+                localStorage.setItem('selectedPaczkomat', JSON.stringify(point));
+            }
+
+            function hidePopup() {
+                document.getElementById('detailsPopup').style.display = 'none';
+            }
+            window.hidePopup = hidePopup;
+        };
+    </script>
+</body>
+</html>

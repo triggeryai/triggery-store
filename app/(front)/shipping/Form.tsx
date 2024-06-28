@@ -1,4 +1,4 @@
-// app/front/shipping/Form.tsx
+// app\(front)\shipping\Form.tsx
 "use client";
 import React, { useState, useEffect } from "react";
 import CheckoutSteps from "@/components/CheckoutSteps";
@@ -7,7 +7,31 @@ import { ShippingAddress } from "@/lib/models/OrderModel";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import Select from "react-select";
-import InpostBox from "@/components/InpostBox";
+
+const InpostModal = ({ closeModal }) => {
+  useEffect(() => {
+    const handleMessage = (event) => {
+      if (event.data.type === 'CLOSE_MODAL') {
+        closeModal();
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
+  }, [closeModal]);
+
+  return (
+    <div className="modal modal-open">
+      <div className="modal-box relative" style={{ width: '75%', height: '75%' }}>
+        <button className="btn btn-sm btn-circle absolute right-2 top-2" onClick={closeModal}>✕</button>
+        <iframe src="/inpost/inpost.html" className="w-full h-full"></iframe>
+      </div>
+    </div>
+  );
+};
 
 const Form = () => {
   const router = useRouter();
@@ -63,35 +87,22 @@ const Form = () => {
   }, [setValue, shippingAddress]);
 
   useEffect(() => {
-    const method = localStorage.getItem('shippingMethod');
-    const redirected = localStorage.getItem('redirected');
-
-    if (method && !redirected) {
-      if (method === "Pocztex Poczta Odbior Punkt") {
-        localStorage.setItem('redirected', 'true');
-        router.push("/pocztex/pocztex.html");
-      }
-    }
-  }, [shippingMethod, router]);
-
-  useEffect(() => {
     if (shippingMethod === "Pocztex Poczta Odbior Punkt") {
       const savedPoint = localStorage.getItem("selectedPoint");
       if (savedPoint) {
         setSelectedPocztex(JSON.parse(savedPoint));
       } else {
         setSelectedPocztex(null);
+        router.push("/pocztex/pocztex.html");
       }
-    } else if (shippingMethod !== "Inpost Paczkomat") {
-      setSelectedPaczkomat(null);
-      localStorage.removeItem("selectedPaczkomat");
+    } else {
+      setSelectedPocztex(null);
     }
 
-    if (shippingMethod !== "Pocztex Poczta Odbior Punkt") {
-      setSelectedPocztex(null);
-      localStorage.removeItem("selectedPoint");
+    if (shippingMethod !== "Inpost Paczkomat") {
+      setSelectedPaczkomat(null);
     }
-  }, [shippingMethod]);
+  }, [shippingMethod, router]);
 
   useEffect(() => {
     const fetchShippingOptions = async () => {
@@ -119,18 +130,29 @@ const Form = () => {
     localStorage.setItem('shippingPrice', option.price);
     localStorage.removeItem('redirected');
     setShippingPrice(option.price);
-    setShowInpostModal(option.value === "Inpost Paczkomat");
+
+    if (option.value === "Inpost Paczkomat") {
+      setShowInpostModal(true);
+    } else {
+      setShowInpostModal(false);
+      // Refresh the page if a different shipping method is selected
+      setTimeout(() => {
+        location.reload();
+      }, 0);
+    }
 
     if (option.value !== "Inpost Paczkomat" && option.value !== "Pocztex Poczta Odbior Punkt") {
       setSelectedPaczkomat(null);
-      localStorage.removeItem("selectedPaczkomat");
-      setSelectedPocztex(null);
-      localStorage.removeItem("selectedPoint");
     }
-  };
 
-  const handleOpenModal = () => {
-    setShowInpostModal(true);
+    if (option.value === "Pocztex Poczta Odbior Punkt") {
+      const savedPoint = localStorage.getItem("selectedPoint");
+      if (!savedPoint) {
+        setTimeout(() => {
+          router.push("/pocztex/pocztex.html");
+        }, 0);
+      }
+    }
   };
 
   const formSubmit = async (data) => {
@@ -163,7 +185,7 @@ const Form = () => {
               {watch("shippingMethod") === "Inpost Paczkomat" && selectedPaczkomat && (
                 <div className="flex-1 min-w-0">
                   <strong>Selected Paczkomat:</strong> {selectedPaczkomat.name}
-                  <button type="button" onClick={handleOpenModal} className="btn btn-link">Change Paczkomat</button>
+                  <button type="button" onClick={() => setShowInpostModal(true)} className="btn btn-link">Change Paczkomat</button>
                 </div>
               )}
               {watch("shippingMethod") === "Pocztex Poczta Odbior Punkt" && selectedPocztex && (
@@ -261,7 +283,7 @@ const Form = () => {
           </form>
         </div>
       </div>
-      {showInpostModal && <InpostBox closeModal={() => setShowInpostModal(false)} />}
+      {showInpostModal && <InpostModal closeModal={() => setShowInpostModal(false)} />}
     </div>
   );
 };

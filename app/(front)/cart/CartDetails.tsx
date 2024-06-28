@@ -1,4 +1,4 @@
-// app\(front)\cart\CartDetails.tsx
+// app/(front)/cart/CartDetails.tsx
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -72,10 +72,10 @@ export default function CartDetails() {
         <div>
           Koszyk jest pusty.        
           <Link href="/search?q=">
-          <div className="inline-block px-6 py-3 text-sm font-medium leading-6 text-center text-white transition duration-300 ease-in-out bg-blue-500 rounded-md shadow-lg hover:bg-blue-600 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-            Kontynuuj zakupy
-          </div>
-        </Link>
+            <div className="inline-block px-6 py-3 text-sm font-medium leading-6 text-center text-white transition duration-300 ease-in-out bg-blue-500 rounded-md shadow-lg hover:bg-blue-600 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+              Kontynuuj zakupy
+            </div>
+          </Link>
         </div>
       ) : (
         <div className="grid md:grid-cols-4 md:gap-5">
@@ -96,12 +96,15 @@ export default function CartDetails() {
                         href={`/product/${item.slug}`}
                         className="flex items-center"
                       >
-                        <Image
-                          src={item.image}
-                          alt={item.name}
-                          width={50}
-                          height={50}
-                        />
+                        {item.mainImage && (
+                          <Image
+                            src={item.mainImage}
+                            alt={item.name}
+                            width={50}
+                            height={50}
+                            className="object-cover"
+                          />
+                        )}
                         <span className="px-2">{item.name}</span>
                       </Link>
                     </td>
@@ -135,8 +138,8 @@ export default function CartDetails() {
                 <ul>
                   <li>
                     <div className="pb-3 text-xl">
-                    Do zapłaty ({items.reduce((a, c) => a + c.qty, 0)}) 
-                     {' '} <span className="font-bold"> {itemsPrice} PLN</span>
+                      Do zapłaty {/* ({items.reduce((a, c) => a + c.qty, 0)})  */}
+                      {' '} <span className="font-bold"> {itemsPrice} PLN</span>
                     </div>
                   </li>
                   <li>

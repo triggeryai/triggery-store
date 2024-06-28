@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 const SuccessfulActivationPage = () => {
   useEffect(() => {
     // Wyświetl powiadomienie toast
-    toast.success('Account activated successfully!', {
+    toast.success('Konto zostało aktywowane pomyślnie!', {
       duration: 4000,
       position: 'top-center',
     });
@@ -14,21 +14,21 @@ const SuccessfulActivationPage = () => {
     // Dynamicznie importuj canvas-confetti, aby zapewnić, że działa po stronie klienta
     import('canvas-confetti').then((confetti) => {
       confetti.default({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 },
+        particleCount: 200,
+        spread: 90,
+        origin: { y: 0.7 },
       });
     });
   }, []);
 
   return (
-    <div className="flex h-screen items-center justify-center bg-gradient-to-r from-cyan-500 to-blue-500">
-      <div className="max-w-md p-8 text-center bg-white rounded-lg shadow-xl">
-        <h1 className="mb-4 text-3xl font-bold text-gray-800">Account Activation Successful</h1>
-        <p className="mb-8 text-lg text-gray-600">Your account has been successfully activated. You&apos;re now ready to explore!</p>
-        <Link href="/">
-          <button className="px-6 py-2 text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 rounded-md transition duration-150 ease-in-out">
-            Go to Homepage
+    <div className="flex h-screen items-center justify-center bg-gradient-to-r from-purple-100 via-orange-600 to-orange-600">
+      <div className="max-w-md p-10 text-center bg-gray-800 rounded-xl shadow-2xl">
+        <h1 className="mb-4 text-4xl font-extrabold text-white">Aktywacja konta zakończona!</h1>
+        <p className="mb-6 text-lg text-gray-300">Twoje konto zostało pomyślnie aktywowane. Możesz teraz zalogować się i zacząć korzystać z serwisu.</p>
+        <Link href="/signin">
+          <button className="px-6 py-3 text-lg font-semibold text-white bg-blue-500 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 rounded-full transition duration-150 ease-in-out">
+            Zaloguj się
           </button>
         </Link>
       </div>
