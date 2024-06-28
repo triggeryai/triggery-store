@@ -309,12 +309,12 @@ export default function OrderDetails({
                           href={`/product/${item.slug}`}
                           className="flex items-center"
                         >
-                          <Image
+                          {/* <Image
                             src={item.image}
                             alt={item.name}
                             width={50}
                             height={50}
-                          ></Image>
+                          ></Image> */}
                           <span className="px-2">
                             {item.name} ({item.color} {item.size})
                           </span>

@@ -1,4 +1,3 @@
-// app\api\orders\route.ts
 import { auth } from '@/lib/auth'
 import dbConnect from '@/lib/dbConnect'
 import OrderModel, { OrderItem } from '@/lib/models/OrderModel'
@@ -7,15 +6,11 @@ import { round2 } from '@/lib/utils'
 import mongoose from 'mongoose'
 
 const calcPrices = (orderItems: OrderItem[]) => {
-  // Calculate the items price
   const itemsPrice = round2(
     orderItems.reduce((acc, item) => acc + item.price * item.qty, 0)
   )
-  // Calculate the shipping price
   const shippingPrice = round2(itemsPrice > 100 ? 0 : 10)
-  // Calculate the tax price
   const taxPrice = round2(Number((0.15 * itemsPrice).toFixed(2)))
-  // Calculate the total price
   const totalPrice = round2(itemsPrice + shippingPrice + taxPrice)
   return { itemsPrice, shippingPrice, taxPrice, totalPrice }
 }
@@ -32,14 +27,12 @@ export const POST = auth(async (req: any) => {
   const { user } = req.auth
   await dbConnect()
 
-  // Rozpocznij sesję transakcyjną
   const session = await mongoose.startSession();
   session.startTransaction();
 
   try {
     const payload = await req.json()
 
-    // Znajdź ceny produktów w bazie danych
     const dbProductPrices = await ProductModel.find(
       {
         _id: { $in: payload.items.map((x: { _id: string }) => x._id) },
@@ -47,7 +40,7 @@ export const POST = auth(async (req: any) => {
       'price countInStock'
     ).session(session)
 
-    const dbOrderItems = payload.items.map((item: { _id: string, qty: number }) => {
+    const dbOrderItems = payload.items.map((item: { _id: string, qty: number, image: string }) => {
       const product = dbProductPrices.find((p) => p._id.equals(item._id))
       if (!product) {
         throw new Error('Product not found');
@@ -59,11 +52,11 @@ export const POST = auth(async (req: any) => {
         ...item,
         product: item._id,
         price: product.price,
+        image: item.image, // Ensure the image field is included
         _id: undefined,
       }
     })
 
-    // Aktualizuj ilość produktu w magazynie
     for (const item of dbOrderItems) {
       await ProductModel.updateOne(
         { _id: item.product },
@@ -84,10 +77,8 @@ export const POST = auth(async (req: any) => {
       user: user._id,
     })
 
-    // Zapisz zamówienie
     const createdOrder = await newOrder.save({ session })
 
-    // Zatwierdź transakcję
     await session.commitTransaction()
 
     return Response.json(
@@ -97,7 +88,6 @@ export const POST = auth(async (req: any) => {
       }
     )
   } catch (err: any) {
-    // Wycofaj transakcję w przypadku błędu
     await session.abortTransaction()
     return Response.json(
       { message: err.message || 'An error occurred' },
@@ -106,7 +96,6 @@ export const POST = auth(async (req: any) => {
       }
     )
   } finally {
-    // Zakończ sesję
     session.endSession()
   }
 }) as any

@@ -13,11 +13,21 @@ type Inputs = {
   email: string
   password: string
   confirmPassword: string
+  captcha: string
 }
 
 const Form = () => {
   const { data: session } = useSession()
   const [showModal, setShowModal] = useState(false)
+
+  const [captchaNum1, setCaptchaNum1] = useState<number>(0)
+  const [captchaNum2, setCaptchaNum2] = useState<number>(0)
+
+  useEffect(() => {
+    // Generate two random numbers between 1 and 10 for CAPTCHA
+    setCaptchaNum1(Math.floor(Math.random() * 10) + 1)
+    setCaptchaNum2(Math.floor(Math.random() * 10) + 1)
+  }, [])
 
   const params = useSearchParams()
   const router = useRouter()
@@ -27,12 +37,14 @@ const Form = () => {
     handleSubmit,
     getValues,
     formState: { errors, isSubmitting },
+    setError,
   } = useForm<Inputs>({
     defaultValues: {
       name: '',
       email: '',
       password: '',
       confirmPassword: '',
+      captcha: '',
     },
   })
 
@@ -43,7 +55,14 @@ const Form = () => {
   }, [callbackUrl, params, router, session])
 
   const formSubmit: SubmitHandler<Inputs> = async (form) => {
-    const { name, email, password } = form
+    const { name, email, password, captcha } = form
+
+    // Check if the CAPTCHA is correct
+    const captchaResult = parseInt(captcha)
+    if (captchaResult !== captchaNum1 + captchaNum2) {
+      setError('captcha', { type: 'manual', message: 'CAPTCHA jest nieprawidłowy' })
+      return
+    }
 
     try {
       const res = await fetch('/api/auth/register', {
@@ -155,6 +174,27 @@ const Form = () => {
               {errors.confirmPassword?.message && (
                 <div className="text-error">{errors.confirmPassword.message}</div>
               )}
+            </div>
+            <div className="my-2">
+              <label className="label">
+                CAPTCHA
+              </label>
+              <div className="flex items-center">
+                <span className="mr-2">{captchaNum1} + {captchaNum2} =</span>
+                <input
+                  type="text"
+                  id="captcha"
+                  {...register('captcha', {
+                    required: 'CAPTCHA jest wymagany',
+                    pattern: {
+                      value: /^\d+$/,
+                      message: 'Wprowadzona wartość musi być liczbą',
+                    },
+                  })}
+                  className="input input-bordered w-full max-w-sm"
+                />
+              </div>
+              {errors.captcha && <p className="text-error">{errors.captcha.message}</p>}
             </div>
             <div className="my-2">
               <button

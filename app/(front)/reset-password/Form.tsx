@@ -1,23 +1,41 @@
-'use client'
-import { useForm } from 'react-hook-form'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import toast from 'react-hot-toast'
+'use client';
+import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import toast from 'react-hot-toast';
+import { useEffect, useState } from 'react';
 
 type ForgotPasswordInputs = {
   email: string;
-}
+  captcha: string;
+};
 
 const ForgotPasswordForm = () => {
-  const router = useRouter()
+  const router = useRouter();
+  const [captchaNum1, setCaptchaNum1] = useState<number>(0);
+  const [captchaNum2, setCaptchaNum2] = useState<number>(0);
+
+  useEffect(() => {
+    // Generate two random numbers between 1 and 10 for CAPTCHA
+    setCaptchaNum1(Math.floor(Math.random() * 10) + 1);
+    setCaptchaNum2(Math.floor(Math.random() * 10) + 1);
+  }, []);
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<ForgotPasswordInputs>()
+    setError,
+  } = useForm<ForgotPasswordInputs>();
 
   const onSubmit = async (data: ForgotPasswordInputs) => {
+    // Check if the CAPTCHA is correct
+    const captchaResult = parseInt(data.captcha);
+    if (captchaResult !== captchaNum1 + captchaNum2) {
+      setError('captcha', { type: 'manual', message: 'CAPTCHA jest nieprawidłowy' });
+      return;
+    }
+
     try {
       const response = await fetch('/api/auth/reset-password', {
         method: 'POST',
@@ -37,7 +55,7 @@ const ForgotPasswordForm = () => {
     } catch (error: any) {
       toast.error(error.message || 'Nie udało się wysłać e-maila z resetowaniem hasła.');
     }
-  }
+  };
 
   return (
     <div className="max-w-sm mx-auto card bg-base-300 my-4">
@@ -63,6 +81,27 @@ const ForgotPasswordForm = () => {
             {errors.email && <p className="text-error">{errors.email.message}</p>}
           </div>
           <div className="my-4">
+            <label className="label">
+              CAPTCHA
+            </label>
+            <div className="flex items-center">
+              <span className="mr-2">{captchaNum1} + {captchaNum2} =</span>
+              <input
+                type="text"
+                id="captcha"
+                {...register('captcha', {
+                  required: 'CAPTCHA jest wymagany',
+                  pattern: {
+                    value: /^\d+$/,
+                    message: 'Wprowadzona wartość musi być liczbą',
+                  },
+                })}
+                className="input input-bordered w-full max-w-xs"
+              />
+            </div>
+            {errors.captcha && <p className="text-error">{errors.captcha.message}</p>}
+          </div>
+          <div className="my-4">
             <button
               type="submit"
               disabled={isSubmitting}
@@ -84,7 +123,7 @@ const ForgotPasswordForm = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ForgotPasswordForm
+export default ForgotPasswordForm;
