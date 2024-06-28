@@ -170,12 +170,9 @@ export default async function SearchPage({
             {q !== 'all' && q !== '' && ' : ' + q}
             {category !== 'all' && ' : ' + category}
             {price !== 'all' && ' : Cena ' + price}
-
-            {(q !== 'all' && q !== '') || category !== 'all' || price !== 'all' ? (
-              <Link className="btn btn-sm btn-ghost" href="/search">
-                Wyczyść
-              </Link>
-            ) : null}
+            <Link className="btn btn-sm btn-ghost" href="http://localhost:3000/search?q=all&category=all&price=all&sort=newest&page=1">
+              Wyczyść
+            </Link>
           </div>
           <div>
             <span className="font-bold">Sortuj według</span>{' '}
