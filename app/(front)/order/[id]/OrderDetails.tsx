@@ -1,9 +1,7 @@
-// components/OrderDetails.tsx
 'use client'
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js'
 import { OrderItem } from '@/lib/models/OrderModel'
 import { useSession } from 'next-auth/react'
-import Image from 'next/image'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
 import useSWR from 'swr'
@@ -18,8 +16,6 @@ export default function OrderDetails({
   orderId: string
   paypalClientId: string
 }) {
-  console.log("Order ID on entry:", orderId); // Log przy wejściu do komponentu
-
   const { trigger: deliverOrder, isMutating: isDelivering } = useSWRMutation(
     `/api/orders/${orderId}`,
     async (url) => {
@@ -38,13 +34,13 @@ export default function OrderDetails({
 
   const { data, error } = useSWR(`/api/orders/${orderId}`)
   const { data: bankAccountData } = useSWR('/api/admin/payments')
+  const { data: taxData } = useSWR('/api/admin/tax')
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
   const [bankAccount, setBankAccount] = useState('1234 1234 1234 1234 1234 1234 1234');
 
   useEffect(() => {
     if (data && data.paymentMethod) {
-      console.log("Loaded payment method from data:", data.paymentMethod);
       setSelectedPaymentMethod(data.paymentMethod);
     }
   }, [data]);
@@ -56,20 +52,11 @@ export default function OrderDetails({
   }, [bankAccountData]);
 
   const handlePaymentMethodChange = (selectedOption) => {
-    console.log("Selected payment method:", selectedOption.value);
-    console.log("Current state before update:", selectedPaymentMethod);
     setSelectedPaymentMethod(selectedOption.value);
-    console.log("New state after update:", selectedOption.value); // Stan zmieni się asynchronicznie
     updatePaymentMethodInDatabase(selectedOption.value);
   };
 
   const updatePaymentMethodInDatabase = async (newPaymentMethod) => {
-    console.log("Order ID before sending request:", orderId); // Log before sending the request
-    console.log("Value before sending:", newPaymentMethod);
-    const payload = JSON.stringify({ paymentMethod: newPaymentMethod });
-    console.log("Sending paymentMethod update with payload:", payload);
-    console.log("Value before sending:", newPaymentMethod);
-    console.log("Sending paymentMethod update with value:", newPaymentMethod);
     if (!newPaymentMethod) {
       toast.error('Nie wybrano metody płatności');
       return;
@@ -82,12 +69,10 @@ export default function OrderDetails({
         },
         body: JSON.stringify({ paymentMethod: newPaymentMethod })
       });
-  
+
       const data = await response.json();
-      console.log("Response from server:", data);  // Server response to the update request
       if (response.ok) {
         toast.success(`Metoda płatności zaktualizowana pomyślnie na ${newPaymentMethod}`);
-        // Reload the page to reflect the updated data after 2 seconds
         setTimeout(() => {
           window.location.reload();
         }, 2000);
@@ -128,7 +113,6 @@ export default function OrderDetails({
       const data = await res.json();
       if (res.ok) {
         toast.success('Zamówienie oznaczone jako nieopłacone');
-        // Automatyczne odświeżanie strony, aby odzwierciedlić zmiany
         window.location.reload();
       } else {
         toast.error(data.message);
@@ -150,23 +134,20 @@ export default function OrderDetails({
       if (response.ok) {
         setStripeSessionUrl(session.url);
       } else {
-        console.error('Nie udało się zainicjować płatności Stripe:', session.message);
         toast.error('Nie udało się zainicjować płatności Stripe: ' + session.message);
       }
     } catch (error) {
-      console.error('Błąd sieci podczas łączenia z bramką płatności:', error);
       toast.error('Wystąpił błąd sieci podczas łączenia z bramką płatności.');
     }
   };
 
   useEffect(() => {
     if (stripeSessionUrl) {
-      window.location.href = stripeSessionUrl; // Przekieruj do Stripe
+      window.location.href = stripeSessionUrl;
     }
   }, [stripeSessionUrl]);
 
   const { data: session } = useSession()
-  console.log(session)
 
   function createPayPalOrder() {
     return fetch(`/api/orders/${orderId}/create-paypal-order`, {
@@ -212,6 +193,7 @@ export default function OrderDetails({
 
   if (error) return error.message
   if (!data) return 'Ładowanie...'
+  if (!taxData) return 'Ładowanie ustawień podatkowych...';
 
   const {
     paymentMethod,
@@ -309,12 +291,6 @@ export default function OrderDetails({
                           href={`/product/${item.slug}`}
                           className="flex items-center"
                         >
-                          {/* <Image
-                            src={item.image}
-                            alt={item.name}
-                            width={50}
-                            height={50}
-                          ></Image> */}
                           <span className="px-2">
                             {item.name} ({item.color} {item.size})
                           </span>
@@ -341,12 +317,14 @@ export default function OrderDetails({
                     <div>{itemsPrice} PLN</div>
                   </div>
                 </li>
-                <li>
-                  <div className="mb-2 flex justify-between">
-                    <div>Podatek</div>
-                    <div>{taxPrice} PLN</div>
-                  </div>
-                </li>
+                {taxData.isActive && (
+                  <li>
+                    <div className="mb-2 flex justify-between">
+                      <div>Podatek</div>
+                      <div>{taxPrice} PLN</div>
+                    </div>
+                  </li>
+                )}
                 <li>
                   <div className="mb-2 flex justify-between">
                     <div>Wysyłka</div>
@@ -356,7 +334,7 @@ export default function OrderDetails({
                 <li>
                   <div className="mb-2 flex justify-between">
                     <div>Łącznie</div>
-                    <div>{totalPrice} PLN</div>
+                    <div>{taxData.isActive ? totalPrice : itemsPrice + shippingPrice} PLN</div>
                   </div>
                 </li>
                 {paymentMethod === 'DirectBankTransferToAccount' && !isPaid && (
