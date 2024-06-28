@@ -2,7 +2,7 @@
 import { signIn, useSession } from 'next-auth/react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import confetti from 'canvas-confetti'
 import toast from 'react-hot-toast'
@@ -10,6 +10,7 @@ import toast from 'react-hot-toast'
 type Inputs = {
   email: string
   password: string
+  captcha: string
 }
 
 const Form = () => {
@@ -19,36 +20,55 @@ const Form = () => {
   let callbackUrl = params.get('callbackUrl') || '/'
   const router = useRouter()
 
+  const [captchaNum1, setCaptchaNum1] = useState<number>(0);
+  const [captchaNum2, setCaptchaNum2] = useState<number>(0);
+
+  useEffect(() => {
+    // Generate two random numbers between 1 and 10 for CAPTCHA
+    setCaptchaNum1(Math.floor(Math.random() * 10) + 1);
+    setCaptchaNum2(Math.floor(Math.random() * 10) + 1);
+  }, []);
+
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    setError,
   } = useForm<Inputs>({
     defaultValues: {
       email: '',
       password: '',
+      captcha: '',
     },
   })
 
   useEffect(() => {
     if (session && session.user) {
-      // Wyświetl confetti
+      // Display confetti
       confetti({
         particleCount: 100,
         spread: 70,
         origin: { y: 0.6 },
       })
 
-      // Wyświetl powiadomienie toast
+      // Display toast notification
       toast.success('Zalogowano pomyślnie!')
 
-      // Przekierowanie
+      // Redirect
       router.push(callbackUrl)
     }
   }, [callbackUrl, params, router, session])
 
   const formSubmit: SubmitHandler<Inputs> = async (form) => {
-    const { email, password } = form
+    const { email, password, captcha } = form
+
+    // Check if the CAPTCHA is correct
+    const captchaResult = parseInt(captcha);
+    if (captchaResult !== captchaNum1 + captchaNum2) {
+      setError('captcha', { type: 'manual', message: 'CAPTCHA jest nieprawidłowy' });
+      return;
+    }
+
     signIn('credentials', {
       email,
       password,
@@ -105,6 +125,27 @@ const Form = () => {
             {errors.password?.message && (
               <div className="text-error">{errors.password.message}</div>
             )}
+          </div>
+          <div className="my-2">
+            <label className="label">
+              CAPTCHA
+            </label>
+            <div className="flex items-center">
+              <span className="mr-2">{captchaNum1} + {captchaNum2} =</span>
+              <input
+                type="text"
+                id="captcha"
+                {...register('captcha', {
+                  required: 'CAPTCHA jest wymagany',
+                  pattern: {
+                    value: /^\d+$/,
+                    message: 'Wprowadzona wartość musi być liczbą',
+                  },
+                })}
+                className="input input-bordered w-full max-w-sm"
+              />
+            </div>
+            {errors.captcha && <p className="text-error">{errors.captcha.message}</p>}
           </div>
           <div className="my-4">
             <button

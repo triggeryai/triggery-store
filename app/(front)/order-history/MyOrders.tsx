@@ -1,3 +1,4 @@
+// app(front)/order-history/MyOrders.tsx
 'use client'
 
 import { Order } from '@/lib/models/OrderModel'
@@ -5,18 +6,41 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import useSWR from 'swr'
+import { useSession } from 'next-auth/react'
 
 export default function MyOrders() {
+  const { data: session, status } = useSession()
   const router = useRouter()
   const [page, setPage] = useState(1)
   const [mounted, setMounted] = useState(false)
-  const { data: ordersData, error } = useSWR(`/api/orders/mine?page=${page}&limit=15`)
+
+  const fetchOrders = async (url: string) => {
+    const response = await fetch(url)
+    if (response.status === 401) {
+      router.push('/signin')
+    }
+    if (!response.ok) {
+      throw new Error('An error occurred while fetching the data.')
+    }
+    return response.json()
+  }
+
+  const { data: ordersData, error } = useSWR(
+    session ? `/api/orders/mine?page=${page}&limit=15` : null,
+    fetchOrders
+  )
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  if (!mounted) return <></>
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/signin')
+    }
+  }, [status, router])
+
+  if (!mounted || status === 'loading') return <></>
 
   if (error) return 'Wystąpił błąd.'
   if (!ordersData) return 'Ładowanie...'
@@ -66,7 +90,6 @@ export default function MyOrders() {
                     Szczegóły
                   </button>
                 </Link>
-
               </td>
             </tr>
           ))}

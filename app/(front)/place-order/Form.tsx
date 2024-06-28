@@ -1,4 +1,3 @@
-// app(front)/place-order/Form.tsx
 'use client';
 import CheckoutSteps from '@/components/CheckoutSteps';
 import useCartService from '@/lib/hooks/useCartStore';
@@ -89,7 +88,10 @@ const Form = () => {
             selectedPocztex: localStorage.getItem('selectedPoint'),
             shippingCost: shippingPrice,
           },
-          items,
+          items: items.map(item => ({
+            ...item,
+            image: item.image, // Ensure the image field is included
+          })),
           itemsPrice,
           taxPrice,
           shippingPrice,
