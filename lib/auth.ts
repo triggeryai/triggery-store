@@ -1,4 +1,4 @@
-// lib\auth.ts
+// lib/auth.ts
 import CredentialsProvider from 'next-auth/providers/credentials'
 import bcrypt from 'bcryptjs'
 import dbConnect from './dbConnect'
@@ -39,7 +39,7 @@ export const config = {
     error: '/signin',
   },
   callbacks: {
-    async jwt({ user, trigger, session, token }: any) {
+    async jwt({ user, token }) {
       if (user) {
         token.user = {
           _id: user._id,
@@ -47,18 +47,16 @@ export const config = {
           name: user.name,
           isAdmin: user.isAdmin,
         }
-      }
-      if (trigger === 'update' && session) {
-        token.user = {
-          ...token.user,
-          email: session.user.email,
-          name: session.user.name,
-          isAdmin: session.user.isAdmin, // Dodaj to
+      } else {
+        await dbConnect();
+        const existingUser = await UserModel.findById(token.user._id);
+        if (!existingUser) {
+          return {};
         }
       }
       return token
     },
-    session: async ({ session, token }: any) => {
+    session: async ({ session, token }) => {
       if (token) {
         session.user = token.user
       }

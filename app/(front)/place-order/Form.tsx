@@ -1,3 +1,4 @@
+// app(front)/place-order/Form.tsx
 'use client';
 import CheckoutSteps from '@/components/CheckoutSteps';
 import useCartService from '@/lib/hooks/useCartStore';
@@ -101,7 +102,7 @@ const Form = () => {
       const data = await res.json();
       if (res.ok) {
         clear();
-        toast.success('Order placed successfully');
+        toast.success('Zamówienie złożone pomyślnie');
         return router.push(`/order/${data.order._id}`);
       } else {
         toast.error(data.message);
@@ -138,23 +139,23 @@ const Form = () => {
         <div className="overflow-x-auto md:col-span-3">
           <div className="card bg-base-300">
             <div className="card-body">
-              <h2 className="card-title">Shipping Address</h2>
+              <h2 className="card-title">Adres Dostawy</h2>
               <p>{shippingAddress.fullName}</p>
               <p>
                 {shippingAddress.address}, {shippingAddress.city}, {shippingAddress.postalCode}, {shippingAddress.country}{' '}
               </p>
               <p>
-                Shipping Method: {shippingMethod} - ${shippingPrice}
+                Metoda wysyłki: {shippingMethod} - {shippingPrice} PLN
               </p>
               {shippingMethod === 'Inpost Paczkomat' && selectedPaczkomat && selectedPaczkomat.name && (
-                <p>Selected Paczkomat: {selectedPaczkomat.name}</p>
+                <p>Wybrany Paczkomat: {selectedPaczkomat.name}</p>
               )}
               {shippingMethod === 'Pocztex Poczta Odbior Punkt' && selectedPocztex && selectedPocztex.name && (
-                <p>Selected Pocztex Point: {selectedPocztex.name}</p>
+                <p>Wybrany Punkt Pocztex: {selectedPocztex.name}</p>
               )}
               <div>
                 <Link className="btn" href="/shipping">
-                  Edit
+                  Edytuj
                 </Link>
               </div>
             </div>
@@ -162,11 +163,11 @@ const Form = () => {
 
           <div className="card bg-base-300 mt-4">
             <div className="card-body">
-              <h2 className="card-title">Payment Method</h2>
+              <h2 className="card-title">Metoda Płatności</h2>
               <p>{paymentMethod}</p>
               <div>
                 <Link className="btn" href="/payment">
-                  Edit
+                  Edytuj
                 </Link>
               </div>
             </div>
@@ -174,13 +175,13 @@ const Form = () => {
 
           <div className="card bg-base-300 mt-4">
             <div className="card-body">
-              <h2 className="card-title">Items</h2>
+              <h2 className="card-title">Produkty</h2>
               <table className="table">
                 <thead>
                   <tr>
-                    <th>Item</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
+                    <th>Produkt</th>
+                    <th>Ilość</th>
+                    <th>Cena</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -205,14 +206,14 @@ const Form = () => {
                       <td>
                         <span>{item.qty}</span>
                       </td>
-                      <td>${item.price}</td>
+                      <td>{item.price} PLN</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
               <div>
                 <Link className="btn" href="/cart">
-                  Edit
+                  Edytuj
                 </Link>
               </div>
             </div>
@@ -222,32 +223,32 @@ const Form = () => {
         <div>
           <div className="card bg-base-300">
             <div className="card-body">
-              <h2 className="card-title">Order Summary</h2>
+              <h2 className="card-title">Podsumowanie Zamówienia</h2>
               <ul className="space-y-3">
                 <li>
                   <div className=" flex justify-between">
-                    <div>Items</div>
-                    <div>${itemsPrice}</div>
+                    <div>Produkty</div>
+                    <div>{itemsPrice} PLN</div>
                   </div>
                 </li>
                 {taxPrice > 0 && (
                   <li>
                     <div className=" flex justify-between">
-                      <div>Tax</div>
-                      <div>${taxPrice}</div>
+                      <div>Podatek</div>
+                      <div>{taxPrice} PLN</div>
                     </div>
                   </li>
                 )}
                 <li>
                   <div className=" flex justify-between">
-                    <div>Shipping</div>
-                    <div>${shippingPrice}</div>
+                    <div>Wysyłka</div>
+                    <div>{shippingPrice} PLN</div>
                   </div>
                 </li>
                 <li>
                   <div className=" flex justify-between">
-                    <div>Total</div>
-                    <div>${totalPrice}</div>
+                    <div>Łącznie</div>
+                    <div>{totalPrice} PLN</div>
                   </div>
                 </li>
 
@@ -260,7 +261,7 @@ const Form = () => {
                     {isPlacing && (
                       <span className="loading loading-spinner"></span>
                     )}
-                    Place Order
+                    Złóż zamówienie
                   </button>
                 </li>
               </ul>

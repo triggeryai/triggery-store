@@ -16,7 +16,7 @@ const FourGridImages: React.FC = () => {
                   height={426}
                 />
                 <Image
-                  src="/shop.jpg"
+                  src="/shop1.jpg"
                   alt="Obraz 2"
                   className="object-cover w-full rounded-lg shadow-lg h-80"
                   width={640}
@@ -25,14 +25,14 @@ const FourGridImages: React.FC = () => {
               </div>
               <div className="w-full px-4 md:w-1/2 xl:mt-11">
                 <Image
-                  src="/shop.jpg"
+                  src="/shop3.jpg"
                   alt="Obraz 3"
                   className="object-cover w-full mb-6 rounded-lg shadow-lg h-80"
                   width={640}
                   height={426}
                 />
                 <Image
-                  src="/shop.jpg"
+                  src="/shop2.jpg"
                   alt="Obraz 4"
                   className="object-cover w-full rounded-lg shadow-lg h-80"
                   width={640}
@@ -47,7 +47,7 @@ const FourGridImages: React.FC = () => {
               Oferujemy lepsze produkty
             </h2>
             <p className="mb-4 text-lg leading-7 text-gray-500 dark:text-gray-400">
-              Odkryj szeroką gamę najwyższej jakości produktów do sprzątania, papieru toaletowego i chusteczek od wiodących marek w Domestico.
+              Odkryj szeroką gamę najwyższej jakości produktów do sprzątania, papieru toaletowego i chusteczek od wiodących marek w Domestico.pl !
             </p>
             <ul className="mb-10 text-left">
               <li className="flex items-start mb-2">

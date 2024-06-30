@@ -1,4 +1,4 @@
-// lib\models\OrderModel.ts
+// lib/models/OrderModel.ts
 import mongoose from 'mongoose';
 
 const orderSchema = new mongoose.Schema(
@@ -18,7 +18,7 @@ const orderSchema = new mongoose.Schema(
         name: { type: String, required: true },
         slug: { type: String, required: true },
         qty: { type: Number, required: true },
-        image: { type: String },
+        mainImage: { type: String }, // Dodane pole mainImage
         price: { type: Number, required: true },
       },
     ],
@@ -48,6 +48,7 @@ const orderSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
 const OrderModel = mongoose.models.Order || mongoose.model('Order', orderSchema);
 
 export default OrderModel;
@@ -84,7 +85,7 @@ export type OrderItem = {
   name: string;
   slug: string;
   qty: number;
-  image: string;
+  mainImage: string; // Dodane pole mainImage
   price: number;
   color: string;
   size: string;

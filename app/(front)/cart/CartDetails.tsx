@@ -16,7 +16,13 @@ export default function CartDetails() {
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    console.log('Cart items in CartDetails:', items); // Logowanie
+  }, [items]);
+  
+  items.forEach(item => {
+    console.log('Item mainImage:', item.mainImage);
+  });
+  
 
   if (!mounted) return <></>;
 
@@ -96,7 +102,7 @@ export default function CartDetails() {
                         href={`/product/${item.slug}`}
                         className="flex items-center"
                       >
-                        {item.mainImage && (
+                        {item.mainImage ? (
                           <Image
                             src={item.mainImage}
                             alt={item.name}
@@ -104,6 +110,8 @@ export default function CartDetails() {
                             height={50}
                             className="object-cover"
                           />
+                        ) : (
+                          <span>{item.name}</span>
                         )}
                         <span className="px-2">{item.name}</span>
                       </Link>
@@ -120,7 +128,9 @@ export default function CartDetails() {
                       <button
                         className="btn"
                         type="button"
-                        onClick={() => item.qty < item.countInStock ? handleIncrease(item) : null}
+                        onClick={() =>
+                          item.qty < item.countInStock ? handleIncrease(item) : null
+                        }
                         disabled={item.qty >= item.countInStock}
                       >
                         +

@@ -1,3 +1,4 @@
+// app\admin\orders\Orders.tsx
 'use client'
 import { useState, useEffect } from 'react'
 import { Order } from '@/lib/models/OrderModel'
@@ -88,7 +89,7 @@ export default function Orders() {
                 <td className="border px-4 py-2">..{order._id.substring(20, 24)}</td>
                 <td className="border px-4 py-2">{order.user?.name || 'Usunięty użytkownik'}</td>
                 <td className="border px-4 py-2">{order.createdAt.substring(0, 10)}</td>
-                <td className="border px-4 py-2">${order.totalPrice}</td>
+                <td className="border px-4 py-2">{order.totalPrice} PLN</td>
                 <td className="border px-4 py-2">
                   {order.isPaid && order.paidAt
                     ? `${order.paidAt.substring(0, 10)}`

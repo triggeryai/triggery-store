@@ -1,4 +1,4 @@
-// app\(front)\shipping\Form.tsx
+// app(front)/shipping/Form.tsx
 "use client";
 import React, { useState, useEffect } from "react";
 import CheckoutSteps from "@/components/CheckoutSteps";
@@ -165,7 +165,7 @@ const Form = () => {
       <CheckoutSteps current={1} />
       <div className="max-w-lg mx-auto card bg-base-300 my-4 p-6">
         <div className="card-body">
-          <h1 className="card-title text-2xl mb-4">Shipping Address</h1>
+          <h1 className="card-title text-2xl mb-4">Adres Dostawy</h1>
           <form onSubmit={handleSubmit(formSubmit)} className="space-y-4">
             <Select
               options={shippingOptions.map(option => ({
@@ -176,33 +176,33 @@ const Form = () => {
               value={shippingOptions.find(option => option.value === shippingMethod)}
               onChange={handleShippingChange}
               className="mb-4"
-              placeholder="Select shipping method"
+              placeholder="Wybierz metodę wysyłki"
             />
             <div className="flex justify-between items-center mb-4">
               <div className="flex-1 min-w-0">
-                <strong>Shipping Cost:</strong> ${shippingPrice} ({shippingMethod})
+                <strong>Koszt wysyłki:</strong> {shippingPrice} PLN ({shippingMethod})
               </div>
               {watch("shippingMethod") === "Inpost Paczkomat" && selectedPaczkomat && (
                 <div className="flex-1 min-w-0">
-                  <strong>Selected Paczkomat:</strong> {selectedPaczkomat.name}
-                  <button type="button" onClick={() => setShowInpostModal(true)} className="btn btn-link">Change Paczkomat</button>
+                  <strong>Wybrany Paczkomat:</strong> {selectedPaczkomat.name}
+                  <button type="button" onClick={() => setShowInpostModal(true)} className="btn btn-link">Zmień Paczkomat</button>
                 </div>
               )}
               {watch("shippingMethod") === "Pocztex Poczta Odbior Punkt" && selectedPocztex && (
                 <div className="flex-1 min-w-0">
-                  <strong>Selected Pocztex Point:</strong> {selectedPocztex ? `${selectedPocztex.name}, ${selectedPocztex.street}, ${selectedPocztex.city}` : "None"}
-                  <button type="button" onClick={() => router.push("/pocztex/pocztex.html")} className="btn btn-link">Change Pocztex Point</button>
+                  <strong>Wybrany Punkt Pocztex:</strong> {selectedPocztex ? `${selectedPocztex.name}, ${selectedPocztex.street}, ${selectedPocztex.city}` : "Brak"}
+                  <button type="button" onClick={() => router.push("/pocztex/pocztex.html")} className="btn btn-link">Zmień Punkt Pocztex</button>
                 </div>
               )}
             </div>
             <div className="mb-2">
               <label className="label" htmlFor="fullName">
-                Full Name
+              Imię i nazwisko
               </label>
               <input
                 type="text"
                 id="fullName"
-                {...register("fullName", { required: "Full Name is required" })}
+                {...register("fullName", { required: "Pełna nazwa jest wymagana" })}
                 className="input input-bordered w-full"
               />
               {errors.fullName && (
@@ -211,12 +211,12 @@ const Form = () => {
             </div>
             <div className="mb-2">
               <label className="label" htmlFor="address">
-                Address
+                Adres
               </label>
               <input
                 type="text"
                 id="address"
-                {...register("address", { required: "Address is required" })}
+                {...register("address", { required: "Adres jest wymagany" })}
                 className="input input-bordered w-full"
               />
               {errors.address && (
@@ -225,12 +225,12 @@ const Form = () => {
             </div>
             <div className="mb-2">
               <label className="label" htmlFor="city">
-                City
+                Miasto
               </label>
               <input
                 type="text"
                 id="city"
-                {...register("city", { required: "City is required" })}
+                {...register("city", { required: "Miasto jest wymagane" })}
                 className="input input-bordered w-full"
               />
               {errors.city && (
@@ -239,13 +239,13 @@ const Form = () => {
             </div>
             <div className="mb-2">
               <label className="label" htmlFor="postalCode">
-                Postal Code
+                Kod pocztowy
               </label>
               <input
                 type="text"
                 id="postalCode"
                 {...register("postalCode", {
-                  required: "Postal Code is required",
+                  required: "Kod pocztowy jest wymagany",
                 })}
                 className="input input-bordered w-full"
               />
@@ -255,12 +255,12 @@ const Form = () => {
             </div>
             <div className="mb-2">
               <label className="label" htmlFor="country">
-                Country
+                Kraj
               </label>
               <input
                 type="text"
                 id="country"
-                {...register("country", { required: "Country is required" })}
+                {...register("country", { required: "Kraj jest wymagany" })}
                 className="input input-bordered w-full"
               />
               {errors.country && (
@@ -276,7 +276,7 @@ const Form = () => {
                 {isSubmitting ? (
                   <span className="loading loading-spinner"></span>
                 ) : (
-                  "Next"
+                  "Dalej"
                 )}
               </button>
             </div>
