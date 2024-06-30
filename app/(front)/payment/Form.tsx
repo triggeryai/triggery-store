@@ -1,9 +1,16 @@
-// app\(front)\payment\Form.tsx
+// app(front)/payment/Form.tsx
 'use client'
 import CheckoutSteps from '@/components/CheckoutSteps'
 import useCartService from '@/lib/hooks/useCartStore'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+
+const paymentMethods = [
+  { label: 'Płatność PayPal', value: 'PayPal' },
+  { label: 'Płatność Stripe', value: 'Stripe' },
+  { label: 'Płatność przy odbiorze', value: 'CashOnDelivery' },
+  { label: 'Przelew bankowy bezpośrednio na konto', value: 'DirectBankTransferToAccount' },
+];
 
 const Form = () => {
   const router = useRouter()
@@ -27,26 +34,26 @@ const Form = () => {
       <CheckoutSteps current={2} />
       <div className="max-w-sm mx-auto card bg-base-300 my-4">
         <div className="card-body">
-          <h1 className="card-title">Payment Method</h1>
+          <h1 className="card-title">Metoda Płatności</h1>
           <form onSubmit={handleSubmit}>
-            {['PayPal', 'Stripe', 'CashOnDelivery', "DirectBankTransferToAccount"].map((payment) => (
-              <div key={payment}>
+            {paymentMethods.map((payment) => (
+              <div key={payment.value}>
                 <label className="label cursor-pointer">
-                  <span className="label-text">{payment}</span>
+                  <span className="label-text">{payment.label}</span>
                   <input
                     type="radio"
                     name="paymentMethod"
                     className="radio"
-                    value={payment}
-                    checked={selectedPaymentMethod === payment}
-                    onChange={() => setSelectedPaymentMethod(payment)}
+                    value={payment.value}
+                    checked={selectedPaymentMethod === payment.value}
+                    onChange={() => setSelectedPaymentMethod(payment.value)}
                   />
                 </label>
               </div>
             ))}
             <div className="my-2">
               <button type="submit" className="btn btn-primary w-full">
-                Next
+                Dalej
               </button>
             </div>
             <div className="my-2">
@@ -55,7 +62,7 @@ const Form = () => {
                 className="btn w-full my-2"
                 onClick={() => router.back()}
               >
-                Back
+                Wstecz
               </button>
             </div>
           </form>

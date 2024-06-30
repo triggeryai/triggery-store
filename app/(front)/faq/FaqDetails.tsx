@@ -1,49 +1,120 @@
-// plik: components/FaqDetails.tsx
-
 import React from 'react';
 import { FiChevronDown } from 'react-icons/fi';
+import Link from 'next/link';
 
 const faqData = [
   {
-    question: "Jakie produkty chemiczne oferujecie?",
-    answer: "Oferujemy szeroką gamę produktów chemicznych, w tym środki czystości, detergenty, dezynfekcje oraz specjalistyczne preparaty do różnych zastosowań."
+    question: "Jak zarejestrować konto?",
+    answer: (
+      <>
+        Aby zarejestrować konto, przejdź <Link href="/register" legacyBehavior><a className="text-blue-500 hover:underline">tutaj</a></Link>. Po rejestracji, musisz zatwierdzić link, który przyjdzie na Twój email podany przy rejestracji.
+      </>
+    ),
   },
   {
-    question: "Czy wasze produkty są bezpieczne dla środowiska?",
-    answer: "Tak, wiele naszych produktów posiada certyfikaty ekologiczne i jest bezpiecznych dla środowiska."
+    question: "Jak się zalogować?",
+    answer: (
+      <>
+        Logowanie odbywa się <Link href="/signin" legacyBehavior><a className="text-blue-500 hover:underline">tutaj</a></Link>. Możesz się zalogować dopiero po aktywowaniu linku, który został wysłany na Twój email po rejestracji.
+      </>
+    ),
   },
   {
-    question: "Jakie rodzaje papierów i ręczników macie w ofercie?",
-    answer: "W naszej ofercie znajdą Państwo zarówno papier toaletowy, jak i ręczniki papierowe różnych marek i typów, w tym produkty przemysłowe oraz domowe."
+    question: "Jak przypomnieć hasło?",
+    answer: (
+      <>
+        Jeśli zapomniałeś hasła, możesz je przypomnieć <Link href="/reset-password" legacyBehavior><a className="text-blue-500 hover:underline">tutaj</a></Link>. Wpisz swój email, a na niego przyjdzie link z aktywacją, po której zatwierdzeniu nowe hasło zostanie wysłane na Twój email.
+      </>
+    ),
   },
   {
-    question: "Czy oferujecie produkty dla firm i instytucji?",
-    answer: "Tak, specjalizujemy się w dostarczaniu produktów chemicznych i papierniczych zarówno dla klientów indywidualnych, jak i firm oraz instytucji."
+    question: "Gdzie znajdę informacje o Domestico?",
+    answer: (
+      <>
+        Informacje o sklepie Domestico znajdziesz <Link href="/about" legacyBehavior><a className="text-blue-500 hover:underline">tutaj</a></Link>.
+      </>
+    ),
   },
   {
-    question: "Jak mogę złożyć zamówienie?",
-    answer: "Zamówienia można składać poprzez naszą stronę internetową domestico.pl. Wystarczy dodać produkty do koszyka i przejść przez proces zamówienia."
+    question: "Jak skontaktować się z nami?",
+    answer: (
+      <>
+        Kontakt z nami znajdziesz <Link href="/contact" legacyBehavior><a className="text-blue-500 hover:underline">tutaj</a></Link>.
+      </>
+    ),
   },
   {
-    question: "Jakie są opcje płatności?",
-    answer: "Akceptujemy różne formy płatności, w tym płatności kartą kredytową, przelewy bankowe oraz płatności online."
+    question: "Gdzie znajduje się nasz sklep stacjonarny?",
+    answer: "Nasz sklep stacjonarny znajduje się na ul. Wrocławska 29, Dzierżoniów, Polska 58-260.",
   },
   {
-    question: "Jak długo trwa realizacja zamówienia?",
-    answer: "Czas realizacji zamówienia wynosi zazwyczaj od 2 do 5 dni roboczych, w zależności od dostępności produktów."
+    question: "Jak rozpocząć zakupy?",
+    answer: (
+      <>
+        Aby rozpocząć zakupy, wejdź <Link href="/search" legacyBehavior><a className="text-blue-500 hover:underline">tutaj</a></Link>. Znajdziesz tam listę dostępnych produktów.
+      </>
+    ),
   },
   {
-    question: "Czy mogę zwrócić zakupione produkty?",
-    answer: "Tak, oferujemy możliwość zwrotu produktów w ciągu 14 dni od daty zakupu, zgodnie z obowiązującymi przepisami."
+    question: "Gdzie znajdę politykę prywatności?",
+    answer: (
+      <>
+        Politykę prywatności znajdziesz <Link href="/privacy" legacyBehavior><a className="text-blue-500 hover:underline">tutaj</a></Link>.
+      </>
+    ),
   },
   {
-    question: "Czy oferujecie rabaty dla stałych klientów?",
-    answer: "Tak, mamy program lojalnościowy oraz specjalne oferty i rabaty dla naszych stałych klientów."
+    question: "Gdzie znajdę regulamin sklepu?",
+    answer: (
+      <>
+        Regulamin sklepu znajdziesz <Link href="/terms" legacyBehavior><a className="text-blue-500 hover:underline">tutaj</a></Link>.
+      </>
+    ),
   },
   {
-    question: "Jak mogę skontaktować się z obsługą klienta?",
-    answer: "Z naszym działem obsługi klienta można skontaktować się telefonicznie pod numerem +48 609 258 191 lub mailowo na adres biuro.domestico@gmail.com."
-  }
+    question: "Gdzie znajdę politykę zwrotów?",
+    answer: (
+      <>
+        Politykę zwrotów znajdziesz <Link href="/return-policy" legacyBehavior><a className="text-blue-500 hover:underline">tutaj</a></Link>.
+      </>
+    ),
+  },
+  {
+    question: "Gdzie znajdę informacje o gwarancji produktów?",
+    answer: (
+      <>
+        Informacje o gwarancji produktów znajdziesz <Link href="/warranty" legacyBehavior><a className="text-blue-500 hover:underline">tutaj</a></Link>.
+      </>
+    ),
+  },
+  {
+    question: "Gdzie mogę zarządzać swoim kontem?",
+    answer: (
+      <>
+        Wszystkie informacje o swoim koncie, w tym zmiana hasła, emaila itp., znajdziesz <Link href="/profile" legacyBehavior><a className="text-blue-500 hover:underline">tutaj</a></Link> po zalogowaniu.
+      </>
+    ),
+  },
+  {
+    question: "Gdzie znajdę swoje zamówienia?",
+    answer: (
+      <>
+        Swoje zamówienia znajdziesz <Link href="/order-history" legacyBehavior><a className="text-blue-500 hover:underline">tutaj</a></Link>.
+      </>
+    ),
+  },
+  {
+    question: "Gdzie znajdę swój koszyk?",
+    answer: (
+      <>
+        Koszyk znajdziesz <Link href="/cart" legacyBehavior><a className="text-blue-500 hover:underline">tutaj</a></Link>.
+      </>
+    ),
+  },
+  {
+    question: "Jakie są opcje płatności i dostawy?",
+    answer: "Istnieje wiele opcji płatności, w tym płatność przy odbiorze w sklepie stacjonarnym, przelew bankowy bezpośrednio na konto oraz bramki płatności. Sklep może modyfikować dostępne opcje w zależności od potrzeb. Opcje dostawy obejmują kurierów oraz paczkomaty InPost.",
+  },
 ];
 
 const FaqDetails: React.FC = () => {

@@ -25,7 +25,7 @@ const BackQuoteRight: React.FC = () => {
           </div>
           <div className="w-full lg:w-1/2 px-4 mb-10 lg:mb-0 order-1 lg:order-2">
             <Image
-              src="/shop.jpg" // Ścieżka do pliku obrazu w katalogu public
+              src="/shop5.jpg" // Ścieżka do pliku obrazu w katalogu public
               alt="Sklep"
               width={1341} // Szerokość obrazu - dostosuj w razie potrzeby
               height={768} // Wysokość obrazu - dostosuj w razie potrzeby

@@ -27,7 +27,7 @@ export default function ProductEditForm({ productId }: { productId: string }) {
       const data = await res.json()
       if (!res.ok) return toast.error(data.message)
 
-      toast.success('Product updated successfully')
+      toast.success('Produkt zaktualizowany pomyślnie')
       router.push('/admin/products')
     }
   )
@@ -43,8 +43,8 @@ export default function ProductEditForm({ productId }: { productId: string }) {
       name: '',
       slug: '',
       price: '',
-      images: [], // You'll set this once you have the data
-      mainImage: '', // You'll set this once you have the data
+      images: [], // Ustawisz to, gdy będziesz mieć dane
+      mainImage: '', // Ustawisz to, gdy będziesz mieć dane
       categories: [],
       brand: '',
       countInStock: '',
@@ -66,8 +66,8 @@ export default function ProductEditForm({ productId }: { productId: string }) {
   }, [product, setValue]);
   
   useEffect(() => {
-    console.log(product); // Check the entire product object
-    console.log(categories); // Check the categories array
+    console.log(product); // Sprawdź cały obiekt produktu
+    console.log(categories); // Sprawdź tablicę kategorii
     if (product && categories) {
       reset({
         ...product,
@@ -81,7 +81,7 @@ export default function ProductEditForm({ productId }: { productId: string }) {
   }
 
   if (error) return error.message
-  if (!product) return 'Loading...'
+  if (!product) return 'Ładowanie...'
 
   const FormInput = ({
     id,
@@ -103,7 +103,7 @@ export default function ProductEditForm({ productId }: { productId: string }) {
           type="text"
           id={id}
           {...register(id, {
-            required: required && `${name} is required`,
+            required: required && `${name} jest wymagane`,
             pattern,
           })}
           className="input input-bordered w-full max-w-md"
@@ -116,7 +116,7 @@ export default function ProductEditForm({ productId }: { productId: string }) {
   )
 
   const uploadHandler = async (e: any) => {
-    const toastId = toast.loading('Uploading image...')
+    const toastId = toast.loading('Ładowanie obrazu...')
     try {
       const resSign = await fetch('/api/cloudinary-sign', {
         method: 'POST',
@@ -141,8 +141,8 @@ export default function ProductEditForm({ productId }: { productId: string }) {
           return data.secure_url
         })
       )
-      setValue('images', [...product.images, ...uploadedImages].slice(0, 10)) // Limit to 10 images
-      toast.success('Files uploaded successfully', {
+      setValue('images', [...product.images, ...uploadedImages].slice(0, 10)) // Limit do 10 obrazów
+      toast.success('Pliki przesłane pomyślnie', {
         id: toastId,
       })
     } catch (err: any) {
@@ -153,17 +153,17 @@ export default function ProductEditForm({ productId }: { productId: string }) {
   }
 
   const CategorySelect = ({ register, error, currentCategories }) => {
-    if (!categories) return 'Loading categories...';
-    if (categoriesError) return `Error: ${categoriesError.message}`;
+    if (!categories) return 'Ładowanie kategorii...';
+    if (categoriesError) return `Błąd: ${categoriesError.message}`;
 
     return (
       <div className="md:flex mb-6">
-        <label className="label md:w-1/5" htmlFor="categories">Categories</label>
+        <label className="label md:w-1/5" htmlFor="categories">Kategorie</label>
         <div className="md:w-4/5">
           <select
             id="categories"
             multiple
-            {...register("categories", { required: "Categories are required" })}
+            {...register("categories", { required: "Kategorie są wymagane" })}
             className="select select-bordered w-full max-w-md"
           >
             {categories.map((cat) => (
@@ -184,16 +184,16 @@ export default function ProductEditForm({ productId }: { productId: string }) {
   const MainImageSelect = ({ register, images, mainImage }) => {
     return (
       <div className="md:flex mb-6">
-        <label className="label md:w-1/5" htmlFor="mainImage">Main Image</label>
+        <label className="label md:w-1/5" htmlFor="mainImage">Główne Zdjęcie</label>
         <div className="md:w-4/5">
           <select
             id="mainImage"
-            {...register("mainImage", { required: "Main Image is required" })}
+            {...register("mainImage", { required: "Główne zdjęcie jest wymagane" })}
             className="select select-bordered w-full max-w-md"
           >
             {images.map((image, index) => (
               <option key={index} value={image} selected={image === mainImage}>
-                {`Image ${index + 1}`}
+                {`Zdjęcie ${index + 1}`}
               </option>
             ))}
           </select>
@@ -204,19 +204,19 @@ export default function ProductEditForm({ productId }: { productId: string }) {
 
   return (
     <div>
-      <h1 className="text-2xl py-4">Edit Product {formatId(productId)}</h1>
+      <h1 className="text-2xl py-4">Edytuj Produkt {formatId(productId)}</h1>
       <div>
         <form onSubmit={handleSubmit(formSubmit)}>
-          <FormInput name="Name" id="name" required />
+          <FormInput name="Nazwa" id="name" required />
           <FormInput name="Slug" id="slug" required />
-          <FormInput name="Price" id="price" required />
+          <FormInput name="Cena" id="price" required />
           <CategorySelect register={register} error={errors.categories} currentCategories={product.categories.map(category => category._id)} />
-          <FormInput name="Brand" id="brand" required />
-          <FormInput name="Description" id="description" required />
-          <FormInput name="Count In Stock" id="countInStock" required />
+          <FormInput name="Marka" id="brand" required />
+          <FormInput name="Opis" id="description" required />
+          <FormInput name="Ilość w magazynie" id="countInStock" required />
           <div className="md:flex mb-6">
             <label className="label md:w-1/5" htmlFor="imageFiles">
-              Upload Images
+              Prześlij Zdjęcia
             </label>
             <div className="md:w-4/5">
               <input
@@ -236,21 +236,21 @@ export default function ProductEditForm({ productId }: { productId: string }) {
             className="btn btn-primary"
           >
             {isUpdating && <span className="loading loading-spinner"></span>}
-            Update
+            Aktualizuj
           </button>
           <Link className="btn ml-4 " href="/admin/products">
-            Cancel
+            Anuluj
           </Link>
         </form>
       </div>
 
       {/* Wyświetlanie obrazów */}
       <div className="mt-8">
-        <h2 className="text-xl mb-4">Product Images</h2>
+        <h2 className="text-xl mb-4">Zdjęcia Produktu</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
           {product.images.map((image, index) => (
             <div key={index} className="relative">
-              <img src={image} alt={`Product Image ${index + 1}`} className="w-full h-auto rounded shadow-md" />
+              <img src={image} alt={`Zdjęcie Produktu ${index + 1}`} className="w-full h-auto rounded shadow-md" />
             </div>
           ))}
         </div>

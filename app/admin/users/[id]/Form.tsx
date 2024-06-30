@@ -1,6 +1,5 @@
 // app\admin\users\[id]\Form.tsx
 'use client'
-'use client'
 import useSWRMutation from 'swr/mutation'
 import useSWR from 'swr'
 import toast from 'react-hot-toast'
@@ -27,7 +26,7 @@ export default function UserEditForm({ userId }: { userId: string }) {
       const data = await res.json()
       if (!res.ok) return toast.error(data.message)
 
-      toast.success('User updated successfully')
+      toast.success('Użytkownik zaktualizowany pomyślnie')
       router.push('/admin/users')
     }
   )
@@ -52,7 +51,7 @@ export default function UserEditForm({ userId }: { userId: string }) {
   }
 
   if (error) return error.message
-  if (!user) return 'Loading...'
+  if (!user) return 'Ładowanie...'
 
   const FormInput = ({
     id,
@@ -74,7 +73,7 @@ export default function UserEditForm({ userId }: { userId: string }) {
           type="text"
           id={id}
           {...register(id, {
-            required: required && `${name} is required`,
+            required: required && `${name} jest wymagane`,
             pattern,
           })}
           className="input input-bordered w-full max-w-md"
@@ -88,10 +87,10 @@ export default function UserEditForm({ userId }: { userId: string }) {
 
   return (
     <div>
-      <h1 className="text-2xl py-4">Edit User {formatId(userId)}</h1>
+      <h1 className="text-2xl py-4">Edytuj Użytkownika {formatId(userId)}</h1>
       <div>
         <form onSubmit={handleSubmit(formSubmit)}>
-          <FormInput name="Name" id="name" required />
+          <FormInput name="Imię" id="name" required />
           <FormInput name="Email" id="email" required />
 
           <div className="md:flex my-3">
@@ -110,7 +109,7 @@ export default function UserEditForm({ userId }: { userId: string }) {
 
           <div className="md:flex my-3">
             <label className="label md:w-1/5" htmlFor="isActive">
-              Active
+              Aktywny
             </label>
             <div className="md:w-4/5">
               <input
@@ -128,10 +127,10 @@ export default function UserEditForm({ userId }: { userId: string }) {
             className="btn btn-primary"
           >
             {isUpdating && <span className="loading loading-spinner"></span>}
-            Update
+            Aktualizuj
           </button>
           <Link className="btn ml-4" href="/admin/users">
-            Cancel
+            Anuluj
           </Link>
         </form>
       </div>

@@ -1,3 +1,4 @@
+// lib\services\productService.ts
 import { cache } from 'react';
 import mongoose from 'mongoose';
 import dbConnect from '@/lib/dbConnect';
