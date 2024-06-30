@@ -1,4 +1,4 @@
-// app(front)/place-order/Form.tsx
+// app/(front)/place-order/Form.tsx
 'use client';
 import CheckoutSteps from '@/components/CheckoutSteps';
 import useCartService from '@/lib/hooks/useCartStore';
@@ -91,7 +91,7 @@ const Form = () => {
           },
           items: items.map(item => ({
             ...item,
-            image: item.image, // Ensure the image field is included
+            mainImage: item.mainImage, // Ensure the mainImage field is included
           })),
           itemsPrice,
           taxPrice,
@@ -192,12 +192,15 @@ const Form = () => {
                           href={`/product/${item.slug}`}
                           className="flex items-center"
                         >
-                          {/*<Image
-                            src={item.image}
-                            alt={item.name}
-                            width={50}
-                            height={50}
-                          ></Image> */}
+                          {item.mainImage && (
+                            <Image
+                              src={item.mainImage}
+                              alt={item.name}
+                              width={50}
+                              height={50}
+                              className="object-cover"
+                            />
+                          )}
                           <span className="px-2">
                             {item.name}({item.color} {item.size})
                           </span>

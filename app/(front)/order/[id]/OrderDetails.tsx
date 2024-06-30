@@ -1,3 +1,4 @@
+// app(front)/order/[id]/OrderDetails.tsx
 'use client'
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js'
 import { OrderItem } from '@/lib/models/OrderModel'
@@ -7,7 +8,8 @@ import toast from 'react-hot-toast'
 import useSWR from 'swr'
 import useSWRMutation from 'swr/mutation'
 import { useEffect, useState } from 'react'
-import Select from 'react-select';
+import Select from 'react-select'
+import Image from 'next/image'
 
 export default function OrderDetails({
   orderId,
@@ -36,30 +38,30 @@ export default function OrderDetails({
   const { data: bankAccountData } = useSWR('/api/admin/payments')
   const { data: taxData } = useSWR('/api/admin/tax')
 
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
-  const [bankAccount, setBankAccount] = useState('1234 1234 1234 1234 1234 1234 1234');
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('')
+  const [bankAccount, setBankAccount] = useState('1234 1234 1234 1234 1234 1234 1234')
 
   useEffect(() => {
     if (data && data.paymentMethod) {
-      setSelectedPaymentMethod(data.paymentMethod);
+      setSelectedPaymentMethod(data.paymentMethod)
     }
-  }, [data]);
+  }, [data])
 
   useEffect(() => {
     if (bankAccountData) {
-      setBankAccount(bankAccountData.accountNumber);
+      setBankAccount(bankAccountData.accountNumber)
     }
-  }, [bankAccountData]);
+  }, [bankAccountData])
 
   const handlePaymentMethodChange = (selectedOption) => {
-    setSelectedPaymentMethod(selectedOption.value);
-    updatePaymentMethodInDatabase(selectedOption.value);
-  };
+    setSelectedPaymentMethod(selectedOption.value)
+    updatePaymentMethodInDatabase(selectedOption.value)
+  }
 
   const updatePaymentMethodInDatabase = async (newPaymentMethod) => {
     if (!newPaymentMethod) {
-      toast.error('Nie wybrano metody płatności');
-      return;
+      toast.error('Nie wybrano metody płatności')
+      return
     }
     try {
       const response = await fetch(`/api/orders/${orderId}/update-payment-method`, {
@@ -67,23 +69,23 @@ export default function OrderDetails({
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ paymentMethod: newPaymentMethod })
-      });
+        body: JSON.stringify({ paymentMethod: newPaymentMethod }),
+      })
 
-      const data = await response.json();
+      const data = await response.json()
       if (response.ok) {
-        toast.success(`Metoda płatności zaktualizowana pomyślnie na ${newPaymentMethod}`);
+        toast.success(`Metoda płatności zaktualizowana pomyślnie na ${newPaymentMethod}`)
         setTimeout(() => {
-          window.location.reload();
-        }, 2000);
+          window.location.reload()
+        }, 2000)
       } else {
-        toast.error(data.message || 'Nie udało się zaktualizować metody płatności');
+        toast.error(data.message || 'Nie udało się zaktualizować metody płatności')
       }
     } catch (error) {
-      toast.error('Błąd sieci podczas próby aktualizacji metody płatności');
-      console.error("Network error:", error);
+      toast.error('Błąd sieci podczas próby aktualizacji metody płatności')
+      console.error('Network error:', error)
     }
-  };
+  }
 
   const { trigger: undeliverOrder, isMutating: isUndelivering } = useSWRMutation(
     `/api/admin/orders/${orderId}/undeliver`,
@@ -109,18 +111,18 @@ export default function OrderDetails({
         headers: {
           'Content-Type': 'application/json',
         },
-      });
-      const data = await res.json();
+      })
+      const data = await res.json()
       if (res.ok) {
-        toast.success('Zamówienie oznaczone jako nieopłacone');
-        window.location.reload();
+        toast.success('Zamówienie oznaczone jako nieopłacone')
+        window.location.reload()
       } else {
-        toast.error(data.message);
+        toast.error(data.message)
       }
     }
-  );
+  )
 
-  const [stripeSessionUrl, setStripeSessionUrl] = useState(null);
+  const [stripeSessionUrl, setStripeSessionUrl] = useState(null)
 
   const createStripeSession = async () => {
     try {
@@ -129,23 +131,23 @@ export default function OrderDetails({
         headers: {
           'Content-Type': 'application/json',
         },
-      });
-      const session = await response.json();
+      })
+      const session = await response.json()
       if (response.ok) {
-        setStripeSessionUrl(session.url);
+        setStripeSessionUrl(session.url)
       } else {
-        toast.error('Nie udało się zainicjować płatności Stripe: ' + session.message);
+        toast.error('Nie udało się zainicjować płatności Stripe: ' + session.message)
       }
     } catch (error) {
-      toast.error('Wystąpił błąd sieci podczas łączenia z bramką płatności.');
+      toast.error('Wystąpił błąd sieci podczas łączenia z bramką płatności.')
     }
-  };
+  }
 
   useEffect(() => {
     if (stripeSessionUrl) {
-      window.location.href = stripeSessionUrl;
+      window.location.href = stripeSessionUrl
     }
-  }, [stripeSessionUrl]);
+  }, [stripeSessionUrl])
 
   const { data: session } = useSession()
 
@@ -181,19 +183,19 @@ export default function OrderDetails({
         'Content-Type': 'application/json',
       },
     })
-    .then((response) => response.json())
-    .then((data) => {
-      toast.success('Zamówienie oznaczone jako opłacone pomyślnie');
-      window.location.reload();
-    })
-    .catch((error) => {
-      toast.error('Nie udało się oznaczyć zamówienia jako opłacone');
-    });
+      .then((response) => response.json())
+      .then((data) => {
+        toast.success('Zamówienie oznaczone jako opłacone pomyślnie')
+        window.location.reload()
+      })
+      .catch((error) => {
+        toast.error('Nie udało się oznaczyć zamówienia jako opłacone')
+      })
   }
 
   if (error) return error.message
   if (!data) return 'Ładowanie...'
-  if (!taxData) return 'Ładowanie ustawień podatkowych...';
+  if (!taxData) return 'Ładowanie ustawień podatkowych...'
 
   const {
     paymentMethod,
@@ -209,14 +211,14 @@ export default function OrderDetails({
     paidAt,
   } = data
 
-  const shippingMethod = shippingAddress.shippingMethod;
-  const selectedPaczkomat = JSON.parse(shippingAddress.selectedPaczkomat || '{}');
-  const selectedPocztex = shippingAddress.selectedPocztex;
-  
+  const shippingMethod = shippingAddress.shippingMethod
+  const selectedPaczkomat = JSON.parse(shippingAddress.selectedPaczkomat || '{}')
+  const selectedPocztex = shippingAddress.selectedPocztex
+
   const copyToClipboard = (text) => {
-    navigator.clipboard.writeText(text);
-    toast.success('Skopiowano do schowka');
-  };
+    navigator.clipboard.writeText(text)
+    toast.success('Skopiowano do schowka')
+  }
 
   return (
     <div>
@@ -237,7 +239,7 @@ export default function OrderDetails({
               {shippingMethod === 'Inpost Paczkomat' && selectedPaczkomat && (
                 <p>Wybrany Paczkomat: {selectedPaczkomat.name}</p>
               )}
-              
+
               {shippingMethod === 'Pocztex Poczta Odbior Punkt' && selectedPocztex && (
                 <p>Wybrany punkt Pocztex: {selectedPocztex}</p>
               )}
@@ -291,6 +293,15 @@ export default function OrderDetails({
                           href={`/product/${item.slug}`}
                           className="flex items-center"
                         >
+                          {item.mainImage && (
+                            <Image
+                              src={item.mainImage}
+                              alt={item.name}
+                              width={50}
+                              height={50}
+                              className="object-cover"
+                            />
+                          )}
                           <span className="px-2">
                             {item.name} ({item.color} {item.size})
                           </span>
@@ -344,8 +355,8 @@ export default function OrderDetails({
                       <div className="flex flex-col space-y-1">
                         <div className="break-all">
                           <span className="font-semibold">Tytuł przelewu:</span>
-                          <span 
-                            className="text-blue-600 ml-2 cursor-pointer" 
+                          <span
+                            className="text-blue-600 ml-2 cursor-pointer"
                             onClick={() => copyToClipboard(orderId)}
                           >
                             {orderId}
@@ -353,8 +364,8 @@ export default function OrderDetails({
                         </div>
                         <div className="break-all">
                           <span className="font-semibold">Numer konta:</span>
-                          <span 
-                            className="text-blue-600 ml-2 cursor-pointer break-all" 
+                          <span
+                            className="text-blue-600 ml-2 cursor-pointer break-all"
                             onClick={() => copyToClipboard(bankAccount)}
                           >
                             {bankAccount}
@@ -385,9 +396,7 @@ export default function OrderDetails({
                         onClick={() => undeliverOrder()}
                         disabled={isUndelivering}
                       >
-                        {isUndelivering && (
-                          <span className="loading loading-spinner"></span>
-                        )}
+                        {isUndelivering && <span className="loading loading-spinner"></span>}
                         Oznacz jako niedostarczone
                       </button>
                     ) : (
@@ -396,9 +405,7 @@ export default function OrderDetails({
                         onClick={() => deliverOrder()}
                         disabled={isDelivering}
                       >
-                        {isDelivering && (
-                          <span className="loading loading-spinner"></span>
-                        )}
+                        {isDelivering && <span className="loading loading-spinner"></span>}
                         Oznacz jako dostarczone
                       </button>
                     )}
@@ -418,10 +425,7 @@ export default function OrderDetails({
                       </li>
                     ) : (
                       <li>
-                        <button
-                          className="btn btn-success w-full my-2"
-                          onClick={markOrderAsPaid}
-                        >
+                        <button className="btn btn-success w-full my-2" onClick={markOrderAsPaid}>
                           Oznacz jako opłacone
                         </button>
                       </li>
