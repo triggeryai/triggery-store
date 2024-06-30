@@ -4,6 +4,7 @@
 import React from 'react';
 import Link from 'next/link';
 import useCartService from '@/lib/hooks/useCartStore';
+import Image from 'next/image';
 
 const CartModalMobile = ({ onClose }) => {
   const { items, itemsPrice, decrease, increase } = useCartService();
@@ -31,6 +32,15 @@ const CartModalMobile = ({ onClose }) => {
           {items.map((item, index) => (
             <li key={item.slug} className="flex justify-between items-center mb-2">
               <div className="flex items-center">
+                {item.mainImage && (
+                  <Image
+                    src={item.mainImage}
+                    alt={item.name}
+                    width={50}
+                    height={50}
+                    className="object-cover"
+                  />
+                )}
                 <span className="ml-2">{item.name}</span>
               </div>
               <div className="flex items-center">
