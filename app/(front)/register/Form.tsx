@@ -84,6 +84,8 @@ const Form = () => {
         })
         toast.success('Rejestracja zakończona sukcesem! Sprawdź email aby aktywować konto.')
         setShowModal(true)
+      } else if (res.status === 409) {
+        toast.error('Użytkownik o podanym emailu już istnieje. Użyj innego emaila.')
       } else {
         const data = await res.json()
         throw new Error(data.message)

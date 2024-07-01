@@ -21,6 +21,18 @@ export const PUT = auth(async (req) => {
         }
       )
     }
+    
+    // Sprawdzenie, czy email jest używany przez innego użytkownika
+    const existingUser = await UserModel.findOne({ email })
+    if (existingUser && existingUser._id.toString() !== dbUser._id.toString()) {
+      return Response.json(
+        { message: 'Email jest już używany przez innego użytkownika' },
+        {
+          status: 409, // Conflict
+        }
+      )
+    }
+
     dbUser.name = name
     dbUser.email = email
     dbUser.password = password
