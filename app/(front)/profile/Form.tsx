@@ -62,6 +62,8 @@ const Form = () => {
           },
         }
         await update(newSession)
+      } else if (res.status === 409) {
+        toast.error('Email jest już używany przez innego użytkownika. Użyj innego emaila.')
       } else {
         const data = await res.json()
         toast.error(data.message || 'error')
@@ -74,6 +76,7 @@ const Form = () => {
       toast.error(error)
     }
   }
+
   return (
     <div className="max-w-lg mx-auto mt-10 bg-white p-8 rounded-lg shadow-lg">
       <div className="card-body">
