@@ -1,8 +1,8 @@
-// components\footer\Footer.tsx
+// plik: components\footer\Footer.tsx
 "use client"
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { FaFacebook, FaTiktok, FaInstagram, FaLinkedin, FaTelegram } from 'react-icons/fa';
+import { FaFacebook, FaTiktok, FaInstagram, FaTelegram } from 'react-icons/fa';
 import SupportBotModal from '../support_bot/SupportBotModal';
 
 const Footer: React.FC = () => {
@@ -46,17 +46,17 @@ const Footer: React.FC = () => {
           {/* Social media icons column */}
           <div className="space-y-2">
             <h3 className="font-bold text-lg mb-3">Śledź Nas</h3>
-            <Link href="https://www.facebook.com"><span className="block link link-hover"><FaFacebook className="inline mr-2" /> Facebook</span></Link>
-            <Link href="https://www.tiktok.com"><span className="block link link-hover"><FaTiktok className="inline mr-2" /> TikTok</span></Link>
-            <Link href="https://www.instagram.com"><span className="block link link-hover"><FaInstagram className="inline mr-2" /> Instagram</span></Link>
-            <Link href="https://www.linkedin.com"><span className="block link link-hover"><FaLinkedin className="inline mr-2" /> LinkedIn</span></Link>
+            <Link href="https://www.facebook.com/domesticopl/" target="_blank" rel="noopener noreferrer"><span className="block link link-hover"><FaFacebook className="inline mr-2" /> Facebook</span></Link>
+            <Link href="https://www.tiktok.com/@domestico.pl" target="_blank" rel="noopener noreferrer"><span className="block link link-hover"><FaTiktok className="inline mr-2" /> TikTok</span></Link>
+            <Link href="https://www.instagram.com/domestico.pl/" target="_blank" rel="noopener noreferrer"><span className="block link link-hover"><FaInstagram className="inline mr-2" /> Instagram</span></Link>
+            <Link href="https://t.me/Bynia2137" target="_blank" rel="noopener noreferrer"><span className="block link link-hover"><FaTelegram className="inline mr-2" /> Telegram</span></Link>
           </div>
         </div>
         {/* Copyright at the bottom */}
         <div className="border-t border-base-300 text-center py-4 mt-8">
           <p>
             Domestico.pl © 2024 - Strona stworzona przez{' '}
-            <Link href="https://t.me/dszafranski">
+            <Link href="https://t.me/dszafranski" target="_blank" rel="noopener noreferrer">
               <span className="text-blue-500 hover:underline cursor-pointer">
                 dszafranski <FaTelegram className="inline" />
               </span>

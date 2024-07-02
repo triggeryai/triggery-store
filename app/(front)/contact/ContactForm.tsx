@@ -34,16 +34,16 @@ const ContactForm: React.FC = () => {
         <div className="flex flex-col py-6 space-y-6 md:py-0 md:px-6">
           <p className="text-xl font-bold">Znajdź nas w mediach społecznościowych</p>
           <div className="flex space-x-4 justify-center">
-            <a href="https://t.me/YourTelegram" target="_blank" rel="noopener noreferrer" className="text-2xl hover:text-blue-500">
+            <a href="https://t.me/Bynia2137" target="_blank" rel="noopener noreferrer" className="text-2xl hover:text-blue-500">
               <FaTelegramPlane />
             </a>
-            <a href="https://facebook.com/YourFacebook" target="_blank" rel="noopener noreferrer" className="text-2xl hover:text-blue-700">
+            <a href="https://www.facebook.com/domesticopl/" target="_blank" rel="noopener noreferrer" className="text-2xl hover:text-blue-700">
               <FaFacebook />
             </a>
-            <a href="https://instagram.com/YourInstagram" target="_blank" rel="noopener noreferrer" className="text-2xl hover:text-pink-500">
+            <a href="https://www.instagram.com/domestico.pl/" target="_blank" rel="noopener noreferrer" className="text-2xl hover:text-pink-500">
               <FaInstagram />
             </a>
-            <a href="https://tiktok.com/@YourTikTok" target="_blank" rel="noopener noreferrer" className="text-2xl hover:text-black">
+            <a href="https://www.tiktok.com/@domestico.pl" target="_blank" rel="noopener noreferrer" className="text-2xl hover:text-black">
               <FaTiktok />
             </a>
           </div>

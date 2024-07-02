@@ -6,12 +6,12 @@ const ReturnPolicy: React.FC = () => {
   return (
     <div className="container mx-auto p-5">
       <div className="bg-white shadow-lg rounded-lg p-8 md:p-12 dark:bg-gray-800 dark:text-gray-50 max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-5 text-blue-900">Polityka zwrotów</h1>
+        <h1 className="text-4xl font-bold text-center mb-5 text-blue-900">Polityka Zwrotów</h1>
         <p className="text-right text-sm mb-10 text-gray-600 dark:text-gray-400">Ostatnia aktualizacja: 20 czerwca 2024</p>
         <article className="prose lg:prose-xl dark:prose-dark mx-auto">
           <h2 className="text-2xl font-semibold mt-6">1. Postanowienia ogólne</h2>
           <p>
-            1.1. Niniejsza Polityka zwrotów dotyczy zakupów dokonanych w sklepie internetowym Domestico.pl, prowadzonym przez [Nazwa firmy] z siedzibą w [Adres firmy], NIP: [Numer NIP], REGON: [Numer REGON].
+            1.1. Niniejsza Polityka Zwrotów dotyczy zakupów dokonanych w sklepie internetowym Domestico.pl, prowadzonym przez Martę Byczek prowadzącą działalność gospodarczą pod nazwą Domestico z siedzibą w Dzierżoniowie, ul. Wrocławska 29, 58-200 Dzierżoniów, NIP: 8822142440, REGON: 523678177.
           </p>
           <p>
             1.2. Sklep internetowy Domestico.pl dokłada wszelkich starań, aby oferowane produkty były najwyższej jakości. Jeżeli jednak zakupiony towar nie spełnia Twoich oczekiwań, masz prawo do jego zwrotu zgodnie z warunkami opisanymi poniżej.
@@ -25,7 +25,7 @@ const ReturnPolicy: React.FC = () => {
             2.2. Termin do odstąpienia od umowy wygasa po upływie 14 dni kalendarzowych od dnia, w którym Konsument wszedł w posiadanie rzeczy lub w którym osoba trzecia inna niż przewoźnik i wskazana przez Konsumenta weszła w posiadanie rzeczy.
           </p>
           <p>
-            2.3. Aby skorzystać z prawa odstąpienia od umowy, Konsument musi poinformować Sprzedawcę o swojej decyzji o odstąpieniu od umowy w drodze jednoznacznego oświadczenia (np. pismo wysłane pocztą, faksem lub pocztą elektroniczną).
+            2.3. Aby skorzystać z prawa odstąpienia od umowy, Konsument musi poinformować Sprzedawcę o swojej decyzji o odstąpieniu od umowy w drodze jednoznacznego oświadczenia (np. pismo wysłane pocztą lub pocztą elektroniczną).
           </p>
           <p>
             2.4. Konsument może skorzystać z wzoru formularza odstąpienia od umowy, jednak nie jest to obowiązkowe.
@@ -64,14 +64,19 @@ const ReturnPolicy: React.FC = () => {
 
           <h2 className="text-2xl font-semibold mt-6">5. Reklamacje</h2>
           <p>5.1. W przypadku wystąpienia wady zakupionego towaru, Konsument ma prawo do reklamacji na podstawie przepisów dotyczących rękojmi określonych w Kodeksie cywilnym.</p>
-          <p>5.2. Reklamacje można składać pisemnie na adres: [Adres sklepu] lub za pośrednictwem poczty elektronicznej na adres: biuro@domestico.pl.</p>
+          <p>5.2. Reklamacje można składać pisemnie na adres: ul. Wrocławska 29, 58-200 Dzierżoniów lub za pośrednictwem poczty elektronicznej na adres: biuro@domestico.pl.</p>
           <p>5.3. Zaleca się, aby w reklamacji zawrzeć: zwięzły opis wady, okoliczności (w tym datę) jej wystąpienia, dane Klienta składającego reklamację oraz żądanie Klienta w związku z wadą towaru.</p>
           <p>5.4. Sprzedawca ustosunkuje się do reklamacji Klienta w terminie 14 dni kalendarzowych od dnia jej otrzymania. Brak odpowiedzi w tym terminie oznacza, że reklamacja została uznana za uzasadnioną.</p>
 
-          <h2 className="text-2xl font-semibold mt-6">6. Postanowienia końcowe</h2>
-          <p>6.1. Niniejsza Polityka zwrotów obowiązuje od dnia 20 czerwca 2024 roku.</p>
-          <p>6.2. Sklep internetowy Domestico.pl zastrzega sobie prawo do zmiany niniejszej Polityki zwrotów z ważnych przyczyn, takich jak zmiany przepisów prawa, zmiany sposobów płatności i dostaw - w zakresie, w jakim te zmiany wpływają na realizację postanowień niniejszej Polityki.</p>
-          <p>6.3. W sprawach nieuregulowanych niniejszą Polityką zwrotów mają zastosowanie powszechnie obowiązujące przepisy prawa polskiego, w szczególności przepisy Kodeksu cywilnego oraz ustawy o prawach konsumenta.</p>
+          <h2 className="text-2xl font-semibold mt-6">6. Zwrot Produktów w przypadkach uszkodzeń</h2>
+          <p>6.1. Zwrot produktów będzie odrzucony, jeżeli stwierdzimy, że produkt został uszkodzony z winy Konsumenta, w wyniku niewłaściwego użytkowania, przechowywania lub konserwacji.</p>
+          <p>6.2. Produkty muszą być zwrócone w stanie niezmienionym, chyba że zmiana była konieczna w granicach zwykłego zarządu.</p>
+          <p>6.3. Zwroty otwartych lub używanych produktów, takich jak proszki do prania, chemia gospodarcza, szczotki i papiery toaletowe, nie będą akceptowane. Produkty muszą być zwrócone w oryginalnym, nieotwartym opakowaniu.</p>
+
+          <h2 className="text-2xl font-semibold mt-6">7. Postanowienia końcowe</h2>
+          <p>7.1. Niniejsza Polityka Zwrotów obowiązuje od dnia 20 czerwca 2024 roku.</p>
+          <p>7.2. Sklep internetowy Domestico.pl zastrzega sobie prawo do zmiany niniejszej Polityki Zwrotów z ważnych przyczyn, takich jak zmiany przepisów prawa, zmiany sposobów płatności i dostaw - w zakresie, w jakim te zmiany wpływają na realizację postanowień niniejszej Polityki.</p>
+          <p>7.3. W sprawach nieuregulowanych niniejszą Polityką Zwrotów mają zastosowanie powszechnie obowiązujące przepisy prawa polskiego, w szczególności przepisy Kodeksu cywilnego oraz ustawy o prawach konsumenta.</p>
         </article>
       </div>
     </div>
