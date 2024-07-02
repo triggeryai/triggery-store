@@ -11,7 +11,7 @@ const WarrantyPolicy: React.FC = () => {
         <article className="prose lg:prose-xl dark:prose-dark mx-auto">
           <h2 className="text-2xl font-semibold mt-6">1. Postanowienia ogólne</h2>
           <p>
-            1.1. Niniejsza Polityka Gwarancyjna dotyczy produktów zakupionych w sklepie internetowym Domestico.pl, prowadzonym przez [Nazwa firmy] z siedzibą w [Adres firmy], NIP: [Numer NIP], REGON: [Numer REGON].
+            1.1. Niniejsza Polityka Gwarancyjna dotyczy produktów zakupionych w sklepie internetowym Domestico.pl, prowadzonym przez Martę Byczek prowadzącą działalność gospodarczą pod nazwą Domestico z siedzibą w Dzierżoniowie, ul. Wrocławska 29, 58-200 Dzierżoniów, NIP: 8822142440, REGON: 523678177.
           </p>
           <p>
             1.2. Sklep internetowy Domestico.pl oferuje produkty najwyższej jakości, w tym chemię gospodarczą, ręczniki i inne produkty. Nasze produkty objęte są gwarancją zgodnie z warunkami opisanymi poniżej.
@@ -32,7 +32,7 @@ const WarrantyPolicy: React.FC = () => {
           <p>3.2. Dla produktów, które mają inny okres gwarancji określony przez producenta, obowiązuje okres gwarancji określony w dokumentacji produktu.</p>
 
           <h2 className="text-2xl font-semibold mt-6">4. Procedura reklamacyjna</h2>
-          <p>4.1. W przypadku stwierdzenia wady produktu, Konsument powinien niezwłocznie zgłosić reklamację, kontaktując się ze Sprzedawcą pisemnie na adres: [Adres sklepu] lub za pośrednictwem poczty elektronicznej na adres: biuro@domestico.pl.</p>
+          <p>4.1. W przypadku stwierdzenia wady produktu, Konsument powinien niezwłocznie zgłosić reklamację, kontaktując się ze Sprzedawcą pisemnie na adres: ul. Wrocławska 29, 58-200 Dzierżoniów lub za pośrednictwem poczty elektronicznej na adres: biuro@domestico.pl.</p>
           <p>4.2. Reklamacja powinna zawierać: zwięzły opis wady, okoliczności (w tym datę) jej wystąpienia, dane Klienta składającego reklamację oraz żądanie Klienta w związku z wadą towaru.</p>
           <p>4.3. Sprzedawca ustosunkuje się do reklamacji Klienta w terminie 14 dni kalendarzowych od dnia jej otrzymania. Brak odpowiedzi w tym terminie oznacza, że reklamacja została uznana za uzasadnioną.</p>
 

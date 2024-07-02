@@ -11,7 +11,7 @@ const TermsOfService: React.FC = () => {
         <article className="prose lg:prose-xl dark:prose-dark mx-auto">
           <h2 className="text-2xl font-semibold mt-6">1. Postanowienia ogólne</h2>
           <p>
-            1.1. Sklep internetowy Domestico.pl, dostępny pod adresem internetowym <a href="https://www.domestico.pl" className="text-blue-600 hover:underline">www.domestico.pl</a>, prowadzony jest przez [Nazwa firmy] z siedzibą w [Adres firmy], NIP: [Numer NIP], REGON: [Numer REGON].
+            1.1. Sklep internetowy Domestico.pl, dostępny pod adresem internetowym <a href="https://www.domestico.pl" className="text-blue-600 hover:underline">www.domestico.pl</a>, prowadzony jest przez Martę Byczek prowadzącą działalność gospodarczą pod nazwą Domestico z siedzibą w Dzierżoniowie, ul. Wrocławska 29, 58-200 Dzierżoniów, NIP: 8822142440, REGON: 523678177.
           </p>
           <p>
             1.2. Niniejszy Regulamin skierowany jest zarówno do konsumentów, jak i do przedsiębiorców korzystających ze Sklepu i określa zasady korzystania ze Sklepu oraz zasady i tryb zawierania Umów Sprzedaży z Klientem na odległość za pośrednictwem Sklepu.
@@ -22,7 +22,7 @@ const TermsOfService: React.FC = () => {
             2.1. Konsument – osoba fizyczna zawierająca ze Sprzedawcą umowę w ramach Sklepu, której przedmiot nie jest związany bezpośrednio z jej działalnością gospodarczą lub zawodową.
           </p>
           <p>
-            2.2. Sprzedawca – [Nazwa firmy] z siedzibą w [Adres firmy], NIP: [Numer NIP], REGON: [Numer REGON].
+            2.2. Sprzedawca – Marta Byczek prowadząca działalność gospodarczą pod nazwą Domestico z siedzibą w Dzierżoniowie, ul. Wrocławska 29, 58-200 Dzierżoniów, NIP: 8822142440, REGON: 523678177.
           </p>
           <p>
             2.3. Klient – każdy podmiot dokonujący zakupów za pośrednictwem Sklepu.
@@ -56,6 +56,7 @@ const TermsOfService: React.FC = () => {
           <h2 className="text-2xl font-semibold mt-6">5. Zasady składania Zamówienia</h2>
           <p>
             5.1. W celu złożenia Zamówienia należy:
+          </p>
             <ul className="list-decimal pl-6">
               <li>wybrać Produkt będący przedmiotem Zamówienia, a następnie kliknąć przycisk „Dodaj do koszyka” (lub równoznaczny);</li>
               <li>zalogować się lub skorzystać z możliwości złożenia Zamówienia bez rejestracji;</li>
@@ -63,24 +64,23 @@ const TermsOfService: React.FC = () => {
               <li>kliknąć przycisk „Zamawiam i płacę” / „Zamówienie z obowiązkiem zapłaty” i potwierdzić zamówienie;</li>
               <li>wybrać jeden z dostępnych sposobów płatności i w zależności od sposobu płatności, opłacić zamówienie w określonym terminie.</li>
             </ul>
-          </p>
 
           <h2 className="text-2xl font-semibold mt-6">6. Oferowane metody dostawy oraz płatności</h2>
           <p>
             6.1. Klient może skorzystać z następujących metod dostawy lub odbioru zamówionego Produktu:
+          </p>
             <ul className="list-disc pl-6">
               <li>Przesyłka kurierska</li>
-              <li>Odbiór osobisty dostępny pod adresem: [Adres sklepu]</li>
+              <li>Odbiór osobisty dostępny pod adresem: ul. Wrocławska 29, 58-200 Dzierżoniów</li>
             </ul>
-          </p>
           <p>
             6.2. Klient może skorzystać z następujących metod płatności:
+          </p>
             <ul className="list-disc pl-6">
               <li>Płatność przelewem na konto Sprzedawcy</li>
               <li>Płatności elektroniczne</li>
               <li>Karty płatnicze</li>
             </ul>
-          </p>
 
           <h2 className="text-2xl font-semibold mt-6">7. Wykonanie umowy sprzedaży</h2>
           <p>
@@ -91,11 +91,11 @@ const TermsOfService: React.FC = () => {
           </p>
           <p>
             7.3. W przypadku wyboru przez Klienta:
+          </p>
             <ul className="list-decimal pl-6">
               <li>płatności przelewem, płatności elektronicznych lub płatności kartą płatniczą, Klient obowiązany jest do dokonania płatności w terminie 7 dni kalendarzowych od dnia zawarcia Umowy Sprzedaży – w przeciwnym razie zamówienie zostanie anulowane.</li>
               <li>płatności gotówką przy odbiorze osobistym przesyłki, Klient obowiązany jest do dokonania płatności przy odbiorze przesyłki.</li>
             </ul>
-          </p>
 
           <h2 className="text-2xl font-semibold mt-6">8. Prawo odstąpienia od umowy</h2>
           <p>
@@ -106,6 +106,15 @@ const TermsOfService: React.FC = () => {
           </p>
           <p>
             8.3. Konsument może odstąpić od Umowy, składając Sprzedawcy oświadczenie o odstąpieniu od Umowy. Do zachowania terminu odstąpienia od Umowy wystarczy wysłanie przez Konsumenta oświadczenia przed upływem tego terminu.
+          </p>
+          <p>
+            8.4. W przypadku odstąpienia od Umowy Konsument zobowiązany jest do zwrotu Produktu Sprzedawcy w stanie niezmienionym, chyba że zmiana była konieczna w granicach zwykłego zarządu. Koszty zwrotu ponosi Konsument.
+          </p>
+          <p>
+            8.5. Zwrot Produktu przez Konsumenta wymaga analizy przez Sprzedawcę, w celu sprawdzenia, czy Produkt nie został otwarty, uszkodzony lub użyty w sposób wykraczający poza konieczny do stwierdzenia charakteru, cech i funkcjonowania Produktu.
+          </p>
+          <p>
+            8.6. Sprzedawca zastrzega sobie prawo do odmowy przyjęcia zwrotu w przypadku stwierdzenia, że Produkt został otwarty, uszkodzony lub użyty w sposób wykraczający poza konieczny do stwierdzenia charakteru, cech i funkcjonowania Produktu.
           </p>
 
           <h2 className="text-2xl font-semibold mt-6">9. Reklamacja i gwarancja</h2>
@@ -128,15 +137,17 @@ const TermsOfService: React.FC = () => {
           </p>
           <p>
             10.2. Zmiana Regulaminu:
+          </p>
             <ul className="list-decimal pl-6">
               <li>Sprzedawca zastrzega sobie prawo do dokonywania zmian Regulaminu z ważnych przyczyn to jest: zmiany przepisów prawa, zmiany sposobów płatności i dostaw - w zakresie, w jakim te zmiany wpływają na realizację postanowień niniejszego Regulaminu.</li>
               <li>W przypadku zawarcia na podstawie niniejszego Regulaminu umów o charakterze ciągłym (np. świadczenie usług drogą elektroniczną - Konto) zmieniony regulamin wiąże Klienta, jeżeli zostały zachowane wymagania określone w art. 384 oraz 384 [1] kodeksu cywilnego, to jest Klient został prawidłowo powiadomiony o zmianach i nie wypowiedział umowy w terminie 14 dni kalendarzowych od dnia powiadomienia.</li>
               <li>W przypadku zawarcia umów innych niż umowy o charakterze ciągłym (np. Umowa Sprzedaży) zmiany Regulaminu nie będą w żaden sposób naruszać praw nabytych Klientów będących Konsumentami przed dniem wejścia w życie zmian Regulaminu, w szczególności zmiany Regulaminu nie będą miały wpływu na złożone lub realizowane zamówienia.</li>
             </ul>
-          </p>
           <p>
             10.3. W sprawach nieuregulowanych niniejszym Regulaminem mają zastosowanie powszechnie obowiązujące przepisy prawa polskiego, w szczególności: kodeksu cywilnego; ustawy o świadczeniu usług drogą elektroniczną; ustawy o prawach konsumenta, ustawy o ochronie danych osobowych.
           </p>
+
+          
         </article>
       </div>
     </div>

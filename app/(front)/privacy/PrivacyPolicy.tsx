@@ -1,5 +1,3 @@
-// plik: components/PrivacyPolicy.tsx
-
 import React from 'react';
 
 const PrivacyPolicy: React.FC = () => {
@@ -73,7 +71,10 @@ const PrivacyPolicy: React.FC = () => {
 
           <h2 className="text-2xl font-semibold mt-6">Kontakt</h2>
           <p>
-            Jeśli masz jakiekolwiek pytania dotyczące naszej Polityki prywatności, skontaktuj się z nami pod adresem email: biuro@domestico.pl.
+            Jeśli masz jakiekolwiek pytania dotyczące naszej Polityki prywatności, skontaktuj się z nami pod adresem email: biuro.domestico@gmail.com lub numerem telefonu +48 609 258 191.
+          </p>
+          <p>
+            Adres firmy: Dzierżoniów, Wrocławska 29, 58-200.
           </p>
         </article>
       </div>
