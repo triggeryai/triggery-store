@@ -26,10 +26,10 @@ const BackQuote: React.FC = () => {
             <p className="mb-10 text-gray-500 dark:text-gray-400">
               W Domestico dostarczamy najwyższej jakości produkty do sprzątania, aby zapewnić czystość i higienę Twoich przestrzeni. Nasza szeroka gama produktów jest dostosowana do wszelkich potrzeb związanych ze sprzątaniem.
             </p>
-            <blockquote className="p-4 italic border-l-4 bg-neutral-100 text-neutral-600 border-neutral-500 quote rounded-md shadow-md">
-              <p className="mb-2">&quot;Dla mnie najwazniejszy jest klient&quot;</p>
+            <blockquote className="p-4 italic border-l-4 bg-neutral-100 text-neutral-600 border-neutral-500 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-400 quote rounded-md shadow-md">
+              <p className="mb-2 dark:text-gray-300">&quot;Dla mnie najwazniejszy jest klient&quot;</p>
               <cite className="flex items-center">
-                <span className="mr-3 font-bold text-neutral-800">- Marta Byczek</span>
+                <span className="mr-3 font-bold text-neutral-800 dark:text-neutral-400">- Marta Byczek</span>
               </cite>
             </blockquote>
           </div>

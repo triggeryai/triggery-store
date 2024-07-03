@@ -47,17 +47,20 @@ const FourGridImages: React.FC = () => {
               Oferujemy lepsze produkty
             </h2>
             <p className="mb-4 text-lg leading-7 text-gray-500 dark:text-gray-400">
-              Odkryj szeroką gamę najwyższej jakości produktów do sprzątania, papieru toaletowego i chusteczek od wiodących marek w Domestico.pl !
+              Odkryj szeroką gamę najwyższej jakości produktów do sprzątania, papieru toaletowego i chusteczek od wiodących marek w Domestico.pl!
             </p>
             <ul className="mb-10 text-left">
               <li className="flex items-start mb-2">
-                <span className="bg-blue-500 rounded-full p-2 text-white mr-2">✓</span> Wysokiej jakości produkty
+                <span className="bg-blue-500 rounded-full p-2 text-white mr-2">✓</span> 
+                <p className="text-gray-700 dark:text-gray-300">Wysokiej jakości produkty</p>
               </li>
               <li className="flex items-start mb-2">
-                <span className="bg-blue-500 rounded-full p-2 text-white mr-2">✓</span> Przystępne ceny
+                <span className="bg-blue-500 rounded-full p-2 text-white mr-2">✓</span> 
+                <p className="text-gray-700 dark:text-gray-300">Przystępne ceny</p>
               </li>
               <li className="flex items-start mb-2">
-                <span className="bg-blue-500 rounded-full p-2 text-white mr-2">✓</span> Szybka dostawa
+                <span className="bg-blue-500 rounded-full p-2 text-white mr-2">✓</span> 
+                <p className="text-gray-700 dark:text-gray-300">Szybka dostawa</p>
               </li>
             </ul>
             <a href="/search" className="px-4 py-2 text-white bg-blue-500 rounded-md dark:bg-blue-400 dark:hover:bg-blue-500 hover:bg-blue-600">

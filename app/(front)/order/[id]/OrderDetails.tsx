@@ -264,6 +264,7 @@ export default function OrderDetails({
                     { label: 'Za pobraniem', value: 'CashOnDelivery' },
                     { label: 'Przelew bankowy na konto', value: 'DirectBankTransferToAccount' },
                   ]}
+                  className="text-black"
                 />
               )}
               {isPaid ? (

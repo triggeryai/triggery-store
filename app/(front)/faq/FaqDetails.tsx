@@ -120,17 +120,17 @@ const faqData = [
 const FaqDetails: React.FC = () => {
   return (
     <section className="py-10 bg-gray-100 dark:bg-gray-800 dark:text-gray-50">
-      <h2 className="text-3xl font-bold text-center mb-6">Często zadawane pytania</h2>
+      <h2 className="text-3xl font-bold text-center mb-6 text-gray-900">Często zadawane pytania</h2>
       <ul className="max-w-2xl mx-auto divide-y divide-gray-300 dark:divide-gray-700 shadow-lg rounded-xl bg-white dark:bg-gray-900">
         {faqData.map((faq, index) => (
           <li key={index}>
             <details className="group p-5">
-              <summary className="flex items-center justify-between cursor-pointer font-medium text-lg transition-all duration-300 group-hover:text-blue-500 dark:group-hover:text-blue-400">
+              <summary className="flex items-center justify-between cursor-pointer font-medium text-lg transition-all duration-300 group-hover:text-blue-500 dark:group-hover:text-blue-400 text-black">
                 <span>{faq.question}</span>
                 <FiChevronDown className="w-6 h-6 text-gray-500 dark:text-gray-400 transition-transform duration-300 group-open:rotate-180" />
               </summary>
               <article className="mt-4 overflow-hidden transition-all duration-300 max-h-0 group-open:max-h-screen">
-                <p className="text-gray-700 dark:text-gray-300">{faq.answer}</p>
+                <p className="text-black">{faq.answer}</p>
               </article>
             </details>
           </li>

@@ -175,7 +175,7 @@ const Form = () => {
               }))}
               value={shippingOptions.find(option => option.value === shippingMethod)}
               onChange={handleShippingChange}
-              className="mb-4"
+              className="mb-4 text-black"
               placeholder="Wybierz metodę wysyłki"
             />
             <div className="flex justify-between items-center mb-4">

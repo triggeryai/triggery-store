@@ -1,4 +1,3 @@
-// CartModal.tsx
 'use client';
 
 import React from 'react';
@@ -11,7 +10,7 @@ const CartModal = () => {
 
   if (items.length === 0) {
     return (
-      <div className="absolute right-0 p-3 w-72 bg-white text-[#222] shadow-lg z-50">
+      <div className="absolute right-0 p-3 w-72 bg-white text-[#222] dark:bg-gray-800 dark:text-gray-200 shadow-lg z-50">
         <p>Twój koszyk jest pusty.</p>
       </div>
     );
@@ -22,7 +21,7 @@ const CartModal = () => {
   const maxHeightForSevenItems = 70 * 7;
 
   return (
-    <div className="absolute right-0 p-3 w-72 bg-white shadow-lg z-50" 
+    <div className="absolute right-0 p-3 w-72 bg-white dark:bg-gray-800 shadow-lg z-50" 
          style={{ maxHeight: `${maxHeightForSevenItems}px`, overflowY: items.length > 7 ? 'scroll' : 'hidden' }}>
       <ul>
         {items.map((item, index) => (
@@ -37,24 +36,24 @@ const CartModal = () => {
                   className="object-cover"
                 />
               )}
-              <span className="ml-2">{item.name}</span>
+              <span className="ml-2 text-[#222] dark:text-gray-200">{item.name}</span>
             </div>
             <div className="flex items-center">
               <button className="btn btn-xs" type="button" onClick={() => decrease(item)}>
                 -
               </button>
-              <span className="mx-2">{item.qty}</span>
+              <span className="mx-2 text-[#222] dark:text-gray-200">{item.qty}</span>
               <button className="btn btn-xs" type="button" onClick={() => increase(item)}>
                 +
               </button>
             </div>
-            <span>{item.price} PLN</span>
+            <span className="text-[#222] dark:text-gray-200">{item.price} PLN</span>
           </li>
         ))}
       </ul>
       <div className="flex justify-between items-center mt-2">
         <div>
-          <span className="font-bold">Suma:</span> {itemsPrice} PLN
+          <span className="font-bold text-[#222] dark:text-gray-200">Suma:</span> {itemsPrice} PLN
         </div>
         <Link href="/cart">
           <button className="btn btn-primary">Zobacz Koszyk</button>

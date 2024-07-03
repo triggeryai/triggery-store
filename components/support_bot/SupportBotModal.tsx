@@ -135,9 +135,9 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
       <CSSTransition in={showModal} timeout={300} classNames="modal" unmountOnExit>
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="fixed inset-0 bg-black opacity-50" onClick={onClose}></div>
-          <div className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-auto z-10 flex flex-col" style={{ maxHeight: '80vh' }}>
+          <div className="bg-white dark:bg-gray-800 text-black rounded-lg shadow-lg p-6 max-w-md w-full mx-auto z-10 flex flex-col" style={{ maxHeight: '80vh' }}>
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-gray-800">Bot Wsparcia</h2>
+              <h2 className="text-xl font-semibold text-black">Bot Wsparcia</h2>
               <button onClick={onClose} className="text-gray-500 hover:text-gray-800">
                 <FaTimes size={20} />
               </button>
@@ -154,9 +154,9 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
     <CSSTransition in={showModal} timeout={300} classNames="modal" unmountOnExit>
       <div className="fixed inset-0 flex items-center justify-center z-50">
         <div className="fixed inset-0 bg-black opacity-50" onClick={onClose}></div>
-        <div className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-auto z-10 flex flex-col" style={{ maxHeight: '80vh' }}>
+        <div className="bg-white dark:bg-gray-800 text-black rounded-lg shadow-lg p-6 max-w-md w-full mx-auto z-10 flex flex-col" style={{ maxHeight: '80vh' }}>
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-gray-800">Bot Wsparcia</h2>
+            <h2 className="text-xl font-semibold text-black">Bot Wsparcia</h2>
             <button onClick={onClose} className="text-gray-500 hover:text-gray-800">
               <FaTimes size={20} />
             </button>
@@ -176,14 +176,14 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
                   <div ref={chatContainerRef} className="flex-1 overflow-y-auto mt-4 mb-4 chat-container">
                     {chatHistory.slice().reverse().map((chat, index) => (
                       <div key={index} className={`message ${chat.sender === 'admin' ? 'admin' : 'user'}`}>
-                        <div className="message-content">
+                        <div className="message-content text-black">
                           <p>{chat.message}</p>
                         </div>
                       </div>
                     ))}
                     {isTyping && (
                       <div className="message typing">
-                        <div className="message-content">
+                        <div className="message-content text-black">
                           <p>...</p>
                         </div>
                       </div>
@@ -194,7 +194,7 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
                       type="text"
                       value={userMessage}
                       onChange={handleUserMessageChange}
-                      className="flex-1 border border-gray-300 rounded-lg p-2 mr-2"
+                      className="flex-1 border border-gray-300 rounded-lg p-2 mr-2 text-black"
                       placeholder="Wpisz swoją wiadomość..."
                       onKeyPress={(e) => {
                         if (e.key === 'Enter') handleSendMessage();
@@ -210,7 +210,7 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
                     {questions.map((q, index) => (
                       <div
                         key={index}
-                        className="bg-gray-200 p-2 m-1 cursor-pointer rounded-lg flex-shrink-0"
+                        className="bg-gray-200 p-2 m-1 cursor-pointer rounded-lg flex-shrink-0 text-black"
                         onClick={() => handleQuestionClick(q.question)}
                       >
                         #{q.question}
@@ -219,7 +219,7 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
                   </div>
                   {selectedQuestion && (
                     <div className="mt-4 p-4 bg-gray-100 rounded-lg overflow-y-auto" style={{ maxHeight: '30vh' }}>
-                      <p>{selectedQuestion}</p>
+                      <p className="text-black">{selectedQuestion}</p>
                     </div>
                   )}
                   <button onClick={() => setShowLiveSupport(true)} className="mt-4 w-full text-center py-2 bg-blue-500 text-white rounded-lg">Kontakt z pomocą na żywo</button>
