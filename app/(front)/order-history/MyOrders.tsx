@@ -56,35 +56,35 @@ export default function MyOrders() {
   }
 
   return (
-    <div className="overflow-x-auto p-4">
+    <div className="overflow-x-auto p-4 dark:bg-gray-800 dark:text-gray-200">
       <table className="table-auto w-full border-collapse">
         <thead>
-          <tr className="bg-gray-200">
-            <th className="border px-4 py-2">ID</th>
-            <th className="border px-4 py-2">DATA</th>
-            <th className="border px-4 py-2">ŁĄCZNA KWOTA</th>
-            <th className="border px-4 py-2">OPŁACONE</th>
-            <th className="border px-4 py-2">DOSTARCZONE</th>
-            <th className="border px-4 py-2">AKCJA</th>
+          <tr className="dark:bg-gray-700">
+            <th className="border border-gray-400 px-4 py-2 dark:border-gray-600">ID</th>
+            <th className="border border-gray-400 px-4 py-2 dark:border-gray-600">DATA</th>
+            <th className="border border-gray-400 px-4 py-2 dark:border-gray-600">ŁĄCZNA KWOTA</th>
+            <th className="border border-gray-400 px-4 py-2 dark:border-gray-600">OPŁACONE</th>
+            <th className="border border-gray-400 px-4 py-2 dark:border-gray-600">DOSTARCZONE</th>
+            <th className="border border-gray-400 px-4 py-2 dark:border-gray-600">AKCJA</th>
           </tr>
         </thead>
         <tbody>
           {orders.map((order: Order) => (
-            <tr key={order._id}>
-              <td className="border px-4 py-2">{order._id.substring(20, 24)}</td>
-              <td className="border px-4 py-2">{order.createdAt.substring(0, 10)}</td>
-              <td className="border px-4 py-2">{order.totalPrice} PLN</td>
-              <td className="border px-4 py-2">
+            <tr key={order._id} className="dark:bg-gray-700">
+              <td className="border border-gray-400 px-4 py-2 dark:border-gray-600">{order._id.substring(20, 24)}</td>
+              <td className="border border-gray-400 px-4 py-2 dark:border-gray-600">{order.createdAt.substring(0, 10)}</td>
+              <td className="border border-gray-400 px-4 py-2 dark:border-gray-600">{order.totalPrice} PLN</td>
+              <td className="border border-gray-400 px-4 py-2 dark:border-gray-600">
                 {order.isPaid && order.paidAt
                   ? `${order.paidAt.substring(0, 10)}`
                   : 'nieopłacone'}
               </td>
-              <td className="border px-4 py-2">
+              <td className="border border-gray-400 px-4 py-2 dark:border-gray-600">
                 {order.isDelivered && order.deliveredAt
                   ? `${order.deliveredAt.substring(0, 10)}`
                   : 'niedostarczone'}
               </td>
-              <td className="border px-4 py-2">
+              <td className="border border-gray-400 px-4 py-2 dark:border-gray-600">
                 <Link href={`/order/${order._id}`} passHref>
                   <button className="btn btn-primary">
                     Szczegóły
@@ -103,7 +103,7 @@ export default function MyOrders() {
         >
           Poprzednia
         </button>
-        <span className="text-gray-700">Strona {page} z {totalPages}</span>
+        <span className="dark:text-gray-200">Strona {page} z {totalPages}</span>
         <button
           onClick={handleNextPage}
           disabled={page === totalPages}

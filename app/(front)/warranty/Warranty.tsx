@@ -8,7 +8,7 @@ const WarrantyPolicy: React.FC = () => {
       <div className="bg-white shadow-lg rounded-lg p-8 md:p-12 dark:bg-gray-800 dark:text-gray-50 max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold text-center mb-5 text-blue-900">Polityka Gwarancyjna</h1>
         <p className="text-right text-sm mb-10 text-gray-600 dark:text-gray-400">Ostatnia aktualizacja: 20 czerwca 2024</p>
-        <article className="prose lg:prose-xl dark:prose-dark mx-auto">
+        <article className="prose lg:prose-xl dark:prose-dark mx-auto text-black">
           <h2 className="text-2xl font-semibold mt-6">1. Postanowienia ogólne</h2>
           <p>
             1.1. Niniejsza Polityka Gwarancyjna dotyczy produktów zakupionych w sklepie internetowym Domestico.pl, prowadzonym przez Martę Byczek prowadzącą działalność gospodarczą pod nazwą Domestico z siedzibą w Dzierżoniowie, ul. Wrocławska 29, 58-200 Dzierżoniów, NIP: 8822142440, REGON: 523678177.

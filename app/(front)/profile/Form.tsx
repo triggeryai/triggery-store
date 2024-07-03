@@ -80,7 +80,7 @@ const Form = () => {
   return (
     <div className="max-w-lg mx-auto mt-10 bg-white p-8 rounded-lg shadow-lg">
       <div className="card-body">
-        <h1 className="text-3xl font-bold mb-6 text-center">Profil</h1>
+        <h1 className="text-3xl font-bold mb-6 text-center text-black">Profil</h1>
         <form onSubmit={handleSubmit(formSubmit)}>
           <div className="mb-4">
             <label className="block text-gray-700" htmlFor="name">
