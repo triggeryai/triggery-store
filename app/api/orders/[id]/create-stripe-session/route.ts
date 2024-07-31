@@ -1,8 +1,9 @@
-// app\api\orders\[id]\create-stripe-session\route.ts
+// next-amazona-v2/app/api/orders/[id]/create-stripe-session/route.ts
 import Stripe from 'stripe';
 import { auth } from '@/lib/auth';
 import dbConnect from '@/lib/dbConnect';
 import OrderModel from '@/lib/models/OrderModel';
+import ShippingOption from '@/lib/models/ShippingPriceModel'; // Import your ShippingOption model
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
   apiVersion: '2020-08-27',
@@ -36,45 +37,40 @@ export const POST = auth(async (...request: any) => {
     return Response.json({ message: 'Order not found' }, { status: 404 });
   }
 
+  // Retrieve the shipping options to get the correct price
+  const shippingOptions = await ShippingOption.find({});
+  const selectedShippingOption = shippingOptions.find(option => option.value === order.shippingAddress.shippingMethod);
+
+  if (!selectedShippingOption) {
+    console.error(`Shipping option not found for method: ${order.shippingAddress.shippingMethod}`);
+    return Response.json({ message: 'Shipping option not found' }, { status: 404 });
+  }
+
   try {
     // Prepare line items for each product in the order
     const lineItems = order.items.map(item => ({
       price_data: {
-        currency: 'usd',
+        currency: 'pln',
         product_data: {
           name: item.name,
           // Replace the placeholder URL with the actual image URL if necessary
-          images: [],        },
+          images: [],        
+        },
         unit_amount: Math.round(item.price * 100), // Convert the price to cents
       },
       quantity: item.qty,
     }));
 
-    // Add a line item for the tax if applicable
-    if (order.taxPrice > 0) {
-      lineItems.push({
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: 'Tax',
-            images: [], // Optionally, you can put an image URL for tax representation
-          },
-          unit_amount: Math.round(order.taxPrice * 100), // Convert the tax to cents
-        },
-        quantity: 1,
-      });
-    }
-
     // Add a line item for shipping if applicable
-    if (order.shippingPrice > 0) {
+    if (selectedShippingOption.price > 0) {
       lineItems.push({
         price_data: {
-          currency: 'usd',
+          currency: 'pln',
           product_data: {
             name: 'Shipping',
             images: [], // Optionally, you can put an image URL for shipping representation
           },
-          unit_amount: Math.round(order.shippingPrice * 100), // Convert the shipping to cents
+          unit_amount: Math.round(selectedShippingOption.price * 100), // Convert the shipping to cents
         },
         quantity: 1,
       });
@@ -82,7 +78,7 @@ export const POST = auth(async (...request: any) => {
 
     // Create a Stripe checkout session with line items
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
+      payment_method_types: ['card', 'p24', 'blik'],
       line_items: lineItems,
       mode: 'payment',
       success_url: `${process.env.NEXT_PUBLIC_DOMAIN}/order/${orderId}/success`,
@@ -91,6 +87,14 @@ export const POST = auth(async (...request: any) => {
         orderId: order._id.toString(),
       },
     });
+
+    order.paymentResult = {
+      id: session.payment_intent as string, // Ensure the payment intent ID is stored
+      status: 'pending',
+      email_address: order.shippingAddress.email, // or however you get the email address
+    };
+
+    await order.save();
 
     console.log('Stripe session created with URL:', session.url);
     return Response.json({ url: session.url });

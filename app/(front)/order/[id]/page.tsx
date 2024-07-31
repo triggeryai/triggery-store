@@ -1,3 +1,4 @@
+// next-amazona-v2/app/(front)/order/[id]/page.tsx
 import OrderDetails from './OrderDetails'
 
 export function generateMetadata({ params }: { params: { id: string } }) {
