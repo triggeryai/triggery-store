@@ -1,4 +1,3 @@
-// app(front)/order/[id]/OrderDetails.tsx
 'use client'
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js'
 import { OrderItem } from '@/lib/models/OrderModel'
@@ -10,6 +9,7 @@ import useSWRMutation from 'swr/mutation'
 import { useEffect, useState } from 'react'
 import Select from 'react-select'
 import Image from 'next/image'
+import confetti from 'canvas-confetti';
 
 export default function OrderDetails({
   orderId,
@@ -37,6 +37,7 @@ export default function OrderDetails({
   const { data, error } = useSWR(`/api/orders/${orderId}`)
   const { data: bankAccountData } = useSWR('/api/admin/payments')
   const { data: taxData } = useSWR('/api/admin/tax')
+  const { data: shippingData } = useSWR('/api/shipping')
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('')
   const [bankAccount, setBankAccount] = useState('1234 1234 1234 1234 1234 1234 1234')
@@ -52,6 +53,16 @@ export default function OrderDetails({
       setBankAccount(bankAccountData.accountNumber)
     }
   }, [bankAccountData])
+
+  useEffect(() => {
+    if (shippingData && data && data.shippingAddress) {
+      const selectedOption = shippingData.find(option => option.value === data.shippingAddress.shippingMethod)
+      if (selectedOption) {
+        data.shippingPrice = selectedOption.price
+        data.totalPrice = data.itemsPrice + data.shippingPrice + data.taxPrice
+      }
+    }
+  }, [shippingData, data])
 
   const handlePaymentMethodChange = (selectedOption) => {
     setSelectedPaymentMethod(selectedOption.value)
@@ -193,9 +204,26 @@ export default function OrderDetails({
       })
   }
 
+  const handleConfetti = () => {
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+    });
+  };
+
+  useEffect(() => {
+    const query = new URLSearchParams(window.location.search);
+    if (query.get('success')) {
+      handleConfetti();
+      markOrderAsPaid();
+    }
+  }, []);
+
   if (error) return error.message
   if (!data) return 'Ładowanie...'
   if (!taxData) return 'Ładowanie ustawień podatkowych...'
+  if (!shippingData) return 'Ładowanie opcji wysyłki...'
 
   const {
     paymentMethod,
@@ -256,11 +284,11 @@ export default function OrderDetails({
               <h2 className="card-title">Metoda płatności</h2>
               {!isPaid && (
                 <Select
-                  defaultValue={{ label: paymentMethod, value: paymentMethod }}
+                  defaultValue={{ label: getLabelForPaymentMethod(paymentMethod), value: paymentMethod }}
                   onChange={handlePaymentMethodChange}
                   options={[
                     { label: 'PayPal', value: 'PayPal' },
-                    { label: 'Stripe', value: 'Stripe' },
+                    { label: 'Płatność Stripe - Przelewy24 / Blik / Karta', value: 'Stripe' },
                     { label: 'Za pobraniem', value: 'CashOnDelivery' },
                     { label: 'Przelew bankowy na konto', value: 'DirectBankTransferToAccount' },
                   ]}
@@ -384,7 +412,7 @@ export default function OrderDetails({
                       </PayPalScriptProvider>
                     ) : paymentMethod === 'Stripe' ? (
                       <button onClick={createStripeSession} className="btn btn-primary w-full my-2">
-                        Zapłać przez Stripe
+                        Zapłać
                       </button>
                     ) : null}
                   </li>
@@ -440,4 +468,16 @@ export default function OrderDetails({
       </div>
     </div>
   )
+}
+
+// Helper function to get label for payment method
+const getLabelForPaymentMethod = (value) => {
+  const options = [
+    { label: 'PayPal', value: 'PayPal' },
+    { label: 'Płatność Stripe - Przelewy24 / Blik / Karta', value: 'Stripe' },
+    { label: 'Za pobraniem', value: 'CashOnDelivery' },
+    { label: 'Przelew bankowy na konto', value: 'DirectBankTransferToAccount' },
+  ];
+  const selectedOption = options.find(option => option.value === value);
+  return selectedOption ? selectedOption.label : value;
 }

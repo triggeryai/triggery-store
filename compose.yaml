@@ -1,4 +1,3 @@
-# compose.yaml
 # specify the version of docker-compose
 version: '3.8'
 
@@ -32,23 +31,6 @@ services:
     # the second number is the port inside the container
     ports:
       - 3000:3000
-
-    # this is for docker compose watch mode
-    # anything mentioned under develop will be watched for changes by docker compose watch
-    # and it will perform the action mentioned
-    develop:
-      # we specify the files to watch for changes
-      watch:
-        - path: ./package.json
-          action: rebuild
-        - path: ./next.config.js
-          action: rebuild
-        - path: ./package-lock.json
-          action: rebuild
-          # it'll watch for changes in the frontend directory and sync the changes with the container real time
-        - path: .
-          target: /app
-          action: sync
 
   # define the db service
   mongo:

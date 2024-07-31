@@ -1,3 +1,4 @@
+// next-amazona-v2/app/admin/products/[id]/Form.tsx
 'use client'
 import useSWRMutation from 'swr/mutation'
 import useSWR from 'swr'
@@ -188,15 +189,17 @@ export default function ProductEditForm({ productId }: { productId: string }) {
         <div className="md:w-4/5">
           <select
             id="mainImage"
-            {...register("mainImage", { required: "Główne zdjęcie jest wymagane" })}
+            {...register("mainImage")}
             className="select select-bordered w-full max-w-md"
           >
+            <option value="">Brak głównego zdjęcia</option>
             {images.map((image, index) => (
               <option key={index} value={image} selected={image === mainImage}>
                 {`Zdjęcie ${index + 1}`}
               </option>
             ))}
           </select>
+          {errors.mainImage && <div className="text-error">{errors.mainImage.message}</div>}
         </div>
       </div>
     );

@@ -1,33 +1,35 @@
-// app(front)/payment/Form.tsx
-'use client'
-import CheckoutSteps from '@/components/CheckoutSteps'
-import useCartService from '@/lib/hooks/useCartStore'
-import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+// next-amazona-v2/app/(front)/payment/Form.tsx
+'use client';
+import CheckoutSteps from '@/components/CheckoutSteps';
+import useCartService from '@/lib/hooks/useCartStore';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const paymentMethods = [
-  { label: 'Płatność PayPal', value: 'PayPal' },
-  { label: 'Płatność Stripe', value: 'Stripe' },
+  { label: 'Płatność Stripe - Przelewy24 / Blik / Karta', value: 'Stripe' },
   { label: 'Płatność przy odbiorze', value: 'CashOnDelivery' },
   { label: 'Przelew bankowy bezpośrednio na konto', value: 'DirectBankTransferToAccount' },
 ];
 
+  {/*{ label: 'Płatność PayPal', value: 'PayPal' }, */}
+
+
 const Form = () => {
-  const router = useRouter()
-  const { savePaymentMethod, paymentMethod, shippingAddress } = useCartService()
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('')
+  const router = useRouter();
+  const { savePaymentMethod, paymentMethod, shippingAddress } = useCartService();
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    savePaymentMethod(selectedPaymentMethod)
-    router.push('/place-order')
-  }
+    e.preventDefault();
+    savePaymentMethod(selectedPaymentMethod);
+    router.push('/place-order');
+  };
 
   useEffect(() => {
     if (!shippingAddress.address) {
-      return router.push('/shipping')
+      return router.push('/shipping');
     }
-    setSelectedPaymentMethod(paymentMethod || 'PayPal')
-  }, [paymentMethod, router, shippingAddress.address])
+    setSelectedPaymentMethod(paymentMethod || 'PayPal');
+  }, [paymentMethod, router, shippingAddress.address]);
 
   return (
     <div>
@@ -69,6 +71,6 @@ const Form = () => {
         </div>
       </div>
     </div>
-  )
-}
-export default Form
+  );
+};
+export default Form;
