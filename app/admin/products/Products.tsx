@@ -1,4 +1,3 @@
-// app/admin/products/Products.tsx
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
@@ -13,7 +12,7 @@ import { SearchBox } from '@/components/header/SearchBoxProduct';
 export default function Products() {
   const [page, setPage] = useState(1)
   const [searchQuery, setSearchQuery] = useState('') // Add state for search query
-  const { data: productsData, error: productsError } = useSWR(`/api/admin/products?page=${page}&limit=15`) // No search in initial API call
+  const { data: productsData, error: productsError } = useSWR(`/api/admin/products?page=${page}&limit=15&search=${searchQuery}`) // Modify API call to include search
   const { data: categories, error: categoriesError, mutate: mutateCategories } = useSWR(`/api/admin/categories`)
   const [showModal, setShowModal] = useState(false)
   const [productToDelete, setProductToDelete] = useState(null)
@@ -182,10 +181,6 @@ export default function Products() {
     setPage(1); // Reset to first page on new search
   }
 
-  const filteredProducts = products.filter(product => 
-    product.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -212,6 +207,7 @@ export default function Products() {
             <tr>
               <th><div className="badge">id</div></th>
               <th><div className="badge">name</div></th>
+              <th><div className="badge">slug</div></th> {/* Add slug header */}
               <th><div className="badge">price</div></th>
               <th><div className="badge">categories</div></th>
               <th><div className="badge">count in stock</div></th>
@@ -219,10 +215,11 @@ export default function Products() {
             </tr>
           </thead>
           <tbody>
-            {filteredProducts.map((product: any) => (
+            {products.map((product: any) => (
               <tr key={product._id}>
                 <td>{product._id}</td>
                 <td>{product.name}</td>
+                <td>{product.slug}</td> {/* Add slug data */}
                 <td>{product.price} PLN</td>
                 <td>{product.categories}</td>
                 <td>{product.countInStock}</td>

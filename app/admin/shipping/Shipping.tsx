@@ -1,4 +1,4 @@
-// app/admin/shipping/Shipping.tsx
+// next-amazona-v2/app/admin/shipping/Shipping.tsx
 'use client';
 import { useState, useEffect } from 'react';
 
@@ -72,11 +72,16 @@ const Shipping = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ value: editOption.value, label: editOption.label, price: editOption.price, isActive: editOption.isActive }),
+        body: JSON.stringify({
+          value: editOption.value,
+          label: editOption.label,
+          price: editOption.price,
+          isActive: editOption.isActive,
+        }),
       });
       if (response.ok) {
         const updatedOption = await response.json();
-        setShippingOptions(shippingOptions.map(option => 
+        setShippingOptions(shippingOptions.map(option =>
           option._id === updatedOption._id ? updatedOption : option
         ));
         setEditOption({ id: '', value: '', label: '', price: '', isActive: true });
@@ -175,10 +180,7 @@ const Shipping = () => {
                 type="checkbox"
                 name="isActive"
                 checked={editOption.isActive}
-                onChange={(e) => {
-                  setEditOption({ ...editOption, isActive: e.target.checked });
-                  handleEditOption();
-                }}
+                onChange={handleEditChange}
                 className="checkbox"
               />
               <span>Aktywne</span>
@@ -207,7 +209,8 @@ const Shipping = () => {
                     type="checkbox"
                     checked={option.isActive}
                     onChange={(e) => {
-                      setEditOption({ ...option, isActive: e.target.checked });
+                      const updatedOption = { ...option, isActive: e.target.checked };
+                      setEditOption(updatedOption);
                       handleEditOption();
                     }}
                     className="checkbox"

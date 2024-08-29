@@ -10,15 +10,15 @@ const sortOrders = [
 ];
 
 const prices = [
-  { name: 'od $1 do $50', value: '1-50' },
-  { name: 'od $51 do $200', value: '51-200' },
-  { name: 'od $201 do $1000', value: '201-1000' },
+  { name: 'od 1 PLN do 50 PLN', value: '1-50' },
+  { name: 'od 51 PLN do 200 PLN', value: '51-200' },
+  { name: 'od 201 PLN do 1000 PLN', value: '201-1000' },
 ];
 
 const ratings = [5, 4, 3, 2, 1];
 
 export async function generateMetadata({
-  searchParams: { q = 'all', category = 'all', price = 'all' },
+  searchParams: { q = '', category = 'all', price = 'all' },
 }: {
   searchParams: {
     q: string;
@@ -28,9 +28,9 @@ export async function generateMetadata({
     page: string;
   };
 }) {
-  if ((q !== 'all' && q !== '') || category !== 'all' || price !== 'all') {
+  if ((q !== '' && q !== '') || category !== 'all' || price !== 'all') {
     return {
-      title: `Wyszukaj ${q !== 'all' ? q : ''} ${category !== 'all' ? `: Kategoria ${category}` : ''} ${price !== 'all' ? `: Cena ${price}` : ''}`,
+      title: `Wyszukaj ${q !== '' ? q : ''} ${category !== 'all' ? `: Kategoria ${category}` : ''} ${price !== 'all' ? `: Cena ${price}` : ''}`,
     };
   } else {
     return {
@@ -40,7 +40,7 @@ export async function generateMetadata({
 }
 
 export default async function SearchPage({
-  searchParams: { q = 'all', category = 'all', price = 'all', sort = 'newest', page = '1' },
+  searchParams: { q = '', category = 'all', price = 'all', sort = 'newest', page = '1' },
 }: {
   searchParams: {
     q: string;
@@ -56,15 +56,20 @@ export default async function SearchPage({
     p,
     r,
     pg,
+    resetQ = false,
   }: {
     c?: string;
     s?: string;
     p?: string;
     r?: string;
     pg?: string;
+    resetQ?: boolean;
   }) => {
-    const params = { q, category, price, sort, page };
-    if (c) params.category = c;
+    const params = { q: resetQ ? '' : q, category, price, sort, page };
+    if (c) {
+      params.category = c;
+      params.q = '';
+    }
     if (p) params.price = p;
     if (pg) params.page = pg;
     if (s) params.sort = s;
@@ -113,13 +118,13 @@ export default async function SearchPage({
         <div>
           <ul>
             <li>
-              <Link className={`link link-hover ${'all' === category && 'link-primary'}`} href={getFilterUrl({ c: 'all' })}>
+              <Link className={`link link-hover ${'all' === category && 'link-primary'}`} href={getFilterUrl({ c: 'all', resetQ: true })}>
                 Wszystkie
               </Link>
             </li>
             {categories.map((c: string) => (
               <li key={c}>
-                <Link className={`link link-hover ${c === category && 'link-primary'}`} href={getFilterUrl({ c })}>
+                <Link className={`link link-hover ${c === category && 'link-primary'}`} href={getFilterUrl({ c, resetQ: true })}>
                   {c}
                 </Link>
               </li>
@@ -167,10 +172,10 @@ export default async function SearchPage({
         <div className="flex items-center justify-between py-4">
           <div className="flex items-center">
             <span className="font-bold">{products.length === 0 ? 'Brak' : countProducts} Wyników</span>
-            {q !== 'all' && q !== '' && ' : ' + q}
+            {q !== '' && ' : ' + q}
             {category !== 'all' && ' : ' + category}
             {price !== 'all' && ' : Cena ' + price}
-            <Link className="btn btn-sm btn-ghost" href="http://localhost:3000/search?q=all&category=all&price=all&sort=newest&page=1">
+            <Link className="btn btn-sm btn-ghost" href="https://domestico.pl/search?q=&category=all&price=all&sort=newest&page=1">
               Wyczyść
             </Link>
           </div>

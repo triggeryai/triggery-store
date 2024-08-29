@@ -18,10 +18,15 @@ export const GET = auth(async (req: any) => {
   const { searchParams } = new URL(req.url)
   const page = parseInt(searchParams.get('page') || '1')
   const limit = parseInt(searchParams.get('limit') || '15')
+  const searchQuery = searchParams.get('search') || ''
   const skip = (page - 1) * limit
 
-  const totalProducts = await ProductModel.countDocuments()
-  const products = await ProductModel.find()
+  const searchFilter = searchQuery 
+    ? { name: { $regex: searchQuery, $options: 'i' } }
+    : {}
+
+  const totalProducts = await ProductModel.countDocuments(searchFilter)
+  const products = await ProductModel.find(searchFilter)
     .populate('categories', 'name')
     .skip(skip)
     .limit(limit)

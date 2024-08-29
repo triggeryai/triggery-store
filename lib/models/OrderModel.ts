@@ -1,4 +1,3 @@
-// lib/models/OrderModel.ts
 import mongoose from 'mongoose';
 
 const orderSchema = new mongoose.Schema(
@@ -6,7 +5,7 @@ const orderSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
+      required: false, // Make sure this is set to false
     },
     items: [
       {
@@ -18,7 +17,7 @@ const orderSchema = new mongoose.Schema(
         name: { type: String, required: true },
         slug: { type: String, required: true },
         qty: { type: Number, required: true },
-        mainImage: { type: String }, // Dodane pole mainImage
+        mainImage: { type: String }, // Added field for main image
         price: { type: Number, required: true },
       },
     ],
@@ -55,7 +54,7 @@ export default OrderModel;
 
 export type Order = {
   _id: string;
-  user?: { name: string };
+  user?: { name: string }; // User is optional
   items: [OrderItem];
   shippingAddress: {
     fullName: string;
@@ -85,7 +84,7 @@ export type OrderItem = {
   name: string;
   slug: string;
   qty: number;
-  mainImage: string; // Dodane pole mainImage
+  mainImage: string; // Added field for main image
   price: number;
   color: string;
   size: string;

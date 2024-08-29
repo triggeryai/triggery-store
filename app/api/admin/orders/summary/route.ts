@@ -16,11 +16,42 @@ export const GET = auth(async (req: any) => {
 
   await dbConnect()
 
-  const ordersCount = await OrderModel.countDocuments()
+  const period = req.nextUrl.searchParams.get('period') || 'monthly'
+  const startDate = req.nextUrl.searchParams.get('startDate')
+  const endDate = req.nextUrl.searchParams.get('endDate')
+  const year = req.nextUrl.searchParams.get('year') || new Date().getFullYear()
+
+  let matchStage = {}
+  let dateFormat
+
+  switch (period) {
+    case 'daily':
+      dateFormat = '%Y-%m-%d'
+      if (startDate && endDate) {
+        matchStage = { createdAt: { $gte: new Date(startDate), $lte: new Date(endDate) } }
+      }
+      break
+    case 'weekly':
+      dateFormat = '%Y-%U'
+      break
+    case 'monthly':
+      dateFormat = '%Y-%m'
+      matchStage = { createdAt: { $gte: new Date(`${year}-01-01`), $lte: new Date(`${year}-12-31`) } }
+      break
+    case 'yearly':
+      dateFormat = '%Y'
+      matchStage = { createdAt: { $gte: new Date(`${year}-01-01`), $lte: new Date(`${year}-12-31`) } }
+      break
+    default:
+      dateFormat = '%Y-%m'
+  }
+
+  const ordersCount = await OrderModel.countDocuments(matchStage)
   const productsCount = await ProductModel.countDocuments()
   const usersCount = await UserModel.countDocuments()
 
   const ordersPriceGroup = await OrderModel.aggregate([
+    { $match: matchStage },
     {
       $group: {
         _id: null,
@@ -32,9 +63,10 @@ export const GET = auth(async (req: any) => {
     ordersPriceGroup.length > 0 ? ordersPriceGroup[0].sales : 0
 
   const salesData = await OrderModel.aggregate([
+    { $match: matchStage },
     {
       $group: {
-        _id: { $dateToString: { format: '%Y-%m', date: '$createdAt' } },
+        _id: { $dateToString: { format: dateFormat, date: '$createdAt' } },
         totalOrders: { $sum: 1 },
         totalSales: { $sum: '$totalPrice' },
       },
@@ -55,7 +87,7 @@ export const GET = auth(async (req: any) => {
   const usersData = await UserModel.aggregate([
     {
       $group: {
-        _id: { $dateToString: { format: '%Y-%m', date: '$createdAt' } },
+        _id: { $dateToString: { format: dateFormat, date: '$createdAt' } },
         totalUsers: { $sum: 1 },
       },
     },

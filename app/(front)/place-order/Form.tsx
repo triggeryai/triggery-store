@@ -1,10 +1,9 @@
-// app/(front)/place-order/Form.tsx
 'use client';
 import CheckoutSteps from '@/components/CheckoutSteps';
 import useCartService from '@/lib/hooks/useCartStore';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react'; // Added useCallback
 import toast from 'react-hot-toast';
 import useSWRMutation from 'swr/mutation';
 import Image from 'next/image';
@@ -19,9 +18,47 @@ const Form = () => {
     clear,
   } = useCartService();
 
+  const [isGuestCheckoutEnabled, setIsGuestCheckoutEnabled] = useState(false);
+  const [loading, setLoading] = useState(true); // Stan ładowania
   const [shippingPrice, setShippingPrice] = useState(0);
   const [taxPrice, setTaxPrice] = useState(0);
   const [totalPrice, setTotalPrice] = useState(itemsPrice + taxPrice + shippingPrice);
+
+  const calculateTotalPrice = useCallback((shipping: number, tax: number) => {
+    setTotalPrice(itemsPrice + tax + shipping);
+  }, [itemsPrice]);
+
+  // Sprawdzanie statusu Guest Checkout
+  useEffect(() => {
+    const fetchGuestCheckoutStatus = async () => {
+      try {
+        const res = await fetch('/api/guest-checkout');
+        if (!res.ok) {
+          throw new Error('Failed to fetch guest checkout status');
+        }
+        const data = await res.json();
+        if (data.success) {
+          setIsGuestCheckoutEnabled(data.data.isGuestCheckoutEnabled);
+        }
+      } catch (error) {
+        console.error('Error fetching guest checkout status:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGuestCheckoutStatus();
+  }, []);
+
+  // Sprawdzenie, czy można uzyskać dostęp do strony
+  useEffect(() => {
+    if (!loading) {
+      if (!paymentMethod && !isGuestCheckoutEnabled) {
+        console.log('Redirecting to login because guest checkout is disabled and no session exists.');
+        router.push('/signin?callbackUrl=/place-order');
+      }
+    }
+  }, [loading, paymentMethod, isGuestCheckoutEnabled, router]);
 
   useEffect(() => {
     const fetchShippingPrice = async () => {
@@ -32,7 +69,7 @@ const Form = () => {
         }
         const data = await response.json();
         const selectedMethod = localStorage.getItem('shippingMethod');
-        const selectedOption = data.find(option => option.value === selectedMethod);
+        const selectedOption = data.find((option: any) => option.value === selectedMethod);
         if (selectedOption) {
           setShippingPrice(selectedOption.price);
           calculateTotalPrice(selectedOption.price, taxPrice);
@@ -43,7 +80,7 @@ const Form = () => {
     };
 
     fetchShippingPrice();
-  }, [itemsPrice, taxPrice]);
+  }, [itemsPrice, taxPrice, calculateTotalPrice]);
 
   useEffect(() => {
     const fetchTaxSettings = async () => {
@@ -66,11 +103,7 @@ const Form = () => {
     };
 
     fetchTaxSettings();
-  }, [itemsPrice, shippingPrice]);
-
-  const calculateTotalPrice = (shipping, tax) => {
-    setTotalPrice(itemsPrice + tax + shipping);
-  };
+  }, [itemsPrice, shippingPrice, calculateTotalPrice]);
 
   const { trigger: placeOrder, isMutating: isPlacing } = useSWRMutation(
     `/api/orders/mine`,
@@ -130,6 +163,10 @@ const Form = () => {
   const shippingMethod = localStorage.getItem('shippingMethod');
   const selectedPaczkomat = JSON.parse(localStorage.getItem('selectedPaczkomat') || '{}');
   const selectedPocztex = JSON.parse(localStorage.getItem('selectedPoint') || '{}');
+
+  if (loading) {
+    return <div>Loading...</div>; // Pokazywanie ekranu ładowania
+  }
 
   return (
     <div>

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react'; // Added useCallback
 import { CSSTransition } from 'react-transition-group';
 import { useSession } from 'next-auth/react';
 import Fuse from 'fuse.js';
@@ -60,6 +60,16 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
     scrollToBottom();
   }, [chatHistory]);
 
+  const fetchChatHistory = useCallback(async () => {
+    if (!session) return;
+    const response = await fetch(`/api/get-messages?user=${session.user.name}`);
+    if (response.ok) {
+      const data = await response.json();
+      setChatHistory(data.data);
+      scrollToBottom();
+    }
+  }, [session]); // Memoized with session as a dependency
+
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (isOpen) {
@@ -68,21 +78,11 @@ const SupportBotModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
       }, 60000); // Refresh every 60 seconds
     }
     return () => clearInterval(interval);
-  }, [isOpen]);
+  }, [isOpen, fetchChatHistory]); // Added fetchChatHistory to the dependency array
 
   const scrollToBottom = () => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-    }
-  };
-
-  const fetchChatHistory = async () => {
-    if (!session) return;
-    const response = await fetch(`/api/get-messages?user=${session.user.name}`);
-    if (response.ok) {
-      const data = await response.json();
-      setChatHistory(data.data);
-      scrollToBottom();
     }
   };
 

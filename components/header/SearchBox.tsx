@@ -1,4 +1,4 @@
-// 
+// next-amazona-v2/components/header/SearchBox.tsx
 'use client'
 import { useSearchParams } from 'next/navigation'
 

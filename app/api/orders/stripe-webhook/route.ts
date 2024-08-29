@@ -1,7 +1,9 @@
+// next-amazona-v2/app/api/orders/stripe-webhook/route.ts
 import { NextApiRequest, NextApiResponse } from 'next';
 import Stripe from 'stripe';
 import dbConnect from '@/lib/dbConnect';
 import OrderModel from '@/lib/models/OrderModel';
+import { NextRequest, NextResponse } from 'next/server';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
   apiVersion: '2020-08-27',
@@ -9,15 +11,11 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || '';
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+export const dynamic = 'force-dynamic';
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextRequest) => {
   const buf = await buffer(req);
-  const sig = req.headers['stripe-signature'] || '';
+  const sig = req.headers.get('stripe-signature') || '';
 
   let event: Stripe.Event;
 
@@ -25,7 +23,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     event = stripe.webhooks.constructEvent(buf, sig, webhookSecret);
   } catch (err) {
     console.log(`⚠️  Webhook signature verification failed.`, err.message);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
+    return NextResponse.json({ message: `Webhook Error: ${err.message}` }, { status: 400 });
   }
 
   // Handle the checkout.session.completed event
@@ -47,7 +45,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
   }
 
-  res.status(200).json({ received: true });
+  return NextResponse.json({ received: true });
 };
 
 const buffer = async (readable: any) => {
@@ -58,4 +56,4 @@ const buffer = async (readable: any) => {
   return Buffer.concat(chunks);
 };
 
-export default handler;
+export { handler as POST };

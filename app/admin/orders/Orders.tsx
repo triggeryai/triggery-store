@@ -1,4 +1,5 @@
 // app\admin\orders\Orders.tsx
+
 'use client'
 import { useState, useEffect } from 'react'
 import { Order } from '@/lib/models/OrderModel'
@@ -59,12 +60,22 @@ export default function Orders() {
     }
   }
 
-  const handlePreviousPage = () => {
-    if (page > 1) setPage(page - 1)
+  const handlePageClick = (pageNumber: number) => {
+    setPage(pageNumber)
   }
 
-  const handleNextPage = () => {
-    if (page < totalPages) setPage(page + 1)
+  // Generate page numbers for pagination
+  const generatePageNumbers = () => {
+    const pageNumbers = []
+    const maxPageButtons = 5
+    const startPage = Math.max(1, page - 2)
+    const endPage = Math.min(totalPages, page + 2)
+
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(i)
+    }
+
+    return pageNumbers
   }
 
   return (
@@ -123,15 +134,23 @@ export default function Orders() {
 
       <div className="flex justify-center items-center mt-4 space-x-4">
         <button
-          onClick={handlePreviousPage}
+          onClick={() => handlePageClick(page - 1)}
           disabled={page === 1}
           className="bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50"
         >
           Poprzednia
         </button>
-        <span className="text-gray-700">Strona {page} z {totalPages}</span>
+        {generatePageNumbers().map((pageNumber) => (
+          <button
+            key={pageNumber}
+            onClick={() => handlePageClick(pageNumber)}
+            className={`px-4 py-2 rounded ${page === pageNumber ? 'bg-blue-700 text-white' : 'bg-blue-500 text-white'}`}
+          >
+            {pageNumber}
+          </button>
+        ))}
         <button
-          onClick={handleNextPage}
+          onClick={() => handlePageClick(page + 1)}
           disabled={page === totalPages}
           className="bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50"
         >

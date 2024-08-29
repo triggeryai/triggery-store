@@ -1,4 +1,3 @@
-// app(front)/shipping/Form.tsx
 "use client";
 import React, { useState, useEffect } from "react";
 import CheckoutSteps from "@/components/CheckoutSteps";
@@ -7,6 +6,7 @@ import { ShippingAddress } from "@/lib/models/OrderModel";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import Select from "react-select";
+import { useSession } from 'next-auth/react';
 
 const InpostModal = ({ closeModal }) => {
   useEffect(() => {
@@ -34,6 +34,9 @@ const InpostModal = ({ closeModal }) => {
 };
 
 const Form = () => {
+  const { data: session } = useSession();
+  const [isGuestCheckoutEnabled, setIsGuestCheckoutEnabled] = useState(false);
+  const [loading, setLoading] = useState(true); // Stan ładowania
   const router = useRouter();
   const { saveShippingAddrress, shippingAddress } = useCartService();
   const {
@@ -59,6 +62,39 @@ const Form = () => {
   const [showInpostModal, setShowInpostModal] = useState(false);
   const [selectedPocztex, setSelectedPocztex] = useState(null);
   const [shippingOptions, setShippingOptions] = useState([]);
+
+  // Pobieranie statusu opcji zakupów bez rejestracji
+  useEffect(() => {
+    const fetchGuestCheckoutStatus = async () => {
+      try {
+        const res = await fetch('/api/guest-checkout');
+        if (!res.ok) {
+          throw new Error('Failed to fetch guest checkout status');
+        }
+        const data = await res.json();
+        console.log('Guest Checkout Status from API:', data);
+        if (data.success) {
+          setIsGuestCheckoutEnabled(data.data.isGuestCheckoutEnabled);
+        }
+      } catch (error) {
+        console.error('Error fetching guest checkout status:', error);
+      } finally {
+        setLoading(false); // Ustawienie ładowania na false po zakończeniu
+      }
+    };
+
+    fetchGuestCheckoutStatus();
+  }, []);
+
+  useEffect(() => {
+    if (!loading) {
+      // Sprawdzenie, czy Guest Checkout jest wyłączony i użytkownik nie jest zalogowany
+      if (!session && !isGuestCheckoutEnabled) {
+        console.log('Redirecting to login because guest checkout is disabled and no session exists.');
+        router.push('/signin?callbackUrl=http%3A%2F%2Fdomestico.pl');
+      }
+    }
+  }, [loading, session, isGuestCheckoutEnabled, router]);
 
   useEffect(() => {
     if (shippingAddress) {
@@ -112,7 +148,7 @@ const Form = () => {
           throw new Error('Failed to fetch shipping options');
         }
         const data = await response.json();
-        // Filter out inactive options
+        console.log('Shipping Options fetched:', data);
         const activeOptions = data.filter(option => option.isActive);
         setShippingOptions(activeOptions);
       } catch (error) {
@@ -135,7 +171,6 @@ const Form = () => {
       setShowInpostModal(true);
     } else {
       setShowInpostModal(false);
-      // Refresh the page if a different shipping method is selected
       setTimeout(() => {
         location.reload();
       }, 0);
@@ -159,6 +194,10 @@ const Form = () => {
     saveShippingAddrress(data);
     router.push("/payment");
   };
+
+  if (loading) {
+    return <div>Loading...</div>; // Pokazywanie ekranu ładowania
+  }
 
   return (
     <div>
@@ -197,7 +236,7 @@ const Form = () => {
             </div>
             <div className="mb-2">
               <label className="label" htmlFor="fullName">
-              Imię i nazwisko
+                Imię i nazwisko
               </label>
               <input
                 type="text"
@@ -217,7 +256,7 @@ const Form = () => {
                 type="text"
                 id="address"
                 {...register("address", { required: "Adres jest wymagany" })}
-                className="input input-bordered w-full"
+                className="input input-bordered w/full"
               />
               {errors.address && (
                 <div className="text-error">{errors.address.message}</div>
@@ -247,7 +286,7 @@ const Form = () => {
                 {...register("postalCode", {
                   required: "Kod pocztowy jest wymagany",
                 })}
-                className="input input-bordered w-full"
+                className="input input-bordered w/full"
               />
               {errors.postalCode && (
                 <div className="text-error">{errors.postalCode.message}</div>
@@ -261,7 +300,7 @@ const Form = () => {
                 type="text"
                 id="country"
                 {...register("country", { required: "Kraj jest wymagany" })}
-                className="input input-bordered w-full"
+                className="input input-bordered w/full"
               />
               {errors.country && (
                 <div className="text-error">{errors.country.message}</div>

@@ -10,7 +10,7 @@ const CartModal = () => {
 
   if (items.length === 0) {
     return (
-      <div className="absolute right-0 p-3 w-72 bg-white text-[#222] dark:bg-gray-800 dark:text-gray-200 shadow-lg z-50">
+      <div className="absolute right-0 p-3 w-72 card card-compact bg-base-100 shadow-xl z-50">
         <p>Twój koszyk jest pusty.</p>
       </div>
     );

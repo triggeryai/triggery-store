@@ -1,9 +1,9 @@
-// next-amazona-v2/app/api/orders/[id]/create-stripe-session/route.ts
 import Stripe from 'stripe';
 import { auth } from '@/lib/auth';
 import dbConnect from '@/lib/dbConnect';
 import OrderModel from '@/lib/models/OrderModel';
-import ShippingOption from '@/lib/models/ShippingPriceModel'; // Import your ShippingOption model
+import ShippingOption from '@/lib/models/ShippingPriceModel'; // Importuj model ShippingOption
+import { getGuestCheckoutStatus } from '@/lib/utils'; // Importuj funkcję do sprawdzania statusu Guest Checkout
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
   apiVersion: '2020-08-27',
@@ -12,7 +12,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
 export const POST = auth(async (...request: any) => {
   const [req, { params }] = request;
 
-  console.log('Request params:', params); // Print params to see the received id
+  console.log('Request params:', params); // Loguj parametry zapytania, aby zobaczyć otrzymane ID zamówienia
 
   if (!params || !params.id) {
     console.error('The order ID is missing in the request params.');
@@ -21,23 +21,24 @@ export const POST = auth(async (...request: any) => {
 
   const orderId = params.id;
 
-  // User authentication
-  if (!req.auth) {
-    console.error('Authorization failed. User is not authenticated.');
+  // Sprawdzenie autoryzacji użytkownika oraz statusu Guest Checkout
+  const isGuestCheckoutEnabled = await getGuestCheckoutStatus();
+  if (!req.auth && !isGuestCheckoutEnabled) {
+    console.error('Authorization failed. User is not authenticated and Guest Checkout is not enabled.');
     return Response.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
-  // Database connection
+  // Połączenie z bazą danych
   await dbConnect();
 
-  // Retrieve the order from the database
+  // Pobranie zamówienia z bazy danych
   const order = await OrderModel.findById(orderId);
   if (!order) {
     console.error(`Order not found with ID: ${orderId}`);
     return Response.json({ message: 'Order not found' }, { status: 404 });
   }
 
-  // Retrieve the shipping options to get the correct price
+  // Pobranie opcji wysyłki, aby uzyskać właściwą cenę
   const shippingOptions = await ShippingOption.find({});
   const selectedShippingOption = shippingOptions.find(option => option.value === order.shippingAddress.shippingMethod);
 
@@ -47,36 +48,36 @@ export const POST = auth(async (...request: any) => {
   }
 
   try {
-    // Prepare line items for each product in the order
+    // Przygotowanie elementów linii dla każdego produktu w zamówieniu
     const lineItems = order.items.map(item => ({
       price_data: {
         currency: 'pln',
         product_data: {
           name: item.name,
-          // Replace the placeholder URL with the actual image URL if necessary
+          // W razie potrzeby zamień placeholder URL na rzeczywisty URL obrazu
           images: [],        
         },
-        unit_amount: Math.round(item.price * 100), // Convert the price to cents
+        unit_amount: Math.round(item.price * 100), // Przeliczenie ceny na grosze
       },
       quantity: item.qty,
     }));
 
-    // Add a line item for shipping if applicable
+    // Dodanie elementu linii dla wysyłki, jeśli ma zastosowanie
     if (selectedShippingOption.price > 0) {
       lineItems.push({
         price_data: {
           currency: 'pln',
           product_data: {
             name: 'Shipping',
-            images: [], // Optionally, you can put an image URL for shipping representation
+            images: [], // Opcjonalnie można dodać URL obrazu reprezentującego wysyłkę
           },
-          unit_amount: Math.round(selectedShippingOption.price * 100), // Convert the shipping to cents
+          unit_amount: Math.round(selectedShippingOption.price * 100), // Przeliczenie ceny wysyłki na grosze
         },
         quantity: 1,
       });
     }
 
-    // Create a Stripe checkout session with line items
+    // Utworzenie sesji Stripe checkout z elementami linii
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card', 'p24', 'blik'],
       line_items: lineItems,
@@ -89,17 +90,17 @@ export const POST = auth(async (...request: any) => {
     });
 
     order.paymentResult = {
-      id: session.payment_intent as string, // Ensure the payment intent ID is stored
+      id: session.payment_intent as string, // Upewnij się, że ID payment intent jest zapisane
       status: 'pending',
-      email_address: order.shippingAddress.email, // or however you get the email address
+      email_address: order.shippingAddress.email, // lub w inny sposób uzyskaj adres e-mail
     };
 
     await order.save();
 
-    console.log('Stripe session created with URL:', session.url);
+    console.log('Stripe session created with URL:', session.url); // Loguj sukces utworzenia sesji
     return Response.json({ url: session.url });
   } catch (error) {
-    console.error('Error creating Stripe checkout session:', error);
+    console.error('Error creating Stripe checkout session:', error); // Loguj błąd utworzenia sesji
     return Response.json({
       message: 'Error creating Stripe checkout session',
       details: error.message,

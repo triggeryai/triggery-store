@@ -1,7 +1,7 @@
-// next-amazona-v2/app/api/admin/general/route.ts
+// next-amazona-v2/app/api/admin/guest-checkout/route.ts
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
-import DeveloperMode from '@/lib/models/DeveloperMode';
+import GuestCheckout from '@/lib/models/GuestCheckout';
 import { auth } from '@/lib/auth';
 
 export const PATCH = auth(async (req) => {
@@ -11,14 +11,14 @@ export const PATCH = auth(async (req) => {
     return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { isDeveloperMode } = await req.json();
+  const { isGuestCheckoutEnabled } = await req.json();
 
   try {
-    let status = await DeveloperMode.findOne();
+    let status = await GuestCheckout.findOne();
     if (!status) {
-      status = new DeveloperMode({ isDeveloperMode: true }); // Set default to true if not found
+      status = new GuestCheckout({ isGuestCheckoutEnabled: isGuestCheckoutEnabled });
     } else {
-      status.isDeveloperMode = isDeveloperMode;
+      status.isGuestCheckoutEnabled = isGuestCheckoutEnabled;
     }
     await status.save();
 
@@ -36,10 +36,9 @@ export const GET = auth(async (req) => {
   }
 
   try {
-    let status = await DeveloperMode.findOne();
+    let status = await GuestCheckout.findOne();
     if (!status) {
-      // Create default entry if not found
-      status = new DeveloperMode({ isDeveloperMode: true });
+      status = new GuestCheckout({ isGuestCheckoutEnabled: false });
       await status.save();
     }
 

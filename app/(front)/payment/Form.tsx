@@ -1,4 +1,3 @@
-// next-amazona-v2/app/(front)/payment/Form.tsx
 'use client';
 import CheckoutSteps from '@/components/CheckoutSteps';
 import useCartService from '@/lib/hooks/useCartStore';
@@ -11,25 +10,62 @@ const paymentMethods = [
   { label: 'Przelew bankowy bezpośrednio na konto', value: 'DirectBankTransferToAccount' },
 ];
 
-  {/*{ label: 'Płatność PayPal', value: 'PayPal' }, */}
-
-
 const Form = () => {
   const router = useRouter();
   const { savePaymentMethod, paymentMethod, shippingAddress } = useCartService();
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
+  const [isGuestCheckoutEnabled, setIsGuestCheckoutEnabled] = useState(false);
+  const [loading, setLoading] = useState(true); // Stan ładowania
+
+  useEffect(() => {
+    const fetchGuestCheckoutStatus = async () => {
+      try {
+        const res = await fetch('/api/guest-checkout');
+        if (!res.ok) {
+          throw new Error('Failed to fetch guest checkout status');
+        }
+        const data = await res.json();
+        console.log('Guest Checkout Status from API:', data);
+        if (data.success) {
+          setIsGuestCheckoutEnabled(data.data.isGuestCheckoutEnabled);
+        }
+      } catch (error) {
+        console.error('Error fetching guest checkout status:', error);
+      } finally {
+        setLoading(false); // Ustawienie ładowania na false po zakończeniu
+      }
+    };
+
+    fetchGuestCheckoutStatus();
+  }, []);
+
+  useEffect(() => {
+    if (!loading) {
+      // Sprawdzenie, czy Guest Checkout jest wyłączony i użytkownik nie jest zalogowany
+      if (!shippingAddress.address && !isGuestCheckoutEnabled) {
+        console.log('Redirecting to login because guest checkout is disabled and no session exists.');
+        router.push('/signin?callbackUrl=/payment');
+      }
+    }
+  }, [loading, isGuestCheckoutEnabled, router, shippingAddress.address]);
+
+  useEffect(() => {
+    if (shippingAddress.address) {
+      setSelectedPaymentMethod(paymentMethod || 'Stripe');
+    } else {
+      router.push('/shipping');
+    }
+  }, [paymentMethod, router, shippingAddress.address]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     savePaymentMethod(selectedPaymentMethod);
     router.push('/place-order');
   };
 
-  useEffect(() => {
-    if (!shippingAddress.address) {
-      return router.push('/shipping');
-    }
-    setSelectedPaymentMethod(paymentMethod || 'PayPal');
-  }, [paymentMethod, router, shippingAddress.address]);
+  if (loading) {
+    return <div>Loading...</div>; // Pokazywanie ekranu ładowania
+  }
 
   return (
     <div>
@@ -73,4 +109,5 @@ const Form = () => {
     </div>
   );
 };
+
 export default Form;

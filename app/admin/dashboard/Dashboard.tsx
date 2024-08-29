@@ -1,4 +1,5 @@
 'use client'
+import { useState } from 'react'
 import Link from 'next/link'
 import { Bar, Doughnut, Line } from 'react-chartjs-2'
 import useSWR from 'swr'
@@ -40,10 +41,24 @@ export const options = {
 }
 
 const Dashboard = () => {
-  const { data: summary, error } = useSWR(`/api/admin/orders/summary`)
+  const [period, setPeriod] = useState('monthly')
+  const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
+  const [year, setYear] = useState(new Date().getFullYear())
+
+  const { data: summary, error } = useSWR(
+    `/api/admin/orders/summary?period=${period}&startDate=${startDate}&endDate=${endDate}&year=${year}`
+  )
 
   if (error) return error.message
   if (!summary) return 'Ładowanie...'
+
+  const handlePeriodChange = (e) => {
+    setPeriod(e.target.value)
+    setStartDate('')
+    setEndDate('')
+    setYear(new Date().getFullYear())
+  }
 
   const salesData = {
     labels: summary.salesData.map((x: { _id: string }) => x._id),
@@ -116,6 +131,60 @@ const Dashboard = () => {
 
   return (
     <div>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Dashboard</h1>
+        <div>
+          <label htmlFor="period" className="mr-2">Wybierz okres:</label>
+          <select
+            id="period"
+            value={period}
+            onChange={handlePeriodChange}
+            className="p-2 border rounded"
+          >
+            <option value="daily">Dzienny</option>
+            <option value="weekly">Tygodniowy</option>
+            <option value="monthly">Miesięczny</option>
+            <option value="yearly">Roczny</option>
+          </select>
+          {period === 'daily' && (
+            <div className="flex items-center mt-2">
+              <label htmlFor="startDate" className="mr-2">Od:</label>
+              <input
+                type="date"
+                id="startDate"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="p-2 border rounded mr-2"
+              />
+              <label htmlFor="endDate" className="mr-2">Do:</label>
+              <input
+                type="date"
+                id="endDate"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="p-2 border rounded"
+              />
+            </div>
+          )}
+          {(period === 'monthly' || period === 'yearly') && (
+            <div className="mt-2">
+              <label htmlFor="year" className="mr-2">Wybierz rok:</label>
+              <select
+                id="year"
+                value={year}
+                onChange={(e) => setYear(e.target.value)}
+                className="p-2 border rounded"
+              >
+                {Array.from(new Array(10), (_, i) => {
+                  const y = new Date().getFullYear() - i;
+                  return <option key={y} value={y}>{y}</option>
+                })}
+              </select>
+            </div>
+          )}
+        </div>
+      </div>
+
       <div className="my-4 stats inline-grid md:flex shadow stats-vertical md:stats-horizontal">
         <div className="stat">
           <div className="stat-title">Sprzedaż</div>
@@ -148,6 +217,7 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
       <div className="grid md:grid-cols-2 gap-4">
         <div>
           <h2 className="text-xl py-2">Raport sprzedaży</h2>

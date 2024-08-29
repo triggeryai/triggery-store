@@ -7,15 +7,11 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: '2020-08-27',
 });
 
-export const config = {
-  api: {
-    bodyParser: false, // Stripe requires the raw body to validate the webhook signature
-  },
-};
-
 const webhookSecret: string = process.env.STRIPE_WEBHOOK_SECRET as string;
 
-export const POST = async (req: NextRequest, res: NextResponse) => {
+export const dynamic = 'force-dynamic';
+
+export const POST = async (req: NextRequest) => {
   console.log('Stripe Webhook Secret:', webhookSecret);
 
   await dbConnect();

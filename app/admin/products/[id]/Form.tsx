@@ -9,6 +9,7 @@ import { useEffect } from 'react'
 import { Product } from '@/lib/models/ProductModel'
 import { formatId } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image';  // Import the Image component from next/image
 
 export default function ProductEditForm({ productId }: { productId: string }) {
   const { data: product, error } = useSWR(`/api/admin/products/${productId}`)
@@ -253,7 +254,15 @@ export default function ProductEditForm({ productId }: { productId: string }) {
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
           {product.images.map((image, index) => (
             <div key={index} className="relative">
-              <img src={image} alt={`Zdjęcie Produktu ${index + 1}`} className="w-full h-auto rounded shadow-md" />
+              {/* Using the Image component from next/image */}
+              <Image
+                src={image}
+                alt={`Zdjęcie Produktu ${index + 1}`}
+                layout="responsive" // Use responsive layout for better handling
+                width={200} // Specify the width
+                height={200} // Specify the height
+                className="rounded shadow-md"
+              />
             </div>
           ))}
         </div>

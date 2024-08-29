@@ -1,22 +1,24 @@
-'use client'
-import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js'
-import { OrderItem } from '@/lib/models/OrderModel'
-import { useSession } from 'next-auth/react'
-import Link from 'next/link'
-import toast from 'react-hot-toast'
-import useSWR from 'swr'
-import useSWRMutation from 'swr/mutation'
-import { useEffect, useState } from 'react'
-import Select from 'react-select'
-import Image from 'next/image'
+'use client';
+import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
+import { OrderItem } from '@/lib/models/OrderModel';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
+import toast from 'react-hot-toast';
+import useSWR from 'swr';
+import useSWRMutation from 'swr/mutation';
+import { useEffect, useState, useCallback } from 'react';
+import Select from 'react-select';
+import Image from 'next/image';
 import confetti from 'canvas-confetti';
+import { useRouter } from 'next/navigation';
+import { getGuestCheckoutStatus } from '@/lib/utils';
 
 export default function OrderDetails({
   orderId,
   paypalClientId,
 }: {
-  orderId: string
-  paypalClientId: string
+  orderId: string;
+  paypalClientId: string;
 }) {
   const { trigger: deliverOrder, isMutating: isDelivering } = useSWRMutation(
     `/api/orders/${orderId}`,
@@ -26,53 +28,73 @@ export default function OrderDetails({
         headers: {
           'Content-Type': 'application/json',
         },
-      })
-      const data = await res.json()
+      });
+      const data = await res.json();
       res.ok
         ? toast.success('Zamówienie dostarczone pomyślnie')
-        : toast.error(data.message)
+        : toast.error(data.message);
     }
-  )
+  );
 
-  const { data, error } = useSWR(`/api/orders/${orderId}`)
-  const { data: bankAccountData } = useSWR('/api/admin/payments')
-  const { data: taxData } = useSWR('/api/admin/tax')
-  const { data: shippingData } = useSWR('/api/shipping')
+  const { data, error } = useSWR(`/api/orders/${orderId}`);
+  const { data: bankAccountData } = useSWR('/api/admin/payments');
+  const { data: taxData } = useSWR('/api/admin/tax');
+  const { data: shippingData } = useSWR('/api/shipping');
 
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('')
-  const [bankAccount, setBankAccount] = useState('1234 1234 1234 1234 1234 1234 1234')
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
+  const [bankAccount, setBankAccount] = useState('1234 1234 1234 1234 1234 1234 1234');
+
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  const [isGuestCheckoutEnabled, setIsGuestCheckoutEnabled] = useState(false);
+
+  // Sprawdzenie statusu Guest Checkout
+  useEffect(() => {
+    const checkGuestCheckoutStatus = async () => {
+      const isGuestCheckoutEnabled = await getGuestCheckoutStatus();
+      setIsGuestCheckoutEnabled(isGuestCheckoutEnabled);
+
+      // Jeżeli Guest Checkout jest wyłączony i użytkownik nie jest zalogowany, przekieruj do logowania
+      if (!isGuestCheckoutEnabled && !session) {
+        router.push(`/signin?callbackUrl=/order/${orderId}`);
+      }
+    };
+
+    checkGuestCheckoutStatus();
+  }, [session, orderId, router]);
 
   useEffect(() => {
     if (data && data.paymentMethod) {
-      setSelectedPaymentMethod(data.paymentMethod)
+      setSelectedPaymentMethod(data.paymentMethod);
     }
-  }, [data])
+  }, [data]);
 
   useEffect(() => {
     if (bankAccountData) {
-      setBankAccount(bankAccountData.accountNumber)
+      setBankAccount(bankAccountData.accountNumber);
     }
-  }, [bankAccountData])
+  }, [bankAccountData]);
 
   useEffect(() => {
     if (shippingData && data && data.shippingAddress) {
-      const selectedOption = shippingData.find(option => option.value === data.shippingAddress.shippingMethod)
+      const selectedOption = shippingData.find(option => option.value === data.shippingAddress.shippingMethod);
       if (selectedOption) {
-        data.shippingPrice = selectedOption.price
-        data.totalPrice = data.itemsPrice + data.shippingPrice + data.taxPrice
+        data.shippingPrice = selectedOption.price;
+        data.totalPrice = data.itemsPrice + data.shippingPrice + data.taxPrice;
       }
     }
-  }, [shippingData, data])
+  }, [shippingData, data]);
 
   const handlePaymentMethodChange = (selectedOption) => {
-    setSelectedPaymentMethod(selectedOption.value)
-    updatePaymentMethodInDatabase(selectedOption.value)
-  }
+    setSelectedPaymentMethod(selectedOption.value);
+    updatePaymentMethodInDatabase(selectedOption.value);
+  };
 
   const updatePaymentMethodInDatabase = async (newPaymentMethod) => {
     if (!newPaymentMethod) {
-      toast.error('Nie wybrano metody płatności')
-      return
+      toast.error('Nie wybrano metody płatności');
+      return;
     }
     try {
       const response = await fetch(`/api/orders/${orderId}/update-payment-method`, {
@@ -81,22 +103,22 @@ export default function OrderDetails({
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ paymentMethod: newPaymentMethod }),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
       if (response.ok) {
-        toast.success(`Metoda płatności zaktualizowana pomyślnie na ${newPaymentMethod}`)
+        toast.success(`Metoda płatności zaktualizowana pomyślnie na ${newPaymentMethod}`);
         setTimeout(() => {
-          window.location.reload()
-        }, 2000)
+          window.location.reload();
+        }, 2000);
       } else {
-        toast.error(data.message || 'Nie udało się zaktualizować metody płatności')
+        toast.error(data.message || 'Nie udało się zaktualizować metody płatności');
       }
     } catch (error) {
-      toast.error('Błąd sieci podczas próby aktualizacji metody płatności')
-      console.error('Network error:', error)
+      toast.error('Błąd sieci podczas próby aktualizacji metody płatności');
+      console.error('Network error:', error);
     }
-  }
+  };
 
   const { trigger: undeliverOrder, isMutating: isUndelivering } = useSWRMutation(
     `/api/admin/orders/${orderId}/undeliver`,
@@ -106,13 +128,13 @@ export default function OrderDetails({
         headers: {
           'Content-Type': 'application/json',
         },
-      })
-      const data = await res.json()
+      });
+      const data = await res.json();
       res.ok
         ? toast.success('Zamówienie oznaczone jako niedostarczone')
-        : toast.error(data.message)
+        : toast.error(data.message);
     }
-  )
+  );
 
   const { trigger: markOrderAsUnpaid, isMutating: isMarkingUnpaid } = useSWRMutation(
     `/api/admin/orders/${orderId}/unpaid`,
@@ -122,18 +144,18 @@ export default function OrderDetails({
         headers: {
           'Content-Type': 'application/json',
         },
-      })
-      const data = await res.json()
+      });
+      const data = await res.json();
       if (res.ok) {
-        toast.success('Zamówienie oznaczone jako nieopłacone')
-        window.location.reload()
+        toast.success('Zamówienie oznaczone jako nieopłacone');
+        window.location.reload();
       } else {
-        toast.error(data.message)
+        toast.error(data.message);
       }
     }
-  )
+  );
 
-  const [stripeSessionUrl, setStripeSessionUrl] = useState(null)
+  const [stripeSessionUrl, setStripeSessionUrl] = useState(null);
 
   const createStripeSession = async () => {
     try {
@@ -142,25 +164,23 @@ export default function OrderDetails({
         headers: {
           'Content-Type': 'application/json',
         },
-      })
-      const session = await response.json()
+      });
+      const session = await response.json();
       if (response.ok) {
-        setStripeSessionUrl(session.url)
+        setStripeSessionUrl(session.url);
       } else {
-        toast.error('Nie udało się zainicjować płatności Stripe: ' + session.message)
+        toast.error('Nie udało się zainicjować płatności Stripe: ' + session.message);
       }
     } catch (error) {
-      toast.error('Wystąpił błąd sieci podczas łączenia z bramką płatności.')
+      toast.error('Wystąpił błąd sieci podczas łączenia z bramką płatności.');
     }
-  }
+  };
 
   useEffect(() => {
     if (stripeSessionUrl) {
-      window.location.href = stripeSessionUrl
+      window.location.href = stripeSessionUrl;
     }
-  }, [stripeSessionUrl])
-
-  const { data: session } = useSession()
+  }, [stripeSessionUrl]);
 
   function createPayPalOrder() {
     return fetch(`/api/orders/${orderId}/create-paypal-order`, {
@@ -170,7 +190,7 @@ export default function OrderDetails({
       },
     })
       .then((response) => response.json())
-      .then((order) => order.id)
+      .then((order) => order.id);
   }
 
   function onApprovePayPalOrder(data: any) {
@@ -183,11 +203,11 @@ export default function OrderDetails({
     })
       .then((response) => response.json())
       .then((orderData) => {
-        toast.success('Zamówienie opłacone pomyślnie')
-      })
+        toast.success('Zamówienie opłacone pomyślnie');
+      });
   }
 
-  function markOrderAsPaid() {
+  const markOrderAsPaid = useCallback(() => {
     fetch(`/api/admin/orders/${orderId}/pay`, {
       method: 'PUT',
       headers: {
@@ -196,13 +216,13 @@ export default function OrderDetails({
     })
       .then((response) => response.json())
       .then((data) => {
-        toast.success('Zamówienie oznaczone jako opłacone pomyślnie')
-        window.location.reload()
+        toast.success('Zamówienie oznaczone jako opłacone pomyślnie');
+        window.location.reload();
       })
       .catch((error) => {
-        toast.error('Nie udało się oznaczyć zamówienia jako opłacone')
-      })
-  }
+        toast.error('Nie udało się oznaczyć zamówienia jako opłacone');
+      });
+  }, [orderId]);
 
   const handleConfetti = () => {
     confetti({
@@ -218,12 +238,12 @@ export default function OrderDetails({
       handleConfetti();
       markOrderAsPaid();
     }
-  }, []);
+  }, [markOrderAsPaid]);
 
-  if (error) return error.message
-  if (!data) return 'Ładowanie...'
-  if (!taxData) return 'Ładowanie ustawień podatkowych...'
-  if (!shippingData) return 'Ładowanie opcji wysyłki...'
+  if (error) return error.message;
+  if (!data) return 'Ładowanie...';
+  if (!taxData) return 'Ładowanie ustawień podatkowych...';
+  if (!shippingData) return 'Ładowanie opcji wysyłki...';
 
   const {
     paymentMethod,
@@ -237,16 +257,16 @@ export default function OrderDetails({
     deliveredAt,
     isPaid,
     paidAt,
-  } = data
+  } = data;
 
-  const shippingMethod = shippingAddress.shippingMethod
-  const selectedPaczkomat = JSON.parse(shippingAddress.selectedPaczkomat || '{}')
-  const selectedPocztex = shippingAddress.selectedPocztex
+  const shippingMethod = shippingAddress.shippingMethod;
+  const selectedPaczkomat = JSON.parse(shippingAddress.selectedPaczkomat || '{}');
+  const selectedPocztex = shippingAddress.selectedPocztex;
 
   const copyToClipboard = (text) => {
-    navigator.clipboard.writeText(text)
-    toast.success('Skopiowano do schowka')
-  }
+    navigator.clipboard.writeText(text);
+    toast.success('Skopiowano do schowka');
+  };
 
   return (
     <div>
@@ -417,7 +437,8 @@ export default function OrderDetails({
                     ) : null}
                   </li>
                 )}
-                {session?.user.isAdmin && (
+                {/* Ograniczenie funkcji tylko do administratora */}
+                {session?.user?.isAdmin && (
                   <li>
                     {isDelivered ? (
                       <button
@@ -440,7 +461,7 @@ export default function OrderDetails({
                     )}
                   </li>
                 )}
-                {session?.user.isAdmin && (
+                {session?.user?.isAdmin && (
                   <ul>
                     {isPaid ? (
                       <li>
@@ -467,7 +488,7 @@ export default function OrderDetails({
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 // Helper function to get label for payment method
@@ -480,4 +501,4 @@ const getLabelForPaymentMethod = (value) => {
   ];
   const selectedOption = options.find(option => option.value === value);
   return selectedOption ? selectedOption.label : value;
-}
+};

@@ -1,4 +1,3 @@
-// components/header/MobileMenu.tsx
 'use client';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -31,8 +30,12 @@ const MobileMenu: React.FC = () => {
     init();
   };
 
+  const handleLinkClick = () => {
+    setMenuOpen(false); // Close the modal
+  };
+
   return (
-    <div className={`flex flex-col items-center w-full shadow-md ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
+    <div className={`flex flex-col items-center w-full shadow-md`}>
       <div className="flex justify-between items-center w-full px-4 py-2">
         <LeftCategorySideBar />
         <Logo />
@@ -59,22 +62,22 @@ const MobileMenu: React.FC = () => {
 
       {/* Dropdown Menu */}
       <MenuModal isOpen={menuOpen} onClose={() => setMenuOpen(false)}>
-        <div className={`p-4 ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
+        <div className={`p-4 ${theme === 'dark' ? 'bg-[#1A103D] text-white' : 'bg-white text-black'}`}>
           {/* User session area */}
           {session && session.user ? (
             <div className="flex flex-col items-center">
               <div className="badge badge-primary mb-4">{session.user.name}</div>
               {session.user.isAdmin && (
-                <Link href="/admin/dashboard"><div className="btn btn-ghost w-full mb-2">Panel Administratora</div></Link>
+                <Link href="/admin/dashboard" onClick={handleLinkClick}><div className="btn btn-ghost w-full mb-2">Panel Administratora</div></Link>
               )}
-              <Link href="/order-history"><div className="btn btn-ghost w-full mb-2">Historia Zamówień</div></Link>
-              <Link href="/profile"><div className="btn btn-ghost w-full mb-2">Profil</div></Link>
+              <Link href="/order-history" onClick={handleLinkClick}><div className="btn btn-ghost w-full mb-2">Historia Zamówień</div></Link>
+              <Link href="/profile" onClick={handleLinkClick}><div className="btn btn-ghost w-full mb-2">Profil</div></Link>
               <button type="button" onClick={signoutHandler} className="btn btn-ghost w-full mb-2">
                 Wyloguj
               </button>
             </div>
           ) : (
-            <button className="btn btn-ghost w-full" onClick={() => signIn()}>
+            <button className="btn btn-ghost w-full" onClick={() => { signIn(); handleLinkClick(); }}>
               Zaloguj
             </button>
           )}

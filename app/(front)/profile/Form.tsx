@@ -1,3 +1,4 @@
+// next-amazona-v2/app/(front)/profile/Form.tsx
 'use client'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
@@ -78,12 +79,12 @@ const Form = () => {
   }
 
   return (
-    <div className="max-w-lg mx-auto mt-10 bg-white p-8 rounded-lg shadow-lg">
+    <div className="max-w-lg mx-auto mt-10 p-8 rounded-lg shadow-lg">
       <div className="card-body">
-        <h1 className="text-3xl font-bold mb-6 text-center text-black">Profil</h1>
+        <h1 className="text-3xl font-bold mb-6 text-center">Profil</h1>
         <form onSubmit={handleSubmit(formSubmit)}>
           <div className="mb-4">
-            <label className="block text-gray-700" htmlFor="name">
+            <label className="block" htmlFor="name">
               Imię
             </label>
             <input
@@ -99,7 +100,7 @@ const Form = () => {
             )}
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700" htmlFor="email">
+            <label className="block" htmlFor="email">
               Email
             </label>
             <input
@@ -119,7 +120,7 @@ const Form = () => {
             )}
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700" htmlFor="password">
+            <label className="block" htmlFor="password">
               Nowe hasło
             </label>
             <input
@@ -133,7 +134,7 @@ const Form = () => {
             )}
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700" htmlFor="confirmPassword">
+            <label className="block" htmlFor="confirmPassword">
               Potwierdź nowe hasło
             </label>
             <input

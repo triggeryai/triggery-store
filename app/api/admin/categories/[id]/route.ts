@@ -1,10 +1,22 @@
-// app\api\admin\categories\[id]\route.ts
 import { auth } from '@/lib/auth';
 import dbConnect from '@/lib/dbConnect';
 import CategoryModel from '@/lib/models/CategoryModel';
 import ProductModel from '@/lib/models/ProductModel';
+import { NextApiRequest, NextApiResponse } from 'next'; // Import Next.js types
 
-export const DELETE = auth(async (req, { params }) => {
+interface AuthRequest extends NextApiRequest {
+  auth: {
+    user?: {
+      isAdmin: boolean;
+    };
+  };
+}
+
+interface Params {
+  id: string;
+}
+
+export const DELETE = auth(async (req: AuthRequest, { params }: { params: Params }): Promise<Response> => {
   if (!req.auth || !req.auth.user?.isAdmin) {
     return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 });
   }
@@ -40,13 +52,15 @@ export const DELETE = auth(async (req, { params }) => {
     await category.deleteOne();
     return new Response(JSON.stringify({ message: 'Category deleted successfully' }), { status: 200 });
   } catch (err) {
-    console.error('Error deleting category:', err);
-    return new Response(JSON.stringify({ message: 'Internal Server Error', error: err.toString() }), { status: 500 });
+    if (err instanceof Error) {
+      console.error('Error deleting category:', err.message);
+      return new Response(JSON.stringify({ message: 'Internal Server Error', error: err.message }), { status: 500 });
+    }
+    return new Response(JSON.stringify({ message: 'Internal Server Error' }), { status: 500 });
   }
 });
 
-
-export const PUT = auth(async (req, { params }): Promise<Response> => {
+export const PUT = auth(async (req: AuthRequest, { params }: { params: Params }): Promise<Response> => {
   if (!req.auth || !req.auth.user?.isAdmin) {
     return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 });
   }
@@ -54,7 +68,7 @@ export const PUT = auth(async (req, { params }): Promise<Response> => {
   await dbConnect();
 
   try {
-    const body = await req.json();
+    const body = JSON.parse(req.body); // Użyj JSON.parse(req.body) zamiast req.json()
     const category = await CategoryModel.findById(params.id);
 
     if (!category) {
@@ -71,16 +85,17 @@ export const PUT = auth(async (req, { params }): Promise<Response> => {
       return new Response(JSON.stringify({ message: 'Slug already exists' }), { status: 409 });
     }
 
-    category.name = body.name;
+    category.name = body.name || category.name; // Ensure default to existing value if none provided
     category.slug = newSlug;
     await category.save();
 
     return new Response(JSON.stringify({ message: 'Category updated successfully' }), { status: 200 });
   } catch (err) {
-    console.error('Error updating category:', err);
-    return new Response(JSON.stringify({ message: 'Internal Server Error', error: err.toString() }), { status: 500 });
+    if (err instanceof Error) {
+      console.error('Error updating category:', err.message);
+      return new Response(JSON.stringify({ message: 'Internal Server Error', error: err.message }), { status: 500 });
+    }
+    return new Response(JSON.stringify({ message: 'Internal Server Error' }), { status: 500 });
   }
 });
 
-
-  

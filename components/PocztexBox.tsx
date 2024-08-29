@@ -16,7 +16,7 @@ const PocztexBox = ({ closeModal }) => {
 
         script.onload = () => {
             setScriptLoaded(true);
-            // Ładowanie CSS po załadowaniu skryptu
+            // Load CSS after script is loaded
             const link = document.createElement('link');
             link.href = "https://mapa.ecommerce.poczta-polska.pl/widget/map-widget-v016.html?v=002";
             link.type = "text/css";
@@ -35,11 +35,12 @@ const PocztexBox = ({ closeModal }) => {
         return () => {
             document.body.removeChild(script);
             if (cssLoaded) {
-                // Przyjmujemy, że tag <link> został dodany, więc go usuwamy
-                document.head.removeChild(document.head.lastChild);
+                // Remove the last added <link> tag
+                const links = document.head.querySelectorAll('link[href="https://mapa.ecommerce.poczta-polska.pl/widget/map-widget-v016.html?v=002"]');
+                links.forEach(link => document.head.removeChild(link));
             }
         };
-    }, []);
+    }, [cssLoaded]); // Added cssLoaded to the dependency array
 
     useEffect(() => {
         if (scriptLoaded && cssLoaded && mapContainerRef.current) {
@@ -68,7 +69,7 @@ const PocztexBox = ({ closeModal }) => {
                     {mapLoaded ? (
                         <div id="pocztaMap" style={{ width: '100%', height: '100%' }}></div>
                     ) : (
-                        <p>Wczytuje mape....</p> // Wyświetlanie informacji o ładowaniu, gdy mapa nie jest jeszcze gotowa
+                        <p>Wczytuje mape....</p> // Display loading message while the map is not ready
                     )}
                 </div>
             </div>

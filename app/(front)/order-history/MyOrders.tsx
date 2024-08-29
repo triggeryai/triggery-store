@@ -1,4 +1,3 @@
-// app(front)/order-history/MyOrders.tsx
 'use client'
 
 import { Order } from '@/lib/models/OrderModel'
@@ -7,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import useSWR from 'swr'
 import { useSession } from 'next-auth/react'
+import toast from 'react-hot-toast'
 
 export default function MyOrders() {
   const { data: session, status } = useSession()
@@ -22,7 +22,9 @@ export default function MyOrders() {
     if (!response.ok) {
       throw new Error('An error occurred while fetching the data.')
     }
-    return response.json()
+    const data = await response.json()
+    console.log("Fetched Orders Data:", data)  // Log the fetched orders data
+    return data
   }
 
   const { data: ordersData, error } = useSWR(
@@ -69,30 +71,39 @@ export default function MyOrders() {
           </tr>
         </thead>
         <tbody>
-          {orders.map((order: Order) => (
-            <tr key={order._id} className="dark:bg-gray-700">
-              <td className="border border-gray-400 px-4 py-2 dark:border-gray-600">{order._id.substring(20, 24)}</td>
-              <td className="border border-gray-400 px-4 py-2 dark:border-gray-600">{order.createdAt.substring(0, 10)}</td>
-              <td className="border border-gray-400 px-4 py-2 dark:border-gray-600">{order.totalPrice} PLN</td>
-              <td className="border border-gray-400 px-4 py-2 dark:border-gray-600">
-                {order.isPaid && order.paidAt
-                  ? `${order.paidAt.substring(0, 10)}`
-                  : 'nieopłacone'}
-              </td>
-              <td className="border border-gray-400 px-4 py-2 dark:border-gray-600">
-                {order.isDelivered && order.deliveredAt
-                  ? `${order.deliveredAt.substring(0, 10)}`
-                  : 'niedostarczone'}
-              </td>
-              <td className="border border-gray-400 px-4 py-2 dark:border-gray-600">
-                <Link href={`/order/${order._id}`} passHref>
-                  <button className="btn btn-primary">
-                    Szczegóły
-                  </button>
-                </Link>
-              </td>
-            </tr>
-          ))}
+          {orders.map((order: Order) => {
+            // Calculate total price using the individual components
+            const calculatedTotalPrice = order.itemsPrice + order.shippingPrice + order.taxPrice
+
+            console.log(`Order ${order._id} - ItemsPrice: ${order.itemsPrice}, ShippingPrice: ${order.shippingPrice}, TaxPrice: ${order.taxPrice}, CalculatedTotalPrice: ${calculatedTotalPrice}`)
+
+            return (
+              <tr key={order._id} className="dark:bg-gray-700">
+                <td className="border border-gray-400 px-4 py-2 dark:border-gray-600">{order._id.substring(20, 24)}</td>
+                <td className="border border-gray-400 px-4 py-2 dark:border-gray-600">{order.createdAt.substring(0, 10)}</td>
+                <td className="border border-gray-400 px-4 py-2 dark:border-gray-600">
+                  {calculatedTotalPrice.toFixed(2)} PLN
+                </td>
+                <td className="border border-gray-400 px-4 py-2 dark:border-gray-600">
+                  {order.isPaid && order.paidAt
+                    ? `${order.paidAt.substring(0, 10)}`
+                    : 'nieopłacone'}
+                </td>
+                <td className="border border-gray-400 px-4 py-2 dark:border-gray-600">
+                  {order.isDelivered && order.deliveredAt
+                    ? `${order.deliveredAt.substring(0, 10)}`
+                    : 'niedostarczone'}
+                </td>
+                <td className="border border-gray-400 px-4 py-2 dark:border-gray-600">
+                  <Link href={`/order/${order._id}`} passHref>
+                    <button className="btn btn-primary">
+                      Szczegóły
+                    </button>
+                  </Link>
+                </td>
+              </tr>
+            )
+          })}
         </tbody>
       </table>
       <div className="flex justify-center items-center mt-4 space-x-4">
