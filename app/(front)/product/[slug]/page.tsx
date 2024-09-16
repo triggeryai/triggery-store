@@ -1,9 +1,23 @@
-// app\(front)\product\[slug]\page.tsx
+// next-amazona-v2/app/(front)/product/[slug]/page.tsx
 import AddToCart from '@/components/products/AddToCart';
 import ProductGallery from '@/components/products/ProductGallery';
 import { convertDocToObj } from '@/lib/utils';
 import productService from '@/lib/services/productService';
 import Link from 'next/link';
+
+// Funkcja do obsługi ścieżek obrazów
+const getImageSrc = (src: string | undefined) => {
+  if (!src) {
+    return '/default-image.jpg'; // Domyślny obraz, jeśli brak obrazu
+  }
+  if (src.startsWith('http')) {
+    return src; // Zdalny obraz (np. Cloudinary)
+  }
+
+  // Usuwamy powtarzające się '/products' i upewniamy się, że ścieżka ma tylko jeden prefiks
+  const cleanedSrc = src.replace(/^\/+|products\//g, '');
+  return `/products/${cleanedSrc}`;
+};
 
 export async function generateMetadata({
   params,
@@ -43,7 +57,7 @@ export default async function ProductDetails({
       </div>
       <div className="grid md:grid-cols-4 md:gap-3">
         <div className="md:col-span-2">
-          <ProductGallery images={product.images} mainImage={product.mainImage} />
+          <ProductGallery images={product.images.map(getImageSrc)} mainImage={getImageSrc(product.mainImage)} />
         </div>
         <div>
           <ul className="space-y-4">

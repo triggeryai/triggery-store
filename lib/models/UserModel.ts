@@ -1,5 +1,5 @@
+// next-amazona-v2/lib/models/UserModel.ts
 import mongoose, { Document, Model } from 'mongoose';
-import bcrypt from 'bcryptjs';
 
 // TypeScript interface to define the User properties
 export interface IUser extends Document {
@@ -18,7 +18,7 @@ export interface IUser extends Document {
 const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  password: { type: String, required: true }, // Hasło przechowywane jako zwykły tekst
   isActive: { type: Boolean, required: true, default: false },
   emailToken: { type: String, default: null },
   isAdmin: { type: Boolean, required: true, default: false },
@@ -26,23 +26,13 @@ const UserSchema = new mongoose.Schema({
   passwordResetTokenExpires: { type: Date, default: null },
 }, { timestamps: true });
 
-// Pre-save middleware to hash the password before saving
-UserSchema.pre<IUser>('save', async function (next) {
-  if (!this.isModified('password')) {
-    return next();
-  }
-  try {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (err) {
-    next(err);
-  }
-});
+// Usunięcie middleware do hashowania hasła
+// Usuwamy automatyczne hashowanie hasła przed zapisem
 
-// Method to compare passwords
+// Usunięcie metody porównującej hasło, ponieważ nie ma już hashowania
 UserSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
-  return await bcrypt.compare(candidatePassword, this.password);
+  // Zamiast porównywania hashowanych haseł, bezpośrednio porównujemy zwykły tekst
+  return candidatePassword === this.password;
 };
 
 // Mongoose model creation

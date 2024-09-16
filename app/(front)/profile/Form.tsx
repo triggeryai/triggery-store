@@ -2,7 +2,7 @@
 'use client'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 
@@ -14,8 +14,9 @@ type Inputs = {
 }
 
 const Form = () => {
-  const { data: session, update } = useSession()
+  const { data: session, status, update } = useSession()
   const router = useRouter()
+  const [loading, setLoading] = useState(true) // Loading state for entire component
 
   const {
     register,
@@ -36,10 +37,11 @@ const Form = () => {
       setValue('name', session.user.name!)
       setValue('email', session.user.email!)
     }
+    setLoading(false) // Stop loading after session data is set
   }, [router, session, setValue])
 
   const formSubmit: SubmitHandler<Inputs> = async (form) => {
-    const { name, email, password } = form
+    const { name, email, password } = form;
     try {
       const res = await fetch('/api/auth/profile', {
         method: 'PUT',
@@ -51,31 +53,43 @@ const Form = () => {
           email,
           password,
         }),
-      })
+      });
+
       if (res.status === 200) {
-        toast.success('Profil został pomyślnie zaktualizowany')
-        const newSession = {
+        toast.success('Profil został pomyślnie zaktualizowany');
+
+        // Usuwamy signOut i signIn - nie będziemy już wylogowywać i ponownie logować użytkownika
+        // Aktualizujemy sesję bez potrzeby ponownego logowania
+        await update({
           ...session,
           user: {
             ...session?.user,
             name,
             email,
           },
-        }
-        await update(newSession)
+        });
+
+        // Przekierowanie użytkownika na stronę profilu
+        router.push('/profile');
       } else if (res.status === 409) {
-        toast.error('Email jest już używany przez innego użytkownika. Użyj innego emaila.')
+        toast.error('Email jest już używany przez innego użytkownika. Użyj innego emaila.');
       } else {
-        const data = await res.json()
-        toast.error(data.message || 'error')
+        const data = await res.json();
+        toast.error(data.message || 'error');
       }
     } catch (err: any) {
-      const error =
-        err.response && err.response.data && err.response.data.message
-          ? err.response.data.message
-          : err.message
-      toast.error(error)
+      const error = err.response?.data?.message || err.message;
+      toast.error(error);
     }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin"></div>
+        <span className="ml-4 text-lg text-blue-500 font-semibold">Ładowanie...</span>
+      </div>
+    )
   }
 
   return (

@@ -1,3 +1,4 @@
+// next-amazona-v2/lib/models/OrderModel.ts
 import mongoose from 'mongoose';
 
 const orderSchema = new mongoose.Schema(
@@ -19,6 +20,8 @@ const orderSchema = new mongoose.Schema(
         qty: { type: Number, required: true },
         mainImage: { type: String }, // Added field for main image
         price: { type: Number, required: true },
+        color: { type: String }, // Added field for product color
+        size: { type: String },  // Added field for product size
       },
     ],
     shippingAddress: {
@@ -28,9 +31,9 @@ const orderSchema = new mongoose.Schema(
       postalCode: { type: String, required: true },
       country: { type: String, required: true },
       shippingMethod: { type: String, required: true },
-      selectedPaczkomat: { type: String },
-      selectedPocztex: { type: String },
-      shippingCost: { type: Number, required: true },
+      selectedPaczkomat: { type: String }, // Added optional field for selected Paczkomat
+      selectedPocztex: { type: String },   // Added optional field for selected Pocztex
+      shippingCost: { type: Number, required: true }, // Added field for shipping cost
     },
     paymentMethod: { type: String, required: true },
     paymentResult: { id: String, status: String, email_address: String },
@@ -86,8 +89,8 @@ export type OrderItem = {
   qty: number;
   mainImage: string; // Added field for main image
   price: number;
-  color: string;
-  size: string;
+  color: string; // Added field for product color
+  size: string;  // Added field for product size
 };
 
 export type ShippingAddress = {

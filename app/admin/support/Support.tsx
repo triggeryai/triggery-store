@@ -1,9 +1,8 @@
-// app/admin/support/Support.tsx
 'use client';
 import React, { useEffect, useState, useRef } from 'react';
 import useSWR from 'swr';
 import { useSession } from 'next-auth/react';
-import { FaSync, FaSun, FaMoon } from 'react-icons/fa';
+import { FaSync } from 'react-icons/fa';
 import toast, { Toaster } from 'react-hot-toast';
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
@@ -17,7 +16,7 @@ const AdminSupport = () => {
   const [replyMessage, setReplyMessage] = useState<string>('');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isBotOff, setIsBotOff] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Zmienna kontrolująca stan ładowania
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -28,6 +27,7 @@ const AdminSupport = () => {
         const userMessages = data.data.filter((msg: any) => msg.sender === uniqueSenders[0] || msg.recipient === uniqueSenders[0]);
         setMessages(userMessages.reverse());
       }
+      setIsLoading(false); // Ustawienie isLoading na false po załadowaniu danych
     }
   }, [data, error]);
 
@@ -100,27 +100,34 @@ const AdminSupport = () => {
     }
   };
 
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-  };
-
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Spinner ładowania
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="flex flex-col items-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
+          <h2 className="mt-4 text-2xl font-semibold text-gray-700">Loading...</h2>
+        </div>
+      </div>
+    );
+  }
 
   if (!session?.user.isAdmin) {
     return <p className="text-center text-gray-600">Nie masz dostępu do tej strony.</p>;
   }
 
   if (error || statusError) return <div>Nie udało się załadować</div>;
-  if (!data || !statusData) return <div>Ładowanie...</div>;
 
   const uniqueSenders = Array.from(new Set(data.data.map((msg: any) => msg.sender !== 'admin' ? msg.sender : msg.recipient)));
 
   return (
-    <div className={`flex h-screen ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-black'}`}>
+    <div className="flex h-screen">
       <Toaster />
-      <div className={`w-1/4 ${isDarkMode ? 'bg-gray-800' : 'bg-gray-200'} p-4`}>
+      <div className="w-1/4 p-4">
         <h2 className="text-xl font-semibold mb-4 flex justify-between items-center">
           Skrzynka odbiorcza wsparcia
           <button 
@@ -133,14 +140,14 @@ const AdminSupport = () => {
         {uniqueSenders.map(sender => (
           <div
             key={sender}
-            className={`p-2 cursor-pointer ${selectedSender === sender ? `${isDarkMode ? 'bg-gray-700' : 'bg-gray-300'}` : `${isDarkMode ? 'bg-gray-600' : 'bg-gray-200'}`} mb-2`}
+            className={`p-2 cursor-pointer ${selectedSender === sender ? 'bg-blue-400' : 'bg-blue-400'} mb-2`}
             onClick={() => handleSenderClick(sender)}
           >
             {sender}
           </div>
         ))}
       </div>
-      <div className={`w-3/4 ${isDarkMode ? 'bg-gray-800' : 'bg-white'} p-4`}>
+      <div className="w-3/4 p-4">
         <h2 className="text-xl font-semibold mb-4 flex justify-between items-center">
           Wiadomości
           <div className="flex items-center">
@@ -152,14 +159,11 @@ const AdminSupport = () => {
               onChange={handleBotToggle}
               className="cursor-pointer"
             />
-            <button onClick={toggleTheme} className="ml-4">
-              {isDarkMode ? <FaSun /> : <FaMoon />}
-            </button>
           </div>
         </h2>
         <div ref={messageContainerRef} className="overflow-y-auto" style={{ maxHeight: '70vh' }}>
           {messages.map((msg, index) => (
-            <div key={index} className={`mb-2 p-2 rounded ${msg.sender === 'admin' ? 'bg-green-100' : 'bg-blue-100'}`}>
+            <div key={index} className={`mb-2 p-2 rounded ${msg.sender === 'admin' ? 'bg-green-400' : 'bg-blue-400'}`}>
               <p className="font-semibold">{msg.sender}</p>
               <p>{msg.message}</p>
             </div>
@@ -170,10 +174,10 @@ const AdminSupport = () => {
             type="text"
             value={replyMessage}
             onChange={handleReplyChange}
-            className="border border-gray-300 rounded-lg p-2 mr-2 w-full"
+            className="border rounded-lg p-2 mr-2 w-full"
             placeholder="Napisz swoją odpowiedź..."
           />
-          <button onClick={handleSendReply} className="bg-blue-500 text-white px-4 py-2 rounded-lg mt-2">Wyślij odpowiedź</button>
+          <button onClick={handleSendReply} className="px-4 py-2 rounded-lg mt-2">Wyślij odpowiedź</button>
         </div>
       </div>
     </div>

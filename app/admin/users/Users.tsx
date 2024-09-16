@@ -1,13 +1,10 @@
-// app\admin\users\Users.tsx
 'use client';
-import UserModel from '@/lib/models/UserModel';
 import { useState } from 'react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 
-// Confirmation Modal component
 const ConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
   if (!isOpen) return null;
 
@@ -28,7 +25,6 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
   );
 };
 
-// Add User Modal component
 const AddUserModal = ({ isOpen, onClose, onAdd }) => {
   const [formData, setFormData] = useState({
     name: '',
@@ -126,7 +122,6 @@ const AddUserModal = ({ isOpen, onClose, onAdd }) => {
   );
 };
 
-// Users component
 export default function Users() {
   const { data: users, error, mutate } = useSWR(`/api/admin/users`);
   const { trigger: deleteUser } = useSWRMutation(
@@ -144,7 +139,7 @@ export default function Users() {
         toast.success('Użytkownik pomyślnie usunięty', {
           id: toastId,
         });
-        mutate(); // Revalidate the SWR cache to update the list
+        mutate(); 
       } else {
         toast.error(data.message, {
           id: toastId,
@@ -166,18 +161,16 @@ export default function Users() {
       const data = await res.json();
       if (res.ok) {
         toast.success('Użytkownik pomyślnie dodany');
-        mutate(); // Revalidate the SWR cache to update the list
+        mutate();
       } else {
         toast.error(data.message);
       }
     }
   );
 
-  // State for the confirmation modal
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
 
-  // State for the add user modal
   const [isAddUserModalOpen, setAddUserModalOpen] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -212,11 +205,20 @@ export default function Users() {
     setAddUserModalOpen(false);
   };
 
+  // Dodanie spinnera ładowania
   if (error) return <div>Wystąpił błąd.</div>;
-  if (!users) return <div>Ładowanie...</div>;
+  if (!users)
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="flex flex-col items-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
+          <h2 className="mt-4 text-2xl font-semibold text-gray-700">Loading...</h2>
+        </div>
+      </div>
+    );
 
   return (
-    <div>
+    <div className="p-4">
       <ConfirmationModal
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
@@ -237,26 +239,26 @@ export default function Users() {
         </button>
       </div>
       <div className="overflow-x-auto">
-        <table className="table table-zebra">
+        <table className="table-auto w-full border-collapse hidden md:table">
           <thead>
             <tr>
-              <th><div className="badge">id</div></th>
-              <th><div className="badge">nazwa</div></th>
-              <th><div className="badge">email</div></th>
-              <th><div className="badge">administrator</div></th>
-              <th><div className="badge">aktywny</div></th>
-              <th><div className="badge">akcje</div></th>
+              <th className="border px-4 py-2"><div className="badge">id</div></th>
+              <th className="border px-4 py-2"><div className="badge">nazwa</div></th>
+              <th className="border px-4 py-2"><div className="badge">email</div></th>
+              <th className="border px-4 py-2"><div className="badge">administrator</div></th>
+              <th className="border px-4 py-2"><div className="badge">aktywny</div></th>
+              <th className="border px-4 py-2"><div className="badge">akcje</div></th>
             </tr>
           </thead>
           <tbody>
             {currentUsers.map((user) => (
               <tr key={user._id}>
-                <td>{user._id}</td>
-                <td>{user.name}</td>
-                <td>{user.email}</td>
-                <td>{user.isAdmin ? 'TAK' : 'NIE'}</td>
-                <td>{user.isActive ? 'TAK' : 'NIE'}</td>
-                <td>
+                <td className="border px-4 py-2">{user._id}</td>
+                <td className="border px-4 py-2">{user.name}</td>
+                <td className="border px-4 py-2">{user.email}</td>
+                <td className="border px-4 py-2">{user.isAdmin ? 'TAK' : 'NIE'}</td>
+                <td className="border px-4 py-2">{user.isActive ? 'TAK' : 'NIE'}</td>
+                <td className="border px-4 py-2">
                   <Link href={`/admin/users/${user._id}`}>
                     <button type="button" className="btn btn-info btn-sm">
                       Edytuj
@@ -275,21 +277,46 @@ export default function Users() {
             ))}
           </tbody>
         </table>
-        <div className="mt-4 flex justify-center">
-          {Array.isArray(users) && users.length > usersPerPage && (
-            <div className="btn-group">
-              {Array.from({ length: Math.ceil(users.length / usersPerPage) }, (_, index) => (
+        {/* Mobile view */}
+        <div className="md:hidden">
+          {currentUsers.map((user) => (
+            <div key={user._id} className="mb-4 p-4 rounded-lg border">
+              <p><strong>ID:</strong> {user._id}</p>
+              <p><strong>Nazwa:</strong> {user.name}</p>
+              <p><strong>Email:</strong> {user.email}</p>
+              <p><strong>Administrator:</strong> {user.isAdmin ? 'TAK' : 'NIE'}</p>
+              <p><strong>Aktywny:</strong> {user.isActive ? 'TAK' : 'NIE'}</p>
+              <div className="flex flex-col items-center mt-4 space-y-2">
+                <Link href={`/admin/users/${user._id}`} passHref>
+                  <button className="btn btn-info w-full max-w-xs">Edytuj</button>
+                </Link>
                 <button
-                  key={index + 1}
-                  className={`btn ${index + 1 === currentPage ? 'btn-active' : ''}`}
-                  onClick={() => handlePageChange(index + 1)}
+                  onClick={() => handleDeleteClick(user._id)}
+                  type="button"
+                  className="btn btn-error w-full max-w-xs"
                 >
-                  {index + 1}
+                  Usuń
                 </button>
-              ))}
+              </div>
             </div>
-          )}
+          ))}
         </div>
+      </div>
+
+      <div className="mt-4 flex justify-center">
+        {Array.isArray(users) && users.length > usersPerPage && (
+          <div className="btn-group">
+            {Array.from({ length: Math.ceil(users.length / usersPerPage) }, (_, index) => (
+              <button
+                key={index + 1}
+                className={`btn ${index + 1 === currentPage ? 'btn-active' : ''}`}
+                onClick={() => handlePageChange(index + 1)}
+              >
+                {index + 1}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

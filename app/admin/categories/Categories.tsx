@@ -1,4 +1,4 @@
-// app\admin\categories\Categories.tsx
+// next-amazona-v2/app/admin/categories/Categories.tsx
 "use client";
 import useSWR from 'swr';
 import { useState, useEffect } from 'react';
@@ -206,8 +206,17 @@ const CategoriesPage = () => {
     setCurrentPage(pageNumber);
   };
 
+  // Dodajemy spinner zamiast "Ładowanie..." 
   if (error) return <p>Wystąpił błąd.</p>;
-  if (!categories) return <p>Ładowanie...</p>;
+  if (!categories)
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="flex flex-col items-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
+          <h2 className="mt-4 text-2xl font-semibold text-gray-700">Loading...</h2>
+        </div>
+      </div>
+    );
 
   return (
     <div className="container mx-auto p-4">

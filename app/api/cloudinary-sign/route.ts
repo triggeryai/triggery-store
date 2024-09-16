@@ -1,3 +1,4 @@
+// next-amazona-v2/app/api/cloudinary-sign/route.ts
 import { auth } from '@/lib/auth'
 import cloudinary from 'cloudinary'
 

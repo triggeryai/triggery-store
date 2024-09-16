@@ -8,6 +8,8 @@ export default function EmailTemplates() {
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [form, setForm] = useState({ from: '', subject: '', html: '' });
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true); // Zmienna kontrolująca stan ładowania
+  const [isSaving, setIsSaving] = useState(false); // Zmienna kontrolująca stan zapisywania
 
   useEffect(() => {
     async function fetchTemplates() {
@@ -28,6 +30,8 @@ export default function EmailTemplates() {
         setTemplates(data);
       } catch (error) {
         setError(error.message);
+      } finally {
+        setIsLoading(false); // Przestajemy ładować dane
       }
     }
     fetchTemplates();
@@ -44,6 +48,7 @@ export default function EmailTemplates() {
   }, [selectedTemplate]);
 
   const handleSave = async () => {
+    setIsSaving(true); // Rozpoczynamy zapisywanie
     try {
       const session = await getSession();
       const response = await fetch(`/api/admin/emails`, {
@@ -73,8 +78,22 @@ export default function EmailTemplates() {
     } catch (error) {
       setError(error.message);
       toast.error('Błąd podczas zapisywania szablonu');
+    } finally {
+      setIsSaving(false); // Kończymy zapisywanie
     }
   };
+
+  // Spinner ładowania
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="flex flex-col items-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500"></div>
+          <h2 className="mt-4 text-2xl font-semibold text-gray-700">Loading...</h2>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-4">
@@ -82,7 +101,7 @@ export default function EmailTemplates() {
       <h1 className="text-2xl font-bold mb-4">Szablony Email</h1>
       {error && <p className="text-red-500">{error}</p>}
       <div className="mb-4">
-        <label className="block text-gray-700">Wybierz szablon</label>
+        <label className="block">Wybierz szablon</label>
         <select 
           className="select select-bordered w-full max-w-xs"
           onChange={(e) => {
@@ -99,7 +118,7 @@ export default function EmailTemplates() {
       {selectedTemplate && (
         <>
           <div className="mb-4">
-            <label className="block text-gray-700">Od</label>
+            <label>Od</label>
             <input
               type="text"
               value={form.from}
@@ -108,7 +127,7 @@ export default function EmailTemplates() {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700">Temat</label>
+            <label>Temat</label>
             <input
               type="text"
               value={form.subject}
@@ -117,7 +136,7 @@ export default function EmailTemplates() {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700">HTML</label>
+            <label>HTML</label>
             <textarea
               value={form.html}
               onChange={(e) => setForm({ ...form, html: e.target.value })}
@@ -125,7 +144,13 @@ export default function EmailTemplates() {
               rows="10"
             />
           </div>
-          <button onClick={handleSave} className="btn btn-primary">Zapisz</button>
+          <button 
+            onClick={handleSave} 
+            className="btn btn-primary" 
+            disabled={isSaving} // Przycisk zapisywania jest zablokowany podczas zapisywania
+          >
+            {isSaving ? 'Zapisywanie...' : 'Zapisz'}
+          </button>
         </>
       )}
     </div>

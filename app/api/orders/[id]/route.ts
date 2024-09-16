@@ -1,12 +1,12 @@
+// next-amazona-v2/app/api/orders/[id]/route.ts
 import dbConnect from '@/lib/dbConnect'
 import OrderModel from '@/lib/models/OrderModel'
 import { auth } from '@/lib/auth'
-import { getGuestCheckoutStatus } from '@/lib/utils' // Dodaj funkcję do sprawdzania statusu Guest Checkout
+import { getGuestCheckoutStatus } from '@/lib/utils'
 
 export const GET = auth(async (...request: any) => {
   const [req, { params }] = request
 
-  // Sprawdzenie, czy użytkownik jest zalogowany lub czy Guest Checkout jest włączony
   const isGuestCheckoutEnabled = await getGuestCheckoutStatus()
 
   if (!req.auth && !isGuestCheckoutEnabled) {

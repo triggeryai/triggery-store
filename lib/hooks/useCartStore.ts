@@ -47,7 +47,6 @@ export default function useCartService() {
     shippingAddress,
   } = cartStore();
 
-  console.log('Current cart items:', items); // Logowanie
 
   return {
     items,

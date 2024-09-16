@@ -1,4 +1,3 @@
-// next-amazona-v2/components/header/SearchBox.tsx
 'use client'
 import { useSearchParams } from 'next/navigation'
 
@@ -7,10 +6,10 @@ export const SearchBox = () => {
   const q = searchParams.get('q') || ''
 
   return (
-    <form action="/search?category=all" method="GET">
+    <form action="/search?category=all" method="GET" className="w-full">
       <div className="join">
         <input
-          className="join-item input input-bordered  w-48"
+          className="join-item input input-bordered w-full md:w-48"
           placeholder="Szukaj"
           defaultValue={q}
           name="q"

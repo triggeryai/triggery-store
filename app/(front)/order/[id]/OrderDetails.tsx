@@ -1,3 +1,4 @@
+// next-amazona-v2/app/(front)/order/[id]/OrderDetails.tsx
 'use client';
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
 import { OrderItem } from '@/lib/models/OrderModel';
@@ -65,12 +66,6 @@ export default function OrderDetails({
   }, [session, orderId, router]);
 
   useEffect(() => {
-    if (data && data.paymentMethod) {
-      setSelectedPaymentMethod(data.paymentMethod);
-    }
-  }, [data]);
-
-  useEffect(() => {
     if (bankAccountData) {
       setBankAccount(bankAccountData.accountNumber);
     }
@@ -80,11 +75,13 @@ export default function OrderDetails({
     if (shippingData && data && data.shippingAddress) {
       const selectedOption = shippingData.find(option => option.value === data.shippingAddress.shippingMethod);
       if (selectedOption) {
-        data.shippingPrice = selectedOption.price;
-        data.totalPrice = data.itemsPrice + data.shippingPrice + data.taxPrice;
+        // REMOVE this overwriting logic
+        // data.shippingPrice = selectedOption.price;
+        // data.totalPrice = data.itemsPrice + data.shippingPrice + data.taxPrice;
       }
     }
   }, [shippingData, data]);
+  
 
   const handlePaymentMethodChange = (selectedOption) => {
     setSelectedPaymentMethod(selectedOption.value);
@@ -119,6 +116,18 @@ export default function OrderDetails({
       console.error('Network error:', error);
     }
   };
+
+  // Funkcja sprawdzająca, czy obraz jest lokalny (jeśli nie, to Cloudinary lub inne)
+  const getImageSrc = (src: string | undefined) => {
+    if (!src) {
+      return '/default-image.jpg'; // Domyślny obraz, gdy brak obrazu
+    }
+    if (src.startsWith('http')) {
+      return src; // Pełny adres URL, np. Cloudinary
+    }
+    return `/products/${src}`; // Lokalny obraz z katalogu public/products
+  };
+
 
   const { trigger: undeliverOrder, isMutating: isUndelivering } = useSWRMutation(
     `/api/admin/orders/${orderId}/undeliver`,
@@ -241,8 +250,14 @@ export default function OrderDetails({
   }, [markOrderAsPaid]);
 
   if (error) return error.message;
-  if (!data) return 'Ładowanie...';
-  if (!taxData) return 'Ładowanie ustawień podatkowych...';
+  if (!data) return (
+    <div className="flex justify-center items-center min-h-screen">
+      <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin"></div>
+      <span className="ml-4 text-lg text-blue-500 font-semibold">Ładowanie...</span>
+    </div>
+  );
+  
+    if (!taxData) return 'Ładowanie ustawień podatkowych...';
   if (!shippingData) return 'Ładowanie opcji wysyłki...';
 
   const {
@@ -262,6 +277,8 @@ export default function OrderDetails({
   const shippingMethod = shippingAddress.shippingMethod;
   const selectedPaczkomat = JSON.parse(shippingAddress.selectedPaczkomat || '{}');
   const selectedPocztex = shippingAddress.selectedPocztex;
+  const selectedOrlen = JSON.parse(localStorage.getItem('selectedOrlenPoint') || '{}');
+
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
@@ -291,6 +308,13 @@ export default function OrderDetails({
               {shippingMethod === 'Pocztex Poczta Odbior Punkt' && selectedPocztex && (
                 <p>Wybrany punkt Pocztex: {selectedPocztex}</p>
               )}
+
+{shippingMethod === 'Orlen Paczka' && selectedOrlen && selectedOrlen.address && (
+                <p>Wybrany Punkt Orlen Paczka: {selectedOrlen.address}</p>
+              )}
+
+
+
               {isDelivered ? (
                 <div className="text-success">Dostarczono {deliveredAt}</div>
               ) : (
@@ -307,7 +331,6 @@ export default function OrderDetails({
                   defaultValue={{ label: getLabelForPaymentMethod(paymentMethod), value: paymentMethod }}
                   onChange={handlePaymentMethodChange}
                   options={[
-                    { label: 'PayPal', value: 'PayPal' },
                     { label: 'Płatność Stripe - Przelewy24 / Blik / Karta', value: 'Stripe' },
                     { label: 'Za pobraniem', value: 'CashOnDelivery' },
                     { label: 'Przelew bankowy na konto', value: 'DirectBankTransferToAccount' },
@@ -344,7 +367,7 @@ export default function OrderDetails({
                         >
                           {item.mainImage && (
                             <Image
-                              src={item.mainImage}
+                              src={getImageSrc(item.mainImage)}
                               alt={item.name}
                               width={50}
                               height={50}
@@ -371,35 +394,37 @@ export default function OrderDetails({
             <div className="card-body">
               <h2 className="card-title">Podsumowanie zamówienia</h2>
               <ul>
-                <li>
-                  <div className="mb-2 flex justify-between">
-                    <div>Przedmioty</div>
-                    <div>{itemsPrice} PLN</div>
-                  </div>
-                </li>
-                {taxData.isActive && (
-                  <li>
-                    <div className="mb-2 flex justify-between">
-                      <div>Podatek</div>
-                      <div>{taxPrice} PLN</div>
-                    </div>
-                  </li>
-                )}
-                <li>
-                  <div className="mb-2 flex justify-between">
-                    <div>Wysyłka</div>
-                    <div>{shippingPrice} PLN</div>
-                  </div>
-                </li>
-                <li>
-                  <div className="mb-2 flex justify-between">
-                    <div>Łącznie</div>
-                    <div>{taxData.isActive ? totalPrice : itemsPrice + shippingPrice} PLN</div>
-                  </div>
-                </li>
+              <li>
+        <div className="mb-2 flex justify-between">
+          <div>Przedmioty</div>
+          <div>{itemsPrice} PLN</div>
+        </div>
+      </li>
+      {taxData.isActive && (
+        <li>
+          <div className="mb-2 flex justify-between">
+            <div>Podatek</div>
+            <div>{taxPrice} PLN</div>
+          </div>
+        </li>
+      )}
+      <li>
+        <div className="mb-2 flex justify-between">
+          <div>Wysyłka</div>
+          <div>{shippingPrice} PLN</div>
+        </div>
+      </li>
+      <li>
+        <div className="mb-2 flex justify-between">
+          <div>Łącznie</div>
+          <div>{totalPrice} PLN</div>
+        </div>
+      </li>
+
+
                 {paymentMethod === 'DirectBankTransferToAccount' && !isPaid && (
                   <li>
-                    <div className="mb-4 p-4 border rounded-lg bg-gray-100">
+                    <div className="mb-4 p-4 border rounded-lg">
                       <div className="font-bold text-lg mb-2">Przelej pieniądze tutaj:</div>
                       <div className="flex flex-col space-y-1">
                         <div className="break-all">
@@ -494,7 +519,6 @@ export default function OrderDetails({
 // Helper function to get label for payment method
 const getLabelForPaymentMethod = (value) => {
   const options = [
-    { label: 'PayPal', value: 'PayPal' },
     { label: 'Płatność Stripe - Przelewy24 / Blik / Karta', value: 'Stripe' },
     { label: 'Za pobraniem', value: 'CashOnDelivery' },
     { label: 'Przelew bankowy na konto', value: 'DirectBankTransferToAccount' },

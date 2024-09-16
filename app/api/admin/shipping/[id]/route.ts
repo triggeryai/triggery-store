@@ -5,7 +5,7 @@ import ShippingOption from '@/lib/models/ShippingPriceModel';
 
 export async function PATCH(req, { params }) {
   const { id } = params;
-  const { value, label, price, isActive } = await req.json();
+  const { value, label, price, width, height, depth, weight, isActive } = await req.json();
 
   await dbConnect();
 
@@ -17,6 +17,10 @@ export async function PATCH(req, { params }) {
     option.value = value;
     option.label = label;
     option.price = price;
+    option.width = width;
+    option.height = height;
+    option.depth = depth;
+    option.weight = weight;  // Added weight field
     option.isActive = isActive;
     await option.save();
     return NextResponse.json(option, { status: 200 });

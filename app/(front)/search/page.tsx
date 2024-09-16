@@ -15,8 +15,6 @@ const prices = [
   { name: 'od 201 PLN do 1000 PLN', value: '201-1000' },
 ];
 
-const ratings = [5, 4, 3, 2, 1];
-
 export async function generateMetadata({
   searchParams: { q = '', category = 'all', price = 'all' },
 }: {
@@ -148,43 +146,24 @@ export default async function SearchPage({
             ))}
           </ul>
         </div>
-        {/*
-        <div>
-          <div className="text-xl pt-3">Opinie Klientów</div>
-          <ul>
-            <li>
-              <Link href={getFilterUrl({ r: 'all' })} className={`link link-hover ${'all' === rating && 'link-primary'}`}>
-                Wszystkie
-              </Link>
-            </li>
-            {ratings.map((r) => (
-              <li key={r}>
-                <Link href={getFilterUrl({ r: `${r}` })} className={`link link-hover ${r === rating && 'link-primary'}`}>
-                  <Rating caption={' & up'} value={r}></Rating>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-        */}
       </div>
       <div className="md:col-span-4">
-        <div className="flex items-center justify-between py-4">
-          <div className="flex items-center">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between py-4 space-y-4 md:space-y-0">
+          <div className="flex flex-wrap items-center">
             <span className="font-bold">{products.length === 0 ? 'Brak' : countProducts} Wyników</span>
             {q !== '' && ' : ' + q}
             {category !== 'all' && ' : ' + category}
             {price !== 'all' && ' : Cena ' + price}
-            <Link className="btn btn-sm btn-ghost" href="https://domestico.pl/search?q=&category=all&price=all&sort=newest&page=1">
+            <Link className="btn btn-sm btn-ghost ml-2 mt-2 md:mt-0" href="/search?q=&category=all&price=all&sort=newest&page=1">
               Wyczyść
             </Link>
           </div>
-          <div>
+          <div className="flex flex-wrap items-center">
             <span className="font-bold">Sortuj według</span>{' '}
             {sortOrders.map((s) => (
               <Link
                 key={s.value}
-                className={`mx-2 link link-hover ${sort == s.value ? 'link-primary' : ''}`}
+                className={`mx-2 link link-hover ${sort === s.value ? 'link-primary' : ''}`}
                 href={getFilterUrl({ s: s.value })}
               >
                 {s.name}

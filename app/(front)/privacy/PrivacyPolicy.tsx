@@ -4,10 +4,10 @@ import React from 'react';
 const PrivacyPolicy: React.FC = () => {
   return (
     <div className="container mx-auto p-5">
-      <div className="bg-white shadow-lg rounded-lg p-8 md:p-12 dark:bg-gray-800 dark:text-gray-50 max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-5 text-blue-900">Polityka prywatności</h1>
-        <p className="text-right text-sm mb-10 text-gray-600 dark:text-gray-400">Ostatnia aktualizacja: 20 czerwca 2024</p>
-        <article className="prose lg:prose-xl dark:prose-dark mx-auto text-black">
+      <div className="shadow-lg rounded-lg p-8 md:p-12 max-w-4xl mx-auto">
+        <h1 className="text-4xl font-bold text-center mb-5">Polityka prywatności</h1>
+        <p className="text-right text-sm mb-10">Ostatnia aktualizacja: 20 czerwca 2024</p>
+        <article className="prose lg:prose-xl mx-auto">
           <p>
             Niniejsza polityka prywatności (&quot;Polityka&quot;) opisuje, w jaki sposób domestico.pl (&quot;Sklep&quot;, &quot;my&quot;, &quot;nas&quot; lub &quot;nasz&quot;) gromadzi, chroni i wykorzystuje dane osobowe (&quot;Dane Osobowe&quot;), które przekazują nam użytkownicy (&quot;Użytkownik&quot;, &quot;Ty&quot; lub &quot;Twój&quot;). Polityka ta dotyczy wszystkich produktów i usług oferowanych przez nasz Sklep.
           </p>

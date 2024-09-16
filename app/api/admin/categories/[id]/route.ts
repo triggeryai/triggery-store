@@ -1,3 +1,4 @@
+// next-amazona-v2/app/api/admin/categories/[id]/route.ts
 import { auth } from '@/lib/auth';
 import dbConnect from '@/lib/dbConnect';
 import CategoryModel from '@/lib/models/CategoryModel';

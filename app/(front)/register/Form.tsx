@@ -1,3 +1,4 @@
+// next-amazona-v2/app/(front)/register/Form.tsx
 'use client'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'

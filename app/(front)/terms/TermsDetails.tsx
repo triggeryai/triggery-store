@@ -5,10 +5,10 @@ import React from 'react';
 const TermsOfService: React.FC = () => {
   return (
     <div className="container mx-auto p-5">
-      <div className="bg-white shadow-lg rounded-lg p-8 md:p-12 dark:bg-gray-800 dark:text-gray-50 max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-5 text-blue-900">Regulamin sklepu Domestico.pl</h1>
-        <p className="text-right text-sm mb-10 text-gray-800">Ostatnia aktualizacja: 20 czerwca 2024</p>
-        <article className="prose lg:prose-xl dark:prose-dark mx-auto text-black">
+      <div className="shadow-lg rounded-lg p-8 md:p-12 max-w-4xl mx-auto">
+        <h1 className="text-4xl font-bold text-center mb-5">Regulamin sklepu Domestico.pl</h1>
+        <p className="text-right text-sm mb-10">Ostatnia aktualizacja: 20 czerwca 2024</p>
+        <article className="prose lg:prose-xl mx-auto">
           <h2 className="text-2xl font-semibold mt-6">1. Postanowienia ogólne</h2>
           <p>
             1.1. Sklep internetowy Domestico.pl, dostępny pod adresem internetowym <a href="https://www.domestico.pl" className="text-blue-600 hover:underline">www.domestico.pl</a>, prowadzony jest przez Martę Byczek prowadzącą działalność gospodarczą pod nazwą Domestico z siedzibą w Dzierżoniowie, ul. Wrocławska 29, 58-200 Dzierżoniów, NIP: 8822142440, REGON: 523678177.

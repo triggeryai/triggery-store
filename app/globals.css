@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -72,4 +73,25 @@ body {
   to {
     transform: rotate(360deg);
   }
+}
+.menu-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Przyciemnienie tła */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Wysoki indeks z, aby pojawił się na wierzchu */
+}
+
+.menu-modal-content {
+  width: 90%; /* 90% szerokości ekranu, aby dopasować się do mniejszych urządzeń */
+  max-width: 400px; /* Maksymalna szerokość dla większych ekranów */
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }

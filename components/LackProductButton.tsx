@@ -18,7 +18,6 @@ const LackProductButton = () => {
         }
 
         const data = await response.json();
-        console.log('Fetched status:', data); // Log response data
         setIsOn(data?.data?.isOn ?? false);
       } catch (error) {
         console.error('Failed to fetch status:', error);
@@ -46,7 +45,6 @@ const LackProductButton = () => {
       }
 
       const data = await response.json();
-      console.log('Updated status:', data); // Log response data
       if (data.success) {
         setIsOn(newStatus);
       } else {

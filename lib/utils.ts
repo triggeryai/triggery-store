@@ -8,9 +8,13 @@ export function convertDocToObj(doc: any) {
   return doc;
 }
 
-export const formatNumber = (x: number) => {
+export const formatNumber = (x: number | null | undefined) => {
+  if (x === null || x === undefined) {
+    return '0';  // Możesz tutaj ustawić domyślną wartość, jeśli `x` jest null lub undefined
+  }
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
+};
+
 
 export const formatId = (x: string) => {
   return `..${x.substring(20, 24)}`;
@@ -22,7 +26,6 @@ export const getGuestCheckoutStatus = async () => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/guest-checkout`);
     if (!res.ok) throw new Error('Failed to fetch guest checkout status');
     const data = await res.json();
-    console.log('API Response for Guest Checkout:', data); // Log do debugowania
     return data.success ? data.data.isGuestCheckoutEnabled : false;
   } catch (error) {
     console.error('Error fetching guest checkout status:', error);

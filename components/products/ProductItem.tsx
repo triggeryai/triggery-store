@@ -1,4 +1,4 @@
-// components/products/ProductItem.tsx
+// next-amazona-v2/components/products/ProductItem.tsx
 "use client";
 import React, { useEffect, useState } from 'react';
 import AddToCartGoCart from '@/components/products/AddToCartGoCart';
@@ -12,6 +12,7 @@ export default function ProductItem({ product }: { product: Product }) {
   const [showModal, setShowModal] = useState(false);
   const [item, setItem] = useState({ ...product });
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     // Założono, że istnieje endpoint API, który zwraca aktualny stan magazynowy produktu na podstawie jego slug
@@ -20,7 +21,7 @@ export default function ProductItem({ product }: { product: Product }) {
         const response = await fetch(`/api/stock/${product.slug}`);
         if (!response.ok) throw new Error('Failed to fetch');
         const data = await response.json();
-        setItem(prev => ({ ...prev, countInStock: data.countInStock }));
+        setItem((prev) => ({ ...prev, countInStock: data.countInStock }));
       } catch (error) {
         console.error('Error fetching product stock:', error);
       }
@@ -29,24 +30,42 @@ export default function ProductItem({ product }: { product: Product }) {
     fetchProductStock();
   }, [product.slug]);
 
+  // Funkcja sprawdzająca, czy obraz jest lokalny (jeśli nie, to Cloudinary lub inne)
+  const getImageSrc = (src: string | undefined) => {
+    if (!src) {
+      return '/images/default-product.webp'; // Domyślna ścieżka do domyślnego produktu
+    }
+    if (src.startsWith('http')) {
+      return src; // Pełny adres URL, np. Cloudinary
+    }
+    return `/products/${src}`; // Lokalny obraz z katalogu public/products
+  };
+
   return (
     <div className="card bg-base-300 shadow-xl mb-4 relative group">
       <figure className="relative">
         <Link href={`/product/${product.slug}`}>
           <div className="relative">
-            {!imageLoaded && (
+            {!imageLoaded && !imageError && (
               <div className="absolute inset-0 flex items-center justify-center bg-gray-200">
                 <div className="loader"></div>
               </div>
             )}
-            <Image
-              src={product.mainImage || product.images[0]} // Używamy mainImage, a jeśli nie ma, to pierwsze zdjęcie z tablicy images
-              alt={product.name}
-              width={300}
-              height={300}
-              className="object-cover h-64 w-full"
-              onLoad={() => setImageLoaded(true)}
-            />
+            {imageError ? (
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-200">
+                <span className="text-gray-500">Brak produktu</span>
+              </div>
+            ) : (
+              <Image
+                src={getImageSrc(product.mainImage || product.images[0])} // Używamy funkcji getImageSrc
+                alt={product.name}
+                width={300}
+                height={300}
+                className="object-cover h-64 w-full"
+                onLoad={() => setImageLoaded(true)}
+                onError={() => setImageError(true)} // Obsługa błędu ładowania obrazka
+              />
+            )}
           </div>
         </Link>
         <div

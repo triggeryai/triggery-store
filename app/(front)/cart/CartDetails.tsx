@@ -1,4 +1,4 @@
-// app/(front)/cart/CartDetails.tsx
+// next-amazona-v2/app/(front)/cart/CartDetails.tsx
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -13,16 +13,15 @@ export default function CartDetails() {
   const { items, itemsPrice, decrease, increase, clear } = useCartService();
   const [showModal, setShowModal] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [loading, setLoading] = useState(true); // State for loading entire component
+  const [loadingItems, setLoadingItems] = useState(true); // State for loading cart items
 
   useEffect(() => {
     setMounted(true);
-    console.log('Cart items in CartDetails:', items); // Logowanie
+    // Simulate loading time for entire component
+    setTimeout(() => setLoading(false), 1000);
+    setTimeout(() => setLoadingItems(false), 1500);
   }, [items]);
-  
-  items.forEach(item => {
-    console.log('Item mainImage:', item.mainImage);
-  });
-  
 
   if (!mounted) return <></>;
 
@@ -47,6 +46,25 @@ export default function CartDetails() {
     decrease(item);
     toast.success('Produkt usunięty z koszyka!');
   };
+
+  const getImageSrc = (src: string | undefined) => {
+    if (!src) {
+      return '/default-image.jpg'; 
+    }
+    if (src.startsWith('http')) {
+      return src; 
+    }
+    return `/products/${src}`; 
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin"></div>
+        <span className="ml-4 text-lg text-blue-500 font-semibold">Ładowanie koszyka...</span>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -75,10 +93,31 @@ export default function CartDetails() {
       )}
 
       {items.length === 0 ? (
-        <div>
-          Koszyk jest pusty.        
+        <div className="flex flex-col items-center justify-center py-10 pb-20">
+          <div className="text-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
+              className="w-16 h-16 mx-auto text-gray-400"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3 3h18M3 8h18M7 12h2m4 0h6M7 16h10m4 0h2m-2 4H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v12a2 2 0 01-2 2H3"
+              />
+            </svg>
+            <h2 className="mt-4 text-2xl font-semibold">
+              Twój koszyk jest pusty
+            </h2>
+            <p className="mt-2">
+              Wydaje się, że nie dodałeś jeszcze żadnych produktów do swojego koszyka.
+            </p>
+          </div>
           <Link href="/search?q=">
-            <div className="inline-block px-6 py-3 text-sm font-medium leading-6 text-center text-white transition duration-300 ease-in-out bg-blue-500 rounded-md shadow-lg hover:bg-blue-600 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+            <div className="mt-6 inline-block px-8 py-4 text-lg font-semibold leading-7 text-center text-white transition duration-300 ease-in-out bg-gradient-to-r from-blue-500 to-purple-500 rounded-full shadow-lg hover:bg-gradient-to-l hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-300 focus:ring-opacity-50 transform hover:-translate-y-1">
               Kontynuuj zakupy
             </div>
           </Link>
@@ -95,61 +134,77 @@ export default function CartDetails() {
                 </tr>
               </thead>
               <tbody>
-                {items.map((item) => (
-                  <tr key={item.slug}>
-                    <td>
-                      <Link
-                        href={`/product/${item.slug}`}
-                        className="flex items-center"
-                      >
-                        {item.mainImage ? (
+                {loadingItems ? (
+                  <>
+                    {[...Array(3)].map((_, i) => (
+                      <tr key={i}>
+                        <td>
+                          <div className="flex items-center animate-pulse">
+                            <div className="bg-gray-200 w-16 h-16 rounded mr-4"></div>
+                            <div className="bg-gray-200 h-6 w-32"></div>
+                          </div>
+                        </td>
+                        <td>
+                          <div className="flex justify-center items-center space-x-4">
+                            <div className="bg-gray-200 h-6 w-8"></div>
+                          </div>
+                        </td>
+                        <td className="bg-gray-200 h-6 w-16"></td>
+                      </tr>
+                    ))}
+                  </>
+                ) : (
+                  items.map((item) => (
+                    <tr key={item.slug}>
+                      <td>
+                        <Link
+                          href={`/product/${item.slug}`}
+                          className="flex items-center"
+                        >
                           <Image
-                            src={item.mainImage}
+                            src={getImageSrc(item.mainImage)}
                             alt={item.name}
                             width={50}
                             height={50}
                             className="object-cover"
                           />
-                        ) : (
-                          <span>{item.name}</span>
-                        )}
-                        <span className="px-2">{item.name}</span>
-                      </Link>
-                    </td>
-                    <td>
-                      <button
-                        className="btn"
-                        type="button"
-                        onClick={() => handleDecrease(item)}
-                      >
-                        -
-                      </button>
-                      <span className="px-2">{item.qty}</span>
-                      <button
-                        className="btn"
-                        type="button"
-                        onClick={() =>
-                          item.qty < item.countInStock ? handleIncrease(item) : null
-                        }
-                        disabled={item.qty >= item.countInStock}
-                      >
-                        +
-                      </button>
-                    </td>
-                    <td>{item.price} PLN</td>
-                  </tr>
-                ))}
+                          <span className="px-2">{item.name}</span>
+                        </Link>
+                      </td>
+                      <td>
+                        <button
+                          className="btn"
+                          type="button"
+                          onClick={() => handleDecrease(item)}
+                        >
+                          -
+                        </button>
+                        <span className="px-2">{item.qty}</span>
+                        <button
+                          className="btn"
+                          type="button"
+                          onClick={() =>
+                            item.qty < item.countInStock ? handleIncrease(item) : null
+                          }
+                          disabled={item.qty >= item.countInStock}
+                        >
+                          +
+                        </button>
+                      </td>
+                      <td>{item.price} PLN</td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
           <div>
-            <div className="card bg-base-300">
+            <div className="card bg-base-300 pb-20">
               <div className="card-body">
                 <ul>
                   <li>
                     <div className="pb-3 text-xl">
-                      Do zapłaty {/* ({items.reduce((a, c) => a + c.qty, 0)})  */}
-                      {' '} <span className="font-bold"> {itemsPrice} PLN</span>
+                      Do zapłaty <span className="font-bold"> {itemsPrice} PLN</span>
                     </div>
                   </li>
                   <li>

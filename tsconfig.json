@@ -1,3 +1,4 @@
+// next-amazona-v2/tsconfig.json
 {
   "compilerOptions": {
     "target": "es6", // or "es2017"

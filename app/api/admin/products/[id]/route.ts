@@ -1,3 +1,4 @@
+// next-amazona-v2/app/api/admin/products/[id]/route.ts
 import { auth } from '@/lib/auth'
 import dbConnect from '@/lib/dbConnect'
 import ProductModel from '@/lib/models/ProductModel'
@@ -33,7 +34,7 @@ export const PUT = auth(async (req, { params }) => {
     return new Response(JSON.stringify({ message: 'Unauthorized' }), { status: 401 });
   }
 
-  const { name, slug, price, categories, images, mainImage, brand, countInStock, description } = await req.json();
+  const { name, slug, price, categories, images, mainImage, brand, countInStock, description, width, height, depth, weight } = await req.json();
 
   try {
     await dbConnect();
@@ -49,6 +50,10 @@ export const PUT = auth(async (req, { params }) => {
       product.brand = brand;
       product.countInStock = countInStock;
       product.description = description;
+      product.width = width || 0;
+      product.height = height || 0;
+      product.depth = depth || 0;
+      product.weight = weight || 0;
 
       await product.save();
       return new Response(JSON.stringify(product), { status: 200 });

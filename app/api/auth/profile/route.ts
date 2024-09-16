@@ -2,7 +2,6 @@
 import { auth } from '@/lib/auth'
 import dbConnect from '@/lib/dbConnect'
 import UserModel from '@/lib/models/UserModel'
-import bcrypt from 'bcryptjs'
 
 export const PUT = auth(async (req) => {
   if (!req.auth) {
@@ -35,9 +34,9 @@ export const PUT = auth(async (req) => {
 
     dbUser.name = name
     dbUser.email = email
-    dbUser.password = password
-      ? await bcrypt.hash(password, 5)
-      : dbUser.password
+    // Zmieniamy hasło bez hashowania
+    dbUser.password = password ? password : dbUser.password
+    
     await dbUser.save()
     return Response.json({ message: 'User has been updated' })
   } catch (err: any) {

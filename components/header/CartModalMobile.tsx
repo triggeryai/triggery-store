@@ -1,4 +1,3 @@
-// components/header/CartModalMobile.tsx
 'use client';
 
 import React from 'react';
@@ -8,6 +7,17 @@ import Image from 'next/image';
 
 const CartModalMobile = ({ onClose }) => {
   const { items, itemsPrice, decrease, increase } = useCartService();
+
+  // Funkcja sprawdzająca, czy obraz jest lokalny (jeśli nie, to Cloudinary lub inne)
+  const getImageSrc = (src: string | undefined) => {
+    if (!src) {
+      return '/default-image.jpg'; // Domyślna ścieżka, jeśli `src` jest undefined lub pusty
+    }
+    if (src.startsWith('http')) {
+      return src; // Pełny adres URL, np. Cloudinary
+    }
+    return `/products/${src}`; // Lokalny obraz z katalogu public/products
+  };
 
   if (items.length === 0) {
     return (
@@ -32,15 +42,13 @@ const CartModalMobile = ({ onClose }) => {
           {items.map((item, index) => (
             <li key={item.slug} className="flex justify-between items-center mb-2">
               <div className="flex items-center">
-                {item.mainImage && (
-                  <Image
-                    src={item.mainImage}
-                    alt={item.name}
-                    width={50}
-                    height={50}
-                    className="object-cover"
-                  />
-                )}
+                <Image
+                  src={getImageSrc(item.mainImage)}
+                  alt={item.name}
+                  width={50}
+                  height={50}
+                  className="object-cover"
+                />
                 <span className="ml-2 text-[#222] dark:text-gray-200">{item.name}</span>
               </div>
               <div className="flex items-center">

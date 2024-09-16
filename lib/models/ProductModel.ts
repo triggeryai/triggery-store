@@ -1,4 +1,4 @@
-// lib/models/ProductModel.ts
+// next-amazona-v2/lib/models/ProductModel.ts
 import mongoose, { Schema } from 'mongoose';
 
 const productSchema = new Schema(
@@ -14,6 +14,10 @@ const productSchema = new Schema(
     description: { type: String, required: true },
     isFeatured: { type: Boolean, default: false },
     banner: String,
+    width: { type: Number, default: 0 }, // Nowe pole szerokość
+    height: { type: Number, default: 0 }, // Nowe pole wysokość
+    depth: { type: Number, default: 0 }, // Nowe pole głębokość
+    weight: { type: Number, default: 0 }, // Nowe pole waga
   },
   {
     timestamps: true,
@@ -38,4 +42,8 @@ export type Product = {
   countInStock: number;
   colors?: string[];
   sizes?: string[];
+  width?: number; // Nowe pole szerokość
+  height?: number; // Nowe pole wysokość
+  depth?: number; // Nowe pole głębokość
+  weight?: number; // Nowe pole waga
 };

@@ -1,21 +1,47 @@
-// components\header\Header.tsx
-import Link from 'next/link'
-import React from 'react'
-import Menu from './Menu'
-import { SearchBox } from './SearchBox'
-import Image from 'next/image'
-import LeftCategorySideBar from './LeftCategorySideBar'
-import Logo from './Logo'
+// next-amazona-v2/components/header/Header.tsx
+"use client";
+
+import React, { useEffect, useState } from 'react';
+import useLayoutService from '@/lib/hooks/useLayout';
+import Link from 'next/link';
+import Menu from './Menu';
+import { SearchBox } from './SearchBox';
+import LeftCategorySideBar from './LeftCategorySideBar';
+import EditableLogo from './EditableLogo';
 
 const Header = () => {
+  const { theme } = useLayoutService();
+  const [headerClasses, setHeaderClasses] = useState('navbar justify-between bg-base-300');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch('/api/admin/builder-settings');
+        const data = await res.json();
+        if (data.success) {
+          setHeaderClasses(data.data.headerClasses);
+        }
+      } catch (error) {
+        console.error('Failed to load builder settings', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
-    // Use the md:flex class to display the header on screens that are 'md' size or larger
     <header className="hidden md:flex">
       <nav className="w-full">
-        <div className="navbar justify-between bg-base-300">
+        <div className={headerClasses}>
           <div>
             <LeftCategorySideBar />
-            <Logo />
+            <EditableLogo
+              srcLight="/logo_domestico.png"
+              srcDark="/logo_domestico_dark.png"
+              alt="Domestico"
+              width={70}
+              height={70}
+            />
           </div>
 
           <Menu />
@@ -25,7 +51,7 @@ const Header = () => {
         </div>
       </nav>
     </header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

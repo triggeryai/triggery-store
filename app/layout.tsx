@@ -1,4 +1,4 @@
-// app/layout.tsx
+// next-amazona-v2/app/layout.tsx
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -10,7 +10,8 @@ import Footer from '@/components/footer/Footer';
 import Cookies from '@/components/cookies/Cookies';
 import GoogleCaptchaWrapper from './GoogleCaptchaWrapper';
 import HeaderMobile from '@/components/header/HeaderMobile';
-import DeveloperModeWrapper from '@/app/DeveloperModeWrapper';
+import BuilderWrapper from '@/app/BuilderWrapper'; 
+import DeveloperModeWrapper from './DeveloperModeWrapper';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -32,15 +33,15 @@ export default function RootLayout({
             <div className="drawer">
               <DrawerButton />
               <div className="drawer-content">
-                <div className="min-h-screen flex flex-col">
+                <BuilderWrapper> 
                   <Header />
                   <HeaderMobile />
                   <DeveloperModeWrapper>
                     {children}
                   </DeveloperModeWrapper>
-                  <Cookies />
-                  <Footer />
-                </div>
+                  </BuilderWrapper>
+                <Cookies />
+                <Footer />
               </div>
               <div className="drawer-side">
                 <label

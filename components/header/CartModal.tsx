@@ -1,3 +1,4 @@
+// next-amazona-v2/components/header/CartModal.tsx
 'use client';
 
 import React from 'react';
@@ -20,6 +21,17 @@ const CartModal = () => {
   // Jeśli jeden element listy ma więcej niż 50px, zmień wartość poniżej odpowiednio.
   const maxHeightForSevenItems = 70 * 7;
 
+  // Funkcja sprawdzająca, czy obraz jest lokalny (jeśli nie, to Cloudinary lub inne)
+  const getImageSrc = (src: string | undefined) => {
+    if (!src) {
+      return '/default-image.jpg'; // Domyślna ścieżka, jeśli `src` jest undefined lub pusty
+    }
+    if (src.startsWith('http')) {
+      return src; // Pełny adres URL, np. Cloudinary
+    }
+    return `/products/${src}`; // Lokalny obraz z katalogu public/products
+  };
+
   return (
     <div className="absolute right-0 p-3 w-72 bg-white dark:bg-gray-800 shadow-lg z-50" 
          style={{ maxHeight: `${maxHeightForSevenItems}px`, overflowY: items.length > 7 ? 'scroll' : 'hidden' }}>
@@ -27,15 +39,13 @@ const CartModal = () => {
         {items.map((item, index) => (
           <li key={item.slug} className="flex justify-between items-center mb-2">
             <div className="flex items-center">
-              {item.mainImage && (
-                <Image
-                  src={item.mainImage}
-                  alt={item.name}
-                  width={50}
-                  height={50}
-                  className="object-cover"
-                />
-              )}
+              <Image
+                src={getImageSrc(item.mainImage)}
+                alt={item.name}
+                width={50}
+                height={50}
+                className="object-cover"
+              />
               <span className="ml-2 text-[#222] dark:text-gray-200">{item.name}</span>
             </div>
             <div className="flex items-center">

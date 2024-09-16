@@ -1,0 +1,171 @@
+<!-- next-amazona-v2/public/orlen/index.html -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-2"/>
+  <meta http-equiv="Content-Language" content="pl"/>
+  <title>Demo Widgetu Ruch</title>
+  
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+  <script type="text/javascript" src="https://ruch-osm.sysadvisors.pl/widget.js?i=12"></script>
+  <link rel="stylesheet" href="https://ruch-osm.sysadvisors.pl/widget.css"/>
+  
+  <style>
+    table {
+      width: 100%;
+    }
+    td#codtd, td#typetd, td#start_adr, td#deliverytd {
+      display: none; /* Ukrywanie elementów */
+    }
+    button#but_s, button#but_h {
+      font-size: 40px;
+      margin-bottom: 20px;
+      width: 100%;
+      height: 90px;
+    }
+
+    @media (min-width: 1200px) {
+      button#but_s, button#but_h {
+        font-size: 24px;
+        margin-bottom: 20px;
+        width: 80%;
+        height: 40px;
+        margin-right: 50px;
+      }
+    }
+    #widget_html {
+      height: 500px;
+      margin-top: 20px;
+      width: 100%;
+    }
+
+    /* Styl dla modala */
+    #modal {
+      display: none; 
+      position: fixed; 
+      z-index: 1000; /* Duża wartość aby modal był nad wszystkim */
+      left: 0;
+      top: 0;
+      width: 100%; 
+      height: 100%; 
+      background-color: rgba(0, 0, 0, 0.4); /* Przezroczyste tło */
+    }
+
+    #modal-content {
+      background-color: #fff;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 30%;
+      text-align: center;
+    }
+
+    #modal-content button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    #modal-content button:hover {
+      background-color: #45a049;
+    }
+
+    #status {
+      display: none; /* Ukrywamy status */
+    }
+  </style>
+
+  <script type="text/javascript">
+    var wid;
+
+    // Initialize widget automatically on page load
+    $(document).ready(function() {
+      button_init();
+    });
+    
+    function button_init() {
+      wid = new RuchWidget('widget_html', {
+        loadCb: on_load, // Called when the widget is loaded
+        readyCb: on_ready, // Called when the widget is ready
+        selectCb: on_select, // Called when a point is selected
+        initialAddress: "58-260", // Initial map center - id point or address
+        sandbox: 0, // 1 if widget should fetch test data
+        showCodFilter: 1, // Show COD filter
+        showPointTypeFilter: 1, // Show point type filter
+        showDeliveryFilter: 1 // Show delivery filter
+      });
+      wid.init();
+    }
+
+    function button_show() {
+      wid.showWidget(
+        0, // COD or not
+        { 'R': 10, 'P': 11, 'U': 12, 'A': 13 }, // Price list for types
+        { 'R': 'ruch', 'P': 'partner', 'U': 'partner', 'A': 'orlen' } // Method list for types
+      );
+      wid.setPointType("PSP, PPP, PSF, PSD"); // Set the displayed point types
+      wid.setDelivery(1); // Set delivery type
+    }
+
+    function button_hide() {
+      wid.hideWidget();
+    }
+
+    function on_load() {
+      $('#but_s').show();
+      $('#but_h').show();
+    }
+
+    function on_ready() {
+      button_show();
+    }
+
+    // Show modal when a point is selected
+    function on_select(p) {
+      if (p != null) {
+        // Wybrany punkt zostaje zapisany w localStorage
+        localStorage.setItem('selectedOrlenPoint', JSON.stringify({
+          id: p.id,
+          address: p.a,
+          method: p.m
+        }));
+        
+        // Otwórz modal, aby pokazać wybrany punkt
+        document.getElementById("modal").style.display = "block";
+        document.getElementById("modal-content-info").innerHTML = 'Wybrano punkt: ' + p.a + '<br>Metoda: ' + p.m;
+      }
+    }
+
+    // Close modal function
+    function closeModal() {
+      document.getElementById("modal").style.display = "none"; // Ukryj modal
+      window.parent.postMessage({ type: 'CLOSE_MODAL' }, '*'); // Wyślij wiadomość do rodzica, aby zamknąć modal
+    }
+
+  </script>
+
+</head>
+<body>
+  <table>
+    <tr>
+      <td><button onclick="button_show()" id="but_s" style="display: none;">Pokaż Punkty</button></td>
+      <td><button onclick="button_hide()" id="but_h" style="display: none;">Ukryj Punkty</button></td>
+    </tr>
+  </table>
+
+  <hr/>
+
+  <div id="widget_html"></div>
+
+  <div id="modal">
+    <div id="modal-content">
+      <p id="modal-content-info"></p>
+      <button onclick="closeModal()">OK</button> <!-- Gdy naciśniesz OK, modal się zamyka -->
+    </div>
+  </div>
+  
+</body>
+</html>

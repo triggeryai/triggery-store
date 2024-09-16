@@ -15,7 +15,8 @@ const Form = () => {
   const { savePaymentMethod, paymentMethod, shippingAddress } = useCartService();
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
   const [isGuestCheckoutEnabled, setIsGuestCheckoutEnabled] = useState(false);
-  const [loading, setLoading] = useState(true); // Stan ładowania
+  const [loading, setLoading] = useState(true); // Stan ładowania formularza
+  const [isSubmitting, setIsSubmitting] = useState(false); // Stan dla przycisku
 
   useEffect(() => {
     const fetchGuestCheckoutStatus = async () => {
@@ -25,14 +26,11 @@ const Form = () => {
           throw new Error('Failed to fetch guest checkout status');
         }
         const data = await res.json();
-        console.log('Guest Checkout Status from API:', data);
-        if (data.success) {
-          setIsGuestCheckoutEnabled(data.data.isGuestCheckoutEnabled);
-        }
+        setIsGuestCheckoutEnabled(data.success && data.data.isGuestCheckoutEnabled);
       } catch (error) {
         console.error('Error fetching guest checkout status:', error);
       } finally {
-        setLoading(false); // Ustawienie ładowania na false po zakończeniu
+        setLoading(false); // Wyłączenie ładowania po zakończeniu
       }
     };
 
@@ -41,9 +39,8 @@ const Form = () => {
 
   useEffect(() => {
     if (!loading) {
-      // Sprawdzenie, czy Guest Checkout jest wyłączony i użytkownik nie jest zalogowany
+      // Sprawdzenie, czy użytkownik ma zapisany adres
       if (!shippingAddress.address && !isGuestCheckoutEnabled) {
-        console.log('Redirecting to login because guest checkout is disabled and no session exists.');
         router.push('/signin?callbackUrl=/payment');
       }
     }
@@ -57,14 +54,20 @@ const Form = () => {
     }
   }, [paymentMethod, router, shippingAddress.address]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     savePaymentMethod(selectedPaymentMethod);
     router.push('/place-order');
   };
 
   if (loading) {
-    return <div>Loading...</div>; // Pokazywanie ekranu ładowania
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin"></div>
+        <span className="ml-4 text-lg text-blue-500 font-semibold">Ładowanie...</span>
+      </div>
+    );
   }
 
   return (
@@ -90,8 +93,16 @@ const Form = () => {
               </div>
             ))}
             <div className="my-2">
-              <button type="submit" className="btn btn-primary w-full">
-                Dalej
+              <button
+                type="submit"
+                className="btn btn-primary w-full"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <span className="loading loading-spinner"></span>
+                ) : (
+                  'Dalej'
+                )}
               </button>
             </div>
             <div className="my-2">

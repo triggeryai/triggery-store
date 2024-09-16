@@ -8,7 +8,6 @@ export async function GET() {
 
   try {
     const devMode = await DeveloperMode.findOne({});
-    console.log('Developer Mode from DB:', devMode); // Debug line
     return NextResponse.json({ isDeveloperMode: devMode?.isDeveloperMode || false }, { status: 200 });
   } catch (error) {
     console.error('Error fetching developer mode status:', error); // Debug line

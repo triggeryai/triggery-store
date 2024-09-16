@@ -67,7 +67,7 @@
                                   '<p>ID: ' + point.name + '</p>' +
                                   '<p>Adres: ' + point.address.line1 + ', ' + point.address.line2 + '</p>' +
                                   '<p><strong>Informacja została zapisana.</strong></p>' +
-                                  '<button onclick="hidePopup()">Zamknij</button>';
+                                  '<button onclick="hidePopup()">OK</button>';
                 popup.style.display = 'block';
                 // Save to localStorage
                 localStorage.setItem('selectedPaczkomat', JSON.stringify(point));
@@ -75,6 +75,7 @@
 
             function hidePopup() {
                 document.getElementById('detailsPopup').style.display = 'none';
+                window.parent.postMessage({ type: 'CLOSE_MODAL' }, '*');
             }
             window.hidePopup = hidePopup;
         };

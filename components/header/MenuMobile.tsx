@@ -8,7 +8,7 @@ import { SearchBox } from './SearchBox';
 import CartModalMobile from './CartModalMobile';
 import DropDownMenuToggle from './DropDownMenuToggle';
 import LeftCategorySideBar from './LeftCategorySideBar';
-import Logo from './Logo';
+import EditableLogo from './EditableLogo';
 import MenuModal from './MenuModal';
 import MenuToggleButton from './MenuToggleButton';
 import ThemeToggle from './ThemeToggle';
@@ -38,15 +38,23 @@ const MobileMenu: React.FC = () => {
     <div className={`flex flex-col items-center w-full shadow-md`}>
       <div className="flex justify-between items-center w-full px-4 py-2">
         <LeftCategorySideBar />
-        <Logo />
+        <EditableLogo
+          srcLight="/logo_domestico.png"
+          srcDark="/logo_domestico_dark.png"
+          alt="Domestico"
+          width={70}
+          height={70}
+        />
         <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
       </div>
 
       {/* Search and toggle */}
       <div className="flex items-center justify-between w-full p-4">
-        <SearchBox />
-        <button className="relative" onClick={() => setShowCartModal(!showCartModal)}>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="darkslategray" aria-hidden="true" className="h-6 w-6 transition-all ease-in-out hover:scale-110 ml-2 swap-on fill-current">
+        <div className="w-4/5">
+          <SearchBox />
+        </div>
+        <button className="relative ml-2" onClick={() => setShowCartModal(!showCartModal)}>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="darkslategray" aria-hidden="true" className="h-6 w-6 transition-all ease-in-out hover:scale-110 swap-on fill-current">
             <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"></path>
           </svg>
           {items.length > 0 && (
@@ -62,25 +70,27 @@ const MobileMenu: React.FC = () => {
 
       {/* Dropdown Menu */}
       <MenuModal isOpen={menuOpen} onClose={() => setMenuOpen(false)}>
-        <div className={`p-4 ${theme === 'dark' ? 'bg-[#1A103D] text-white' : 'bg-white text-black'}`}>
-          {/* User session area */}
-          {session && session.user ? (
-            <div className="flex flex-col items-center">
-              <div className="badge badge-primary mb-4">{session.user.name}</div>
-              {session.user.isAdmin && (
-                <Link href="/admin/dashboard" onClick={handleLinkClick}><div className="btn btn-ghost w-full mb-2">Panel Administratora</div></Link>
-              )}
-              <Link href="/order-history" onClick={handleLinkClick}><div className="btn btn-ghost w-full mb-2">Historia Zamówień</div></Link>
-              <Link href="/profile" onClick={handleLinkClick}><div className="btn btn-ghost w-full mb-2">Profil</div></Link>
-              <button type="button" onClick={signoutHandler} className="btn btn-ghost w-full mb-2">
-                Wyloguj
+        <div className='menu-modal'>
+          <div className="menu-modal-content">
+            {/* User session area */}
+            {session && session.user ? (
+              <div className="flex flex-col items-center text-black">
+                <div className="badge badge-primary mb-4">{session.user.name}</div>
+                {session.user.isAdmin && (
+                  <Link href="/admin/dashboard" onClick={handleLinkClick}><div className="btn btn-ghost w-full mb-2">Panel Administratora</div></Link>
+                )}
+                <Link href="/order-history" onClick={handleLinkClick}><div className="btn btn-ghost w-full mb-2">Historia Zamówień</div></Link>
+                <Link href="/profile" onClick={handleLinkClick}><div className="btn btn-ghost w-full mb-2">Profil</div></Link>
+                <button type="button" onClick={signoutHandler} className="btn btn-ghost w-full mb-2">
+                  Wyloguj
+                </button>
+              </div>
+            ) : (
+              <button className="btn btn-ghost w-full text-black" onClick={() => { signIn(); handleLinkClick(); }}>
+                Zaloguj
               </button>
-            </div>
-          ) : (
-            <button className="btn btn-ghost w-full" onClick={() => { signIn(); handleLinkClick(); }}>
-              Zaloguj
-            </button>
-          )}
+            )}
+          </div>
         </div>
       </MenuModal>
     </div>
