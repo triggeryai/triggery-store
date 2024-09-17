@@ -2,6 +2,7 @@
 import CredentialsProvider from 'next-auth/providers/credentials';
 import dbConnect from './dbConnect';
 import UserModel from './models/UserModel';
+import bcrypt from 'bcrypt'; // Importujemy bcrypt do hashowania
 import NextAuth from 'next-auth';
 
 export const config = {
@@ -13,6 +14,7 @@ export const config = {
       },
       async authorize(credentials) {
         await dbConnect();
+
         if (!credentials) {
           console.log("Brak danych logowania");
           return null;
@@ -26,13 +28,12 @@ export const config = {
           return null;
         }
 
-        console.log("Wprowadzone hasło:", credentials.password);
-        console.log("Hasło w bazie danych:", user.password);
-
-        // Proste porównanie haseł bez hashowania (pamiętaj, aby dodać właściwe hashowanie w realnym systemie)
-        if (credentials.password === user.password) {
+        // Sprawdzanie hasła użytkownika za pomocą bcrypt
+        const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
+        
+        if (isPasswordValid) {
           console.log("Użytkownik autoryzowany");
-          return user;
+          return user; // Zwracamy użytkownika po poprawnej weryfikacji
         } else {
           console.log("Hasło niepoprawne");
           return null;

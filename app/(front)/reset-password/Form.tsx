@@ -1,3 +1,4 @@
+// next-amazona-v2/app/(front)/reset-password/Form.tsx
 'use client';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';

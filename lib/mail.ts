@@ -63,8 +63,12 @@ export async function sendVerificationEmail(email: string, token: string) {
 }
 
 export async function sendPasswordResetEmail(email: string, token: string) {
-  const resetPasswordUrl = `${process.env.NEXT_PUBLIC_DOMAIN}/reset-password/${encodeURIComponent(token)}`;
-  const { from, subject, html } = await getTemplateContent('sendPasswordResetEmail', { resetPasswordUrl });
+  const resetPasswordUrl = `${process.env.NEXT_PUBLIC_DOMAIN}/api/auth/reset-password/${encodeURIComponent(
+    token
+  )}`;
+  const { from, subject, html } = await getTemplateContent('sendPasswordResetEmail', {
+    resetPasswordUrl,
+  });
 
   await transporter.sendMail({
     from,
@@ -75,7 +79,9 @@ export async function sendPasswordResetEmail(email: string, token: string) {
 }
 
 export async function sendNewPasswordEmail(email: string, newPassword: string) {
-  const { from, subject, html } = await getTemplateContent('sendNewPasswordEmail', { newPassword });
+  const { from, subject, html } = await getTemplateContent('sendNewPasswordEmail', {
+    newPassword,
+  });
 
   await transporter.sendMail({
     from,
@@ -84,7 +90,6 @@ export async function sendNewPasswordEmail(email: string, newPassword: string) {
     html,
   });
 }
-
 export async function sendSupportEmail(userEmail: string, message: string) {
   const { from, subject, html } = await getTemplateContent('sendSupportEmail', { message });
 

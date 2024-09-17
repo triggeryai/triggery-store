@@ -1,3 +1,4 @@
+// next-amazona-v2/app/api/auth/register/route.ts
 import { NextRequest } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import UserModel from '@/lib/models/UserModel';
