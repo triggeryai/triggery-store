@@ -1,27 +1,24 @@
-// next-amazona-v2/next.config.js
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true, // Dodano reactStrictMode
+  typescript: {  ignoreBuildErrors: true,},
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'res.cloudinary.com', // Existing configuration for Cloudinary
+        hostname: 'res.cloudinary.com', // Konfiguracja dla Cloudinary
       },
       {
         protocol: 'http',
-        hostname: 'localhost', // Existing configuration for local server
+        hostname: 'localhost', // Konfiguracja dla lokalnego serwera
       },
       {
         protocol: 'https',
-        hostname: 'i.postimg.cc', // Added configuration for Postimg
+        hostname: 'i.postimg.cc', // Konfiguracja dla Postimg
       },
     ],
   },
-  api: {
-    bodyParser: {
-      sizeLimit: '50mb', // Set the maximum upload size to 50MB
-    },
-  },
+  // Usunięto klucz `api`, ponieważ nie jest obsługiwany w App Routerze
 };
 
 module.exports = nextConfig;

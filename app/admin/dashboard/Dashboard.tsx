@@ -1,3 +1,4 @@
+// next-amazona-v2/app/admin/dashboard/Dashboard.tsx
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
@@ -40,17 +41,20 @@ export const options = {
 }
 
 // Funkcja do formatowania liczb
+// Funkcja do formatowania liczb i zaokrąglania do dwóch miejsc po przecinku
 function formatLargeNumbers(number) {
-  if (Math.abs(number) >= 1.0e+9) {
-    return (number / 1.0e+9).toFixed(1) + "B"; // Milardy
-  } else if (Math.abs(number) >= 1.0e+6) {
-    return (number / 1.0e+6).toFixed(1) + "M"; // Miliony
-  } else if (Math.abs(number) >= 1.0e+3) {
-    return (number / 1.0e+3).toFixed(1) + "K"; // Tysiące
+  const roundedNumber = Math.round((number + Number.EPSILON) * 100) / 100; // Zaokrąglanie do 2 miejsc po przecinku
+  if (Math.abs(roundedNumber) >= 1.0e+9) {
+    return (roundedNumber / 1.0e+9).toFixed(2) + "B"; // Milardy
+  } else if (Math.abs(roundedNumber) >= 1.0e+6) {
+    return (roundedNumber / 1.0e+6).toFixed(2) + "M"; // Miliony
+  } else if (Math.abs(roundedNumber) >= 1.0e+3) {
+    return (roundedNumber / 1.0e+3).toFixed(2) + "K"; // Tysiące
   } else {
-    return number; // Mniejsze liczby pozostają bez zmian
+    return roundedNumber.toFixed(2); // Mniejsze liczby zaokrąglone do 2 miejsc po przecinku
   }
 }
+
 
 const Dashboard = () => {
   const [period, setPeriod] = useState('monthly')

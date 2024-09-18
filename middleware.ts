@@ -1,3 +1,4 @@
+// next-amazona-v2/middleware.ts
 import NextAuth from 'next-auth'
 import type { NextAuthConfig } from 'next-auth'
 

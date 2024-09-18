@@ -17,7 +17,7 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-base-300 text-base-content">
+    <footer className="bg-base-300 text-base-content mt-auto">
       <div className="container mx-auto px-4 py-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Columns with links */}
@@ -53,7 +53,7 @@ const Footer: React.FC = () => {
           </div>
         </div>
         {/* Copyright at the bottom */}
-        <div className="border-t border-base-300 text-center py-4 mt-8">
+        <div className="border-t border-base-300 text-center py-4 mt-4">
           <p>
             Domestico.pl © 2024 - Strona stworzona przez{' '}
             <Link href="https://t.me/dszafranski" target="_blank" rel="noopener noreferrer">

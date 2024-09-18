@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -17,6 +16,13 @@
   }
 }
 
+/* Global height and margin reset */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
@@ -27,15 +33,32 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+footer {
+  margin-top: auto;
+}
+
 .btn {
   text-transform: none;
 }
-/* Dodaj tę regułę do swojego arkusza stylów */
+
+/* Karuzela */
 .carousel-item {
   scroll-margin-top: 100px; /* Ustaw tę wartość na wysokość twojego paska nawigacji lub więcej */
 }
-/* globals.css */
 
+.carousel-item img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Style dla trybu deweloperskiego */
 .developing-mode-container {
   display: flex;
   flex-direction: column;
@@ -59,7 +82,8 @@ body {
   font-size: 1.5rem;
   color: #555;
 }
-/* styles/global.css */
+
+/* Loader */
 .loader {
   border: 4px solid rgba(0, 0, 0, 0.1);
   border-left-color: #000;
@@ -74,6 +98,8 @@ body {
     transform: rotate(360deg);
   }
 }
+
+/* Modal menu */
 .menu-modal {
   position: fixed;
   top: 0;

@@ -1,33 +1,40 @@
-// next-amazona-v2/tsconfig.json
 {
   "compilerOptions": {
-    "target": "es6", // or "es2017"
+    "target": "es6", // Możesz zmienić na "es2017" lub nowszy, jeśli używasz nowoczesnych funkcji JS
     "lib": [
       "dom",
       "dom.iterable",
       "esnext"
     ],
     "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
+    "skipLibCheck": false, // Sprawdzanie typów w zależnościach
+    "strict": true, // Ścisłe sprawdzanie typów
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node", // Use "node" for Next.js projects
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve", // Update if using React 17+ and TSX
+    "jsx": "preserve",
     "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "forceConsistentCasingInFileNames": true, // Wymuszenie spójności wielkości liter
+    "strictNullChecks": true, // Ścisłe sprawdzanie `null` i `undefined`
+    "noImplicitAny": true, // Zapobiega automatycznemu przypisywaniu `any` tam, gdzie nie jest określony typ
+    "noImplicitReturns": true, // Wymusza jawne określenie wartości zwracanych
+    "noImplicitThis": true, // Zapobiega niejawnemu używaniu `this` o typie `any`
+    "noUnusedLocals": true, // Wykrywa nieużywane zmienne lokalne
+    "noUnusedParameters": true, // Wykrywa nieużywane parametry funkcji
+    "strictBindCallApply": true, // Ścisłe sprawdzanie dla metod `bind`, `call` i `apply`
     "paths": {
       "@/*": [
         "./*"
       ]
-    }
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "include": [
     "next-env.d.ts",

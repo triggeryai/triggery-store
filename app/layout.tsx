@@ -10,7 +10,7 @@ import Footer from '@/components/footer/Footer';
 import Cookies from '@/components/cookies/Cookies';
 import GoogleCaptchaWrapper from './GoogleCaptchaWrapper';
 import HeaderMobile from '@/components/header/HeaderMobile';
-import BuilderWrapper from '@/app/BuilderWrapper'; 
+import BuilderWrapper from '@/app/BuilderWrapper';
 import DeveloperModeWrapper from './DeveloperModeWrapper';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -32,14 +32,16 @@ export default function RootLayout({
           <Providers>
             <div className="drawer">
               <DrawerButton />
-              <div className="drawer-content">
-                <BuilderWrapper> 
+              <div className="drawer-content flex flex-col min-h-screen">
+                <BuilderWrapper>
                   <Header />
                   <HeaderMobile />
                   <DeveloperModeWrapper>
-                    {children}
+                    <main className="flex-grow">
+                      {children}
+                    </main>
                   </DeveloperModeWrapper>
-                  </BuilderWrapper>
+                </BuilderWrapper>
                 <Cookies />
                 <Footer />
               </div>
