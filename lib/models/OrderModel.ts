@@ -6,7 +6,11 @@ const orderSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: false, // Make sure this is set to false
+      required: false, // User is optional
+    },
+    email: {
+      type: String, // New field for guest user's email
+      required: false, // This is optional, only used for guest checkout
     },
     items: [
       {
@@ -31,8 +35,8 @@ const orderSchema = new mongoose.Schema(
       postalCode: { type: String, required: true },
       country: { type: String, required: true },
       shippingMethod: { type: String, required: true },
-      selectedPaczkomat: { type: String }, // Added optional field for selected Paczkomat
-      selectedPocztex: { type: String },   // Added optional field for selected Pocztex
+      selectedPaczkomat: { type: String }, // Optional field for selected Paczkomat
+      selectedPocztex: { type: String },   // Optional field for selected Pocztex
       shippingCost: { type: Number, required: true }, // Added field for shipping cost
     },
     paymentMethod: { type: String, required: true },
@@ -58,6 +62,7 @@ export default OrderModel;
 export type Order = {
   _id: string;
   user?: { name: string }; // User is optional
+  email?: string; // Email for guest users
   items: [OrderItem];
   shippingAddress: {
     fullName: string;

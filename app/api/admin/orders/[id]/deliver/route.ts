@@ -34,11 +34,11 @@ export const PUT = auth(async (...args: any) => {
       order.deliveredAt = Date.now();
       const updatedOrder = await order.save();
 
-      // Sprawdź, czy użytkownik istnieje i ma e-mail
-      const userEmail = order.user?.email;
-      if (!userEmail) {
+      // Sprawdź, czy użytkownik istnieje lub gość i ma e-mail
+      const email = order.email || order.user?.email;
+      if (!email) {
         return Response.json(
-          { message: 'Brak adresu e-mail dla użytkownika' },
+          { message: 'Brak adresu e-mail dla użytkownika lub gościa' },
           {
             status: 400,
           }
@@ -46,7 +46,7 @@ export const PUT = auth(async (...args: any) => {
       }
 
       // Wysyłanie e-maila informującego o dostarczeniu zamówienia
-      await sendOrderStatusUpdateEmail(userEmail, order._id, 'Dostarczone');
+      await sendOrderStatusUpdateEmail(email, order._id, 'Dostarczone');
 
       return Response.json(updatedOrder);
     } else {

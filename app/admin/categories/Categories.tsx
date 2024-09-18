@@ -32,13 +32,13 @@ const Modal = ({ onClose, onSubmit, initialCategory, isEditing }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50" onClick={onClose}>
-      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-5 rounded-lg shadow-lg"
+    <div className="fixed inset-0 bg-base-100 bg-opacity-50 z-50" onClick={onClose}>
+      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-base-100 p-5 rounded-lg shadow-lg"
            onClick={(e) => e.stopPropagation()}>
         <form onSubmit={handleSubmit} className="space-y-4">
           {isEditing && (
             <div>
-              <label htmlFor="category-id" className="block text-sm font-medium text-gray-700">ID</label>
+              <label htmlFor="category-id" className="block text-sm font-medium">ID</label>
               <input
                 type="text"
                 id="category-id"
@@ -49,7 +49,7 @@ const Modal = ({ onClose, onSubmit, initialCategory, isEditing }) => {
             </div>
           )}
           <div>
-            <label htmlFor="category-name" className="block text-sm font-medium text-gray-700">Nazwa</label>
+            <label htmlFor="category-name" className="block text-sm font-medium">Nazwa</label>
             <input
               type="text"
               id="category-name"
@@ -62,7 +62,7 @@ const Modal = ({ onClose, onSubmit, initialCategory, isEditing }) => {
           </div>
           {isEditing && (
             <div>
-              <label htmlFor="category-slug" className="block text-sm font-medium text-gray-700">Slug</label>
+              <label htmlFor="category-slug" className="block text-sm font-medium">Slug</label>
               <input
                 type="text"
                 id="category-slug"
@@ -85,8 +85,8 @@ const Modal = ({ onClose, onSubmit, initialCategory, isEditing }) => {
 };
 
 const ConfirmDeleteModal = ({ onClose, onConfirm }) => (
-  <div className="fixed inset-0 bg-black bg-opacity-50 z-50" onClick={onClose}>
-    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-5 rounded-lg shadow-lg"
+  <div className="fixed inset-0 bg-base-200 z-50 bg-opacity-150" onClick={onClose}>
+    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-5 bg-opacity-150 bg-base-200 rounded-lg shadow-lg"
          onClick={(e) => e.stopPropagation()}>
       <h3 className="font-bold text-lg">Czy na pewno chcesz usunąć tę kategorię?</h3>
       <div className="modal-action">

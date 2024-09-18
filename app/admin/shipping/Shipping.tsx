@@ -107,7 +107,7 @@ const Shipping = () => {
         <h2 className="text-2xl font-semibold mb-4">Dodaj Nową Opcję</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Wartość</label>
+            <label className="block text-sm font-medium">Wartość</label>
             <input
               type="text"
               name="value"
@@ -117,7 +117,7 @@ const Shipping = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Etykieta</label>
+            <label className="block text-sm font-medium">Etykieta</label>
             <input
               type="text"
               name="label"
@@ -127,7 +127,7 @@ const Shipping = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Cena</label>
+            <label className="block text-sm font-medium">Cena</label>
             <input
               type="number"
               name="price"
@@ -137,7 +137,7 @@ const Shipping = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Szerokość (cm)</label>
+            <label className="block text-sm font-medium">Szerokość (cm)</label>
             <input
               type="number"
               name="width"
@@ -147,7 +147,7 @@ const Shipping = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Wysokość (cm)</label>
+            <label className="block text-sm font-medium">Wysokość (cm)</label>
             <input
               type="number"
               name="height"
@@ -157,7 +157,7 @@ const Shipping = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Głębokość (cm)</label>
+            <label className="block text-sm font-medium">Głębokość (cm)</label>
             <input
               type="number"
               name="depth"
@@ -167,7 +167,7 @@ const Shipping = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Waga (kg)</label>
+            <label className="block text-sm font-medium">Waga (kg)</label>
             <input
               type="number"
               name="weight"
@@ -195,7 +195,7 @@ const Shipping = () => {
           <h2 className="text-2xl font-semibold mb-4">Edytuj Opcję</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Wartość</label>
+              <label className="block text-sm font-medium">Wartość</label>
               <input
                 type="text"
                 name="value"
@@ -205,7 +205,7 @@ const Shipping = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Etykieta</label>
+              <label className="block text-sm font-medium">Etykieta</label>
               <input
                 type="text"
                 name="label"
@@ -215,7 +215,7 @@ const Shipping = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Cena</label>
+              <label className="block text-sm font-medium">Cena</label>
               <input
                 type="number"
                 name="price"
@@ -225,7 +225,7 @@ const Shipping = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Szerokość (cm)</label>
+              <label className="block text-sm font-medium">Szerokość (cm)</label>
               <input
                 type="number"
                 name="width"
@@ -235,7 +235,7 @@ const Shipping = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Wysokość (cm)</label>
+              <label className="block text-sm font-medium">Wysokość (cm)</label>
               <input
                 type="number"
                 name="height"
@@ -245,7 +245,7 @@ const Shipping = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Głębokość (cm)</label>
+              <label className="block text-sm font-medium">Głębokość (cm)</label>
               <input
                 type="number"
                 name="depth"
@@ -255,7 +255,7 @@ const Shipping = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Waga (kg)</label>
+              <label className="block text-sm font-medium">Waga (kg)</label>
               <input
                 type="number"
                 name="weight"

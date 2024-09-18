@@ -9,9 +9,9 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 z-50 flex justify-center items-center">
-      <div className="bg-white p-4 rounded-md shadow-xl">
-        <h4 className="text-lg mb-4">Czy na pewno chcesz usunąć tego użytkownika?</h4>
+    <div className="fixed inset-0 bg-slate-800 bg-opacity-100 z-50 flex justify-center items-center">
+      <div className="bg-transparent p-4 rounded-md shadow-xl">
+        <h4 className="text-lg mb-4 text-white">Czy na pewno chcesz usunąć tego użytkownika?</h4>
         <div className="flex justify-end">
           <button onClick={onClose} className="btn btn-secondary mr-2">
             Nie

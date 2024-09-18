@@ -116,8 +116,16 @@ footer {
 .menu-modal-content {
   width: 90%; /* 90% szerokości ekranu, aby dopasować się do mniejszych urządzeń */
   max-width: 400px; /* Maksymalna szerokość dla większych ekranów */
-  background-color: white;
   padding: 1.5rem;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: white; /* Default dla trybu jasnego */
+  color: black; /* Domyślny kolor tekstu dla trybu jasnego */
 }
+
+/* Styl dla trybu ciemnego */
+.dark .menu-modal-content {
+  background-color: #1e293b; /* Kolor tła dla trybu ciemnego */
+  color: white; /* Kolor tekstu dla trybu ciemnego */
+}
+

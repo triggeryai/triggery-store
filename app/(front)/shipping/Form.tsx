@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import Select from "react-select";
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 
 const InpostModal = ({ closeModal }) => {
   useEffect(() => {
@@ -227,6 +228,7 @@ const Form = () => {
 
   const formSubmit = async (data) => {
     saveShippingAddrress(data);
+    localStorage.setItem('userEmail', data.email); // Save the email to localStorage
     router.push("/payment");
   };
 
@@ -293,13 +295,27 @@ const Form = () => {
               <label className="label" htmlFor="email">
                 Email
               </label>
-              <input
-                type="email"
-                id="email"
-                {...register("email", { required: "Email jest wymagany" })}
-                className="input input-bordered w-full"
-                defaultValue={session?.user?.email || ""} // Automatically fill email if logged in
-              />
+              {session?.user?.email ? (
+                <div className="relative">
+                  <input
+                    type="email"
+                    id="email"
+                    value={session.user.email} // Block email from being changed
+                    className="input input-bordered w-full"
+                    readOnly
+                  />
+                  <p className="text-sm mt-2">
+                    Jeśli chcesz zmienić adres email, przejdź do swojego profilu i <Link href="/profile" className="text-blue-500">zmień tutaj</Link>.
+                  </p>
+                </div>
+              ) : (
+                <input
+                  type="email"
+                  id="email"
+                  {...register("email", { required: "Email jest wymagany" })}
+                  className="input input-bordered w-full"
+                />
+              )}
               {errors.email && (
                 <div className="text-error">{errors.email.message}</div>
               )}
@@ -407,6 +423,5 @@ const Form = () => {
     </div>
   );
 };
-
 
 export default Form;

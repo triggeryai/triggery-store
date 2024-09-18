@@ -1,3 +1,4 @@
+// next-amazona-v2/app/admin/general/General.tsx
 "use client";
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';

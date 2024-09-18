@@ -59,16 +59,15 @@ const calcPrices = (
     totalPrice = 0; // Cap at zero
   }
 
-  return { 
-    itemsPrice, 
-    shippingPrice: finalShippingCost, 
-    taxPrice, 
-    totalPrice, 
-    discountValue, 
-    isFreeShipping 
+  return {
+    itemsPrice,
+    shippingPrice: finalShippingCost,
+    taxPrice,
+    totalPrice,
+    discountValue,
+    isFreeShipping,
   };
 };
-
 
 // Funkcja do obliczania liczby paczek na podstawie objętości i wagi
 const calculateNumOfPackages = (items: OrderItem[], shippingOption: any) => {
@@ -145,7 +144,7 @@ export const POST = auth(async (req: any) => {
       }
 
       // Sprawdź, czy użytkownik kwalifikuje się do rabatu
-      if (discount.users !== 'all' && !discount.users.includes(user._id)) {
+      if (discount.users !== 'all' && user && !discount.users.includes(user._id)) {
         throw new Error('This discount is not available for you');
       }
 
@@ -161,7 +160,7 @@ export const POST = auth(async (req: any) => {
     const automaticDiscount = await DiscountModel.findOne({
       code: { $exists: false }, // Automatyczne rabaty bez kodu
       isActive: true,
-      users: { $in: ['all', user._id] },
+      users: { $in: ['all', user?._id] },
     });
 
     // Sumowanie rabatów: jeśli istnieje rabat automatyczny, ale kod ma wyższy priorytet
@@ -219,6 +218,9 @@ export const POST = auth(async (req: any) => {
       discountToApply ? { value: discountToApply.value, type: discountToApply.type } : null
     );
 
+    // Sprawdzenie, czy użytkownik jest zalogowany lub gość, i przypisanie emaila
+    const email = user?.email || payload.shippingAddress.email;
+
     const newOrder = new OrderModel({
       items: dbOrderItems,
       itemsPrice,
@@ -232,6 +234,7 @@ export const POST = auth(async (req: any) => {
       },
       paymentMethod: payload.paymentMethod,
       user: user ? user._id : null,
+      email, // Dla gości
     });
 
     const createdOrder = await newOrder.save({ session });

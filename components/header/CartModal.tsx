@@ -1,70 +1,93 @@
-// next-amazona-v2/components/header/CartModal.tsx
 'use client';
 
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import useCartService from '@/lib/hooks/useCartStore';
 import Image from 'next/image';
+import useLayoutService from '@/lib/hooks/useLayout';
 
 const CartModal = () => {
   const { items, itemsPrice, decrease, increase } = useCartService();
+  const { theme } = useLayoutService();
+  const isDarkMode = theme === 'dark';
 
-  if (items.length === 0) {
-    return (
-      <div className="absolute right-0 p-3 w-72 card card-compact bg-base-100 shadow-xl z-50">
-        <p>Twój koszyk jest pusty.</p>
-      </div>
-    );
-  }
+  // Dodajemy lokalny stan do kontrolowania widoczności modala
+  const [isHovered, setIsHovered] = useState(false);
+  const hoverTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  // Ustawienie wysokości dla 7 elementów listy.
-  // Jeśli jeden element listy ma więcej niż 50px, zmień wartość poniżej odpowiednio.
-  const maxHeightForSevenItems = 70 * 7;
+  // Funkcja obsługująca najechanie myszką (hover)
+  const handleMouseEnter = () => {
+    if (hoverTimeout.current) {
+      clearTimeout(hoverTimeout.current);
+    }
+    setIsHovered(true);
+  };
+
+  // Funkcja obsługująca wyjechanie myszką (hover leave)
+  const handleMouseLeave = () => {
+    hoverTimeout.current = setTimeout(() => {
+      setIsHovered(false);
+    }, 300); // Opóźnienie 300ms przed zamknięciem
+  };
 
   // Funkcja sprawdzająca, czy obraz jest lokalny (jeśli nie, to Cloudinary lub inne)
   const getImageSrc = (src: string | undefined) => {
     if (!src) {
-      return '/default-image.jpg'; // Domyślna ścieżka, jeśli `src` jest undefined lub pusty
+      return '/default-image.jpg';
     }
     if (src.startsWith('http')) {
-      return src; // Pełny adres URL, np. Cloudinary
+      return src;
     }
-    return `/products/${src}`; // Lokalny obraz z katalogu public/products
+    return `/products/${src}`;
   };
 
+  // Jeśli koszyk jest pusty, zawsze wyświetlamy komunikat
+  if (items.length === 0) {
+    return (
+      <div
+        className={`absolute right-0 top-12 p-4 w-80 shadow-xl rounded-lg z-50 ${isDarkMode ? 'bg-black' : 'bg-white'}`}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <p className="text-center">Twój koszyk jest pusty.</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="absolute right-0 p-3 w-72 bg-white dark:bg-gray-800 shadow-lg z-50" 
-         style={{ maxHeight: `${maxHeightForSevenItems}px`, overflowY: items.length > 7 ? 'scroll' : 'hidden' }}>
-      <ul>
-        {items.map((item, index) => (
-          <li key={item.slug} className="flex justify-between items-center mb-2">
-            <div className="flex items-center">
+    <div
+      className={`absolute right-0 top-12 p-4 w-80 shadow-xl rounded-lg z-50 max-h-[480px] overflow-y-auto ${isDarkMode ? 'bg-black' : 'bg-white'}`}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <ul className="divide-y">
+        {items.map((item) => (
+          <li key={item.slug} className="flex justify-between items-center py-2">
+            <div className="flex items-center space-x-3">
               <Image
                 src={getImageSrc(item.mainImage)}
                 alt={item.name}
                 width={50}
                 height={50}
-                className="object-cover"
+                className="object-cover rounded"
               />
-              <span className="ml-2 text-[#222] dark:text-gray-200">{item.name}</span>
+              <span>{item.name}</span>
             </div>
-            <div className="flex items-center">
-              <button className="btn btn-xs" type="button" onClick={() => decrease(item)}>
+            <div className="flex items-center space-x-2">
+              <button className="btn btn-xs rounded" type="button" onClick={() => decrease(item)}>
                 -
               </button>
-              <span className="mx-2 text-[#222] dark:text-gray-200">{item.qty}</span>
-              <button className="btn btn-xs" type="button" onClick={() => increase(item)}>
+              <span>{item.qty}</span>
+              <button className="btn btn-xs rounded" type="button" onClick={() => increase(item)}>
                 +
               </button>
             </div>
-            <span className="text-[#222] dark:text-gray-200">{item.price} PLN</span>
+            <span>{item.price} PLN</span>
           </li>
         ))}
       </ul>
-      <div className="flex justify-between items-center mt-2">
-        <div>
-          <span className="font-bold text-[#222] dark:text-gray-200">Suma:</span> {itemsPrice} PLN
-        </div>
+      <div className="flex justify-between items-center mt-4">
+        <div className="text-lg font-bold">Suma: {itemsPrice} PLN</div>
         <Link href="/cart">
           <button className="btn btn-primary">Zobacz Koszyk</button>
         </Link>

@@ -8,8 +8,10 @@ import { useEffect, useState, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import useSWRMutation from 'swr/mutation';
 import Image from 'next/image';
+import { useSession } from 'next-auth/react'; // Import useSession
 
 const Form = () => {
+  const { data: session } = useSession(); // Get session data
   const router = useRouter();
   const {
     paymentMethod,
@@ -192,6 +194,7 @@ const Form = () => {
   const { trigger: placeOrder, isMutating: isPlacing } = useSWRMutation(
     `/api/orders/mine`,
     async (url) => {
+      const email = session?.user?.email || localStorage.getItem('userEmail'); // Pobieranie e-maila z sesji lub localStorage
       const res = await fetch('/api/orders', {
         method: 'POST',
         headers: {
@@ -206,6 +209,7 @@ const Form = () => {
             selectedPocztex: localStorage.getItem('selectedPoint'),
             selectedOrlenPoint: localStorage.getItem('selectedOrlenPoint'),
             shippingCost: shippingPrice,
+            email, // Dodanie emaila do zamówienia
           },
           items: items.map(item => ({
             ...item,
@@ -226,7 +230,7 @@ const Form = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            email: shippingAddress.email,
+            email,
             orderId: data.order._id,
           }),
         });
@@ -278,6 +282,7 @@ const Form = () => {
             <div className="card-body">
               <h2 className="card-title">Adres Dostawy</h2>
               <p>{shippingAddress.fullName}</p>
+              <p>{session?.user?.email || localStorage.getItem('userEmail')} {/* Email użytkownika */}</p>
               <p>
                 {shippingAddress.address}, {shippingAddress.city}, {shippingAddress.postalCode}, {shippingAddress.country}{' '}
               </p>
