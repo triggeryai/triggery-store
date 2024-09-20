@@ -1,3 +1,4 @@
+// next-amazona-v2/app/admin/products/Products.tsx
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -8,7 +9,7 @@ import useSWRMutation from 'swr/mutation';
 import { v4 as uuidv4 } from 'uuid';
 import LackProductButton from '@/components/LackProductButton';
 import { SearchBox } from '@/components/header/SearchBoxProduct';
-import { FaSyncAlt } from 'react-icons/fa';
+import { FaSyncAlt, FaCopy } from 'react-icons/fa';
 
 export default function Products() {
   const router = useRouter();
@@ -146,6 +147,11 @@ export default function Products() {
     router.push(`/admin/products/${productId}?page=${page}&editedProductId=${productId}`);
   };
 
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast.success('Copied to clipboard');
+  };
+
   // Zamieniamy tekst "Ładowanie..." na ładny spinner
   if (productsError || categoriesError) return <p>Error occurred.</p>;
   if (!productsData || !categories)
@@ -258,66 +264,53 @@ export default function Products() {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="table-auto w-full border-collapse hidden md:table">
+        <table className="table-auto w-full border-collapse">
           <thead>
             <tr>
-              <th className="border px-4 py-2">Thumbnail</th>
-              <th className="border px-4 py-2"><div className="badge">id</div></th>
-              <th className="border px-4 py-2"><div className="badge">name</div></th>
-              <th className="border px-4 py-2"><div className="badge">slug</div></th>
-              <th className="border px-4 py-2"><div className="badge">price</div></th>
-              <th className="border px-4 py-2"><div className="badge">categories</div></th>
-              <th className="border px-4 py-2"><div className="badge">count in stock</div></th>
-              <th className="border px-4 py-2"><div className="badge">width</div></th>
-              <th className="border px-4 py-2"><div className="badge">height</div></th>
-              <th className="border px-4 py-2"><div className="badge">depth</div></th>
-              <th className="border px-4 py-2"><div className="badge">weight</div></th>
-              <th className="border px-4 py-2"><div className="badge">actions</div></th>
+              <th className="border px-2 py-2">Thumbnail</th>
+              <th className="border px-2 py-2">ID</th>
+              <th className="border px-2 py-2">Name</th>
+              <th className="border px-2 py-2">Slug</th>
+              <th className="border px-2 py-2">Price</th>
+              <th className="border px-2 py-2">Count</th>
+              <th className="border px-2 py-2">Actions</th>
             </tr>
           </thead>
           <tbody>
             {products.map((product: any) => (
               <tr key={product._id} className={product._id === editedProductId ? 'bg-yellow-100' : ''}>
-<td className="border px-4 py-2">
-  {product.mainImage ? (
-    product.mainImage.startsWith("http") ? (
-      <img src={product.mainImage} alt={product.name} className="h-16 w-16 object-cover" />
-    ) : (
-      <img
-        src={`/products/${product.mainImage}`}
-        alt={product.name}
-        className="h-16 w-16 object-cover"
-      />
-    )
-  ) : (
-    <span>Brak zdjęcia</span>
-  )}
-</td>
-
-                <td className="border px-4 py-2">{product._id}</td>
-                <td className="border px-4 py-2">{product.name}</td>
-                <td className="border px-4 py-2">{product.slug}</td>
-                <td className="border px-4 py-2">{product.price} PLN</td>
-                <td className="border px-4 py-2">{product.categories}</td>
-                <td className="border px-4 py-2">{product.countInStock}</td>
-                <td className="border px-4 py-2">{product.width} cm</td>
-                <td className="border px-4 py-2">{product.height} cm</td>
-                <td className="border px-4 py-2">{product.depth} cm</td>
-                <td className="border px-4 py-2">{product.weight} kg</td>
-                <td className="border px-4 py-2">
-                  <button 
-                    type="button" 
-                    className="btn btn-info btn-sm"
-                    onClick={() => handleProductEdit(product._id)}
-                  >
+                <td className="border px-2 py-2">
+                  {product.mainImage ? (
+                    <img
+                      src={product.mainImage.startsWith('http') ? product.mainImage : `/products/${product.mainImage}`}
+                      alt={product.name}
+                      className="h-10 w-10 object-cover"
+                    />
+                  ) : (
+                    'No image'
+                  )}
+                </td>
+                <td className="border px-2 py-2">
+                  {product._id.slice(0, 4)}...{product._id.slice(-4)}
+                  <button className="ml-2" onClick={() => handleCopy(product._id)}>
+                    <FaCopy />
+                  </button>
+                </td>
+                <td className="border px-2 py-2">{product.name}</td>
+                <td className="border px-2 py-2">
+                  {product.slug.slice(0, 8)}...
+                  <button className="ml-2" onClick={() => handleCopy(product.slug)}>
+                    <FaCopy />
+                  </button>
+                </td>
+                <td className="border px-2 py-2">{product.price} PLN</td>
+                <td className="border px-2 py-2 text-center">{product.countInStock}</td>
+                <td className="border px-2 py-2">
+                  <button onClick={() => handleProductEdit(product._id)} className="btn btn-info btn-sm">
                     Edit
                   </button>
                   &nbsp;
-                  <button
-                    onClick={() => handleDeleteClick(product._id)}
-                    type="button"
-                    className="btn btn-error btn-sm"
-                  >
+                  <button onClick={() => handleDeleteClick(product._id)} className="btn btn-error btn-sm">
                     Delete
                   </button>
                 </td>
