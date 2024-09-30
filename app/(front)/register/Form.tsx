@@ -55,7 +55,10 @@ const Form = () => {
     }
   }, [callbackUrl, params, router, session])
 
-  const formSubmit: SubmitHandler<Inputs> = async (form) => {
+  // Modyfikacja: Dodano event?.preventDefault(), aby zapobiec użyciu GET
+  const formSubmit: SubmitHandler<Inputs> = async (form, event) => {
+    event?.preventDefault(); // Zapobiegaj domyślnemu działaniu formularza (GET)
+
     const { name, email, password, captcha } = form
 
     // Check if the CAPTCHA is correct
